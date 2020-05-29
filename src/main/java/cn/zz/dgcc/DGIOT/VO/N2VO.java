@@ -18,6 +18,7 @@ public class N2VO {
     String devName;
     int devBH;       //设备编号
     int devZH;   //设备站号
+    String devStatus;
     int model;   //气调模式
     String QTstartTime; //气调开始时间
     String QMJCtime;    //气密性检测时间
@@ -39,12 +40,12 @@ public class N2VO {
     List<Double> CO2;  //CO2浓度
     String CRC;
 
-    public String getDevName() {
-        return devName;
+    public int getDepotId() {
+        return depotId;
     }
 
-    public void setDevName(String devName) {
-        this.devName = devName;
+    public void setDepotId(int depotId) {
+        this.depotId = depotId;
     }
 
     public String getDevNote() {
@@ -55,12 +56,12 @@ public class N2VO {
         this.devNote = devNote;
     }
 
-    public int getDepotId() {
-        return depotId;
+    public String getDevName() {
+        return devName;
     }
 
-    public void setDepotId(int depotId) {
-        this.depotId = depotId;
+    public void setDevName(String devName) {
+        this.devName = devName;
     }
 
     public int getDevBH() {
@@ -77,6 +78,14 @@ public class N2VO {
 
     public void setDevZH(int devZH) {
         this.devZH = devZH;
+    }
+
+    public String getDevStatus() {
+        return devStatus;
+    }
+
+    public void setDevStatus(String devStatus) {
+        this.devStatus = devStatus;
     }
 
     public int getModel() {
@@ -229,5 +238,13 @@ public class N2VO {
 
     public void setCO2(List<Double> CO2) {
         this.CO2 = CO2;
+    }
+
+    public String getCRC() {
+        return CRC;
+    }
+
+    public void setCRC(String CRC) {
+        this.CRC = CRC;
     }
 }

@@ -156,7 +156,7 @@ public class AppDateController extends BaseController {
     }
 
     /**
-     * 获取制氮机运行状态,需要解析返回值并回复 TODO
+     * 获取制氮机运行状态,需要解析返回值并回复
      *
      * @return
      */
@@ -322,6 +322,8 @@ public class AppDateController extends BaseController {
     /**
      * 获取选择仓库的氮气气调解析信息
      *
+     * @param depotId
+     * @param session
      * @return
      */
     @ResponseBody
@@ -372,7 +374,8 @@ public class AppDateController extends BaseController {
     /**
      * 根据devName 下发查询粮情命令
      *
-     * @param
+     * @param depotId
+     * @param session
      * @return
      */
     @RequestMapping("/getNewGrain.do")
@@ -429,10 +432,11 @@ public class AppDateController extends BaseController {
 
     /**
      * 下发测控命令
-     * @param depotId       仓库id
-     * @param devAddress    设备类地址
-     * @param devNum        设备编号
-     * @param action        动作      00/11：关/开
+     *
+     * @param depotId    仓库id
+     * @param devAddress 设备类地址
+     * @param devNum     设备编号
+     * @param action     动作      00/11：关/开
      * @param session
      * @return
      */
@@ -440,6 +444,8 @@ public class AppDateController extends BaseController {
     @ResponseBody
     public JsonResult<String> sendTestOrder(int depotId, String devAddress, int devNum, String action, HttpSession session) {
         log.info("下发测控命令");
+        action += action;
+
         String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
         Device rs = deviceService.getDevByDevName(devName);
         //根据编号站号选择设备
@@ -449,7 +455,7 @@ public class AppDateController extends BaseController {
         ControlOrderCommondBuilder controlOrderCommondBuilder = ControlOrderCommondBuilder.getInstance();
         String devBH = rs.getDevBH();
         String devZH = rs.getDevZH();
-        int devAdd = Integer.parseInt(devAddress,16);
+        int devAdd = Integer.parseInt(devAddress, 16);
         String devDZ = byteToHex(devAdd);
 
         String devBHDZ = byteToHex(devNum);
@@ -480,9 +486,10 @@ public class AppDateController extends BaseController {
 
 
     /**
-     * 通过分机名 exp: QT000001 下发查询气调状态命令
+     * 通过depotId exp:  下发查询气调状态命令
      *
-     * @param
+     * @param depotId
+     * @param session
      * @return
      */
     @RequestMapping("/getNewN2Info.do")
@@ -577,6 +584,33 @@ public class AppDateController extends BaseController {
         }
         return new JsonResult<>(success, "sendMsg failed");
     }
+
+
+    @RequestMapping("/JsonTime.do")
+    @ResponseBody
+    public void setTime(int depotId, HttpSession h) {
+        String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
+        Device rs = deviceService.getDevByDevName(devName);
+        String devId = rs.getDevId();
+        ConfCommondBuilder confCommondBuilder = ConfCommondBuilder.getInstance();
+        String commond = confCommondBuilder.setTimes(devId);
+        String pk = rs.getProductKey();
+        devName = rs.getDeviceName();
+        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
+        log.info(commond + "-----" + topicFullName);
+        JSONObject json = ioTService.pub(topicFullName, commond, pk, null);
+        log.info(json.toJSONString());
+        //保存 已经下发的命令
+        Order o = new Order(getUserIdFromSession(h), 0, json.getString("MessageId"), 2, commond,
+                ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
+        System.out.println("OOOO----" + o);
+        int r = orderService.save(o);
+        if (r == 1) {
+            log.info("保存命令成功");
+            r = 0;
+        }
+    }
+
 
     /**
      * json格式 系统配置 下发
@@ -689,7 +723,8 @@ public class AppDateController extends BaseController {
 
 
     /**
-     *  TODO
+     * TODO
+     *
      * @param depotId
      * @param action
      * @param session

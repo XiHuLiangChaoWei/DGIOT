@@ -116,7 +116,7 @@ public class DeviceBindController extends BaseController {
                     break;
                 }
             }
-            //TODO 修改为根据Type计数
+            //
             deviceNameFix = deviceService.getCountByType(pk);
 
             String deviceNameSuf = null;
@@ -182,7 +182,14 @@ public class DeviceBindController extends BaseController {
                     "a1gQiP9WsBk", null);
             String succ = jsonRs.getString("Success");
             if ("true".equals(succ)) {
-                log.info("三元组信息下发成功");
+                log.info("第一次三元组信息下发成功");
+            }
+
+            jsonRs = ioTService.pub("/a1gQiP9WsBk/000000/user/dev/register/response", downDevInfo.toString(),
+                    "a1gQiP9WsBk", null);
+            succ = jsonRs.getString("Success");
+            if ("true".equals(succ)) {
+                log.info("第二次三元组信息下发成功");
             }
         }
 

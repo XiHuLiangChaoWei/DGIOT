@@ -47,6 +47,7 @@ public class Dg4AnalysisN2 {
         log.info("开始解析N2信息······");
         String devBH = msg.substring(8, 10);
         String devZH = msg.substring(10, 12);
+        String devStatus = msg.substring(12, 14);
         String model = msg.substring(14, 16);
         String QTstart = msg.substring(16, 28);
         String qimixing = msg.substring(28, 40);
@@ -110,6 +111,7 @@ public class Dg4AnalysisN2 {
 //        Device dev = deviceService.getDevByBHAndZH(devBH,devZH,2);
 //        String devNote = dev.getDevNote();
 
+        devStatus = devStatus.equals("01") ? "远程" : devStatus.equals("00") ? "本地" : null;
 
         //拼装解析信息
         N2VO n2VO = new N2VO();
@@ -119,6 +121,7 @@ public class Dg4AnalysisN2 {
             n2VO.setDevBH(Integer.parseInt(devBH));
             n2VO.setDevZH(Integer.parseInt(devZH));
             n2VO.setModel(getModel(model));   //设置模式
+            n2VO.setDevStatus(devStatus);
             n2VO.setQTstartTime(parseTimes(QTstart)); //设置气调启动时间
             n2VO.setQMJCtime(parseTimes(qimixing));//设置上一次气密性检测时间
 
@@ -156,6 +159,7 @@ public class Dg4AnalysisN2 {
         log.info("拼装完成--------------------------------");
         return jo;
     }
+
     private String Hex2Int2(String msg) {
         int index = Integer.parseInt(msg, 16);
         return String.valueOf(index);
@@ -163,7 +167,7 @@ public class Dg4AnalysisN2 {
 
 
     private String Hex2Int(String msg) {
-        int index = Integer.parseInt(msg, 16)-500;
+        int index = Integer.parseInt(msg, 16) - 500;
         return String.valueOf(index);
     }
 
@@ -280,6 +284,7 @@ public class Dg4AnalysisN2 {
                 a = 1;
                 rs.add(a);
             } else if (index.equals("00")) {
+                a = 0;
                 rs.add(a);
             }
         }

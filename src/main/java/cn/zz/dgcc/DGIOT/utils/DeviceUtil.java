@@ -29,7 +29,7 @@ public class DeviceUtil {
         String devZH = content.getString("devZH");
         int type = content.getInteger("type");
         String busType = content.getString("busType");
-        String ccId = content.getString("ccId");
+        String ccId = content.getString("CCID");
         if (devNote.equals(null)) {
             devNote = "";
         }

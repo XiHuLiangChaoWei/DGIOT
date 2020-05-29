@@ -108,7 +108,7 @@
             is_used = 1,Dev_Id =#{DevId},
             Dtu_id=#{DtuId},devNote=#{devNote},
             devBH=#{devBH},devZH=#{devZH},
-            bus_type=#{busType}，cc_id=#{ccId}
+            bus_type=#{busType},cc_id=#{ccId}
         WHERE
             device_secret = #{deviceSecret}
     </update>

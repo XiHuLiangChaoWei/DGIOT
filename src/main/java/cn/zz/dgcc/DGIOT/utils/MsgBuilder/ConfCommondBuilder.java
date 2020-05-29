@@ -3,6 +3,11 @@ package cn.zz.dgcc.DGIOT.utils.MsgBuilder;
 import cn.zz.dgcc.DGIOT.entity.N2Configure;
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static cn.zz.dgcc.DGIOT.utils.Constant.DATE_FORMAT_YMDHMS;
+
 /**
  * Created by: YYL
  * Date: 2020/5/28 8:49
@@ -31,6 +36,12 @@ public class ConfCommondBuilder extends CommondBuild{
         return new Gson().toJson(this.n2Configure);
     }
 
+    public String setTimes(String devId){
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_YMDHMS);
+        String d = sdf.format(date);
+        return "{\"devId\":\""+devId+"\",\"command type\":\"TBSJ\",\"Sync time\":\""+d+"\"}";
+    }
 
     public String getPZCXInfo(String devId){
         String rs = "{\"devId\":\""+devId+"\",\"command type\":\"CXPZ\"}";
