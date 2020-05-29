@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zz.dgcc.DGIOT.mapper.QuartzJobMapper" >
+  <resultMap id="BaseResultMap" type="cn.zz.dgcc.DGIOT.entity.QuartzJob" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="schemeName" property="schemeName" jdbcType="VARCHAR" />
+    <result column="schemeType" property="schemeType" jdbcType="VARCHAR" />
+    <result column="week" property="week" jdbcType="VARCHAR" />
+    <result column="timeDate" property="timeDate" jdbcType="VARCHAR" />
+    <result column="hour" property="hour" jdbcType="VARCHAR" />
+    <result column="minute" property="minute" jdbcType="VARCHAR" />
+    <result column="setTime" property="setTime" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="jobName" property="jobName" jdbcType="VARCHAR" />
+    <result column="jobGroup" property="jobGroup" jdbcType="VARCHAR" />
+    <result column="jobKey" property="jobKey" jdbcType="VARCHAR" />
+    <result column="Cron" property="cron" jdbcType="VARCHAR" />
+    <result column="Particulars" property="particulars" jdbcType="VARCHAR" />
+    <result column="jobClass" property="jobClass" jdbcType="VARCHAR" />
+    <result column="start" property="start" jdbcType="VARCHAR" />
+    <result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="updatePeople" property="updatePeople" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <insert id="saveQuartzJob" parameterType="cn.zz.dgcc.DGIOT.entity.QuartzJob">
+    insert into quartz_job (id, schemeName, schemeType, week, timeDate,
+            hour, minute, setTime, remark, type, jobName, jobGroup, jobKey, Cron,jobClass, start, updateTime, updatePeople)
+     values (#{id}, #{schemeName},#{schemeType}, #{week}, #{timeDate}, #{hour}, #{minute}, #{setTime},
+            #{remark}, #{type}, #{jobName}, #{jobGroup}, #{jobKey}, #{Cron}, #{jobClass}, #{start}, #{updateTime}, #{updatePeople})
+  </insert>
+
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    SELECT * FROM quartz_job order by updateTime desc
+  </select>
+
+  <select id="selectQuartzJobById" resultMap="BaseResultMap" >
+    SELECT * FROM quartz_job WHERE id = #{id}
+  </select>
+
+  <delete id="deleteQuartzJob">
+    DELETE FROM quartz_job WHERE id = #{id}
+  </delete>
+
+  <update id="updateQuartzJob" parameterType="cn.zz.dgcc.DGIOT.entity.QuartzJob">
+    UPDATE quartz_job SET schemeName = #{schemeName}, schemeType = #{schemeType},week=#{week},timeDate=#{timeDate},
+                          hour = #{hour}, minute =#{minute},setTime=#{setTime},remark=#{remark},type=#{type},jobName=#{jobName},jobGroup=#{jobGroup},
+                          jobKey = #{jobKey},Cron=#{Cron},jobClass=#{jobClass},start=#{start},updateTime=#{updateTime},updatePeople=#{updatePeople}
+                    WHERE id = #{id}
+  </update>
+</mapper>

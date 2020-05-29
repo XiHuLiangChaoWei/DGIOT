@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>DGCC</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">DGCC 阿里云物联平台</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left" th:remove="body">
+            <li class="layui-nav-item"><a href="" th:text="${msg}">控制台</a></li>
+            <li class="layui-nav-item"><a href="">商品管理</a></li>
+            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:">
+                    <img src="" class="layui-nav-img">
+                    管理员
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:" id="backTop">主页</a>
+                    <dl class="layui-nav-child" id="productId">
+                        <dd><a href="javascript:">仓库列表</a></dd>
+                        <dd><a href="javascript:">列表二</a></dd>
+                        <dd><a href="javascript:">列表三</a></dd>
+                        <dd><a href="">超链接</a></dd>
+                    </dl>
+                </li>
+                <!--                <li class="layui-nav-item">-->
+                <!--                    <a href="javascript:;">解决方案</a>-->
+                <!--                    <dl class="layui-nav-child" id="TopicId">-->
+                <!--                        <dd><a href="javascript:;">列表一</a></dd>-->
+                <!--                        <dd><a href="javascript:;">列表二</a></dd>-->
+                <!--                        <dd><a href="">超链接</a></dd>-->
+                <!--                    </dl>-->
+                <!--                </li>-->
+                <!--                <li class="layui-nav-item"><a href="">云市场</a></li>-->
+                <!--                <li class="layui-nav-item"><a href="">发布商品</a></li>-->
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" style="background-color:#c2c2c2">
+        <div class="layui-tab">
+            <div class="layui-tab-content" id="centerAll">
+                <!-- 内容主体区域 -->
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-md6">
+                        <div class="layui-card">
+                            <div class="layui-tab-content">
+                                <div style="padding: 15px;">
+                                </div>
+                                <div class="layui-card-header">粮情报表</div>
+                                <div class="layui-card-body"
+                                     style="height: 750px;word-wrap:break-word;overflow-y:auto">
+                                    <div id="grain"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-md6" style="float: right">
+
+                        <div class="layui-card">
+                            <div class="layui-tab-content">
+                                <div style="padding: 15px;">
+                                </div>
+                                <div class="layui-card-header">气体报表</div>
+                                <div class="layui-card-body"
+                                     style="height: 750px;word-wrap:break-word;overflow-y:auto">
+                                    <div id="N2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-footer">
+        <div id="sse">
+            <a href="javascript:">运行 WebSocket</a>
+        </div>
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+<script src="../layui/layui.all.js"></script>
+<script src="../jquery-3.4.1.min.js"/>
+
+
+<link th:href="@{../layui/layui.all.js}" rel="stylesheet"/>
+<script th:src="@{../jquery-3.4.1.min.js}"></script>
+<script th:src="@{../echarts.js}"></script>
+<!--<script th:src="@{../DGCC.js}"></script>-->
+
+
+<script type="text/javascript" th:inline="javascript">
+    //JavaScript代码区域   webSocket
+
+    window.onload = function () {
+        showGrainInfo();
+        showN2Info();
+
+
+    }
+
+    function showN2Info() {
+        $.ajax({
+            url: "/sql/getN2Info",
+            type: "post",
+            dateType: "json",
+            success: function (json) {
+
+                let sourceDate = [];
+                let pici = [];
+                let seriesDate = [];
+                let list = json.data;
+                //数据解析成json对象
+                let lst = JSON.stringify(list);
+                let ls = JSON.parse(lst);
+                // console.log("json=" + ls);
+                //遍历depot
+                pici.push("批次");
+                let count = 0;
+                for (let p in ls) {
+                    let nongdu = [];
+                    nongdu.push("仓库" + p);
+                    for (let i = 0; i < ls[p].length; i++) {
+                        let info = ls[p][i];
+                        // console.log("info:" + info);
+                        let batchId = info.batchId;
+                        let N2P = info.n2P;
+                        // console.log("batchId:" + batchId);
+                        // console.log("N2P:" + N2P);
+                        nongdu.push(N2P);
+                        if (count == 0) {
+                            pici.push(batchId);
+                            seriesDate.push({type: 'bar', xAxisIndex: 1, yAxisIndex: 1})
+                        }
+
+                    }
+                    if (count == 0) {
+                        sourceDate.push(pici);
+                    }
+                    seriesDate.push({type: 'bar', seriesLayoutBy: 'row'})
+                    sourceDate.push(nongdu);
+                    count++;
+                }
+                // console.log("pici=" + pici);
+                // console.log("sourceDate=" + sourceDate);
+                // console.log("seriesDate=" + seriesDate);
+
+                let dom1 = document.getElementById("N2");
+                let resizeMainContainer1 = function () {
+                    dom1.style.width = dom1.offsetWidth + 'px';
+                    console.log("width" + dom1.style.width);
+                    dom1.style.height = window.innerHeight * 0.8 + 'px';
+                    console.log("height" + dom1.style.height);
+                };
+                //设置div容器高宽
+                resizeMainContainer1();
+                let Chart = echarts.init(dom1);
+                option = null;
+
+                option = {
+                    legend: {},
+                    tooltip: {},
+                    dataset: {
+                        source: sourceDate,
+                    },
+                    xAxis: [
+                        {type: 'category', gridIndex: 0},
+                        {type: 'category', gridIndex: 1}
+                    ],
+                    yAxis: [
+                        {gridIndex: 0},
+                        {gridIndex: 1}
+                    ],
+                    grid: [
+                        {bottom: '55%'},
+                        {top: '55%'}
+                    ],
+                    series: seriesDate,
+                    // [
+                    //     // These series are in the first grid.
+                    //     {type: 'bar', seriesLayoutBy: 'row'},
+                    //     {type: 'bar', seriesLayoutBy: 'row'},
+                    //     {type: 'bar', seriesLayoutBy: 'row'},
+                    //     // These series are in the second grid.
+                    //     {type: 'bar', xAxisIndex: 1, yAxisIndex: 1},
+                    //     {type: 'bar', xAxisIndex: 1, yAxisIndex: 1},
+                    //     {type: 'bar', xAxisIndex: 1, yAxisIndex: 1},
+                    //     {type: 'bar', xAxisIndex: 1, yAxisIndex: 1}
+                    // ]
+                };
+                if (option && typeof option === "object") {
+                    Chart.setOption(option, true);
+                }
+            }
+        })
+    }
+
+    function showGrainInfo() {
+        $.ajax({
+            url: "/sql/getGrainInfo",
+            type: "post",
+            dateType: "json",
+            success: function (json) {
+
+                let list = json.data;
+                //数据解析成json对象
+                let lst = JSON.stringify(list);
+                let ls = JSON.parse(lst);
+
+                // console.log("list:" + lst);
+                // console.log(ls[1]);
+
+                let cangkuDate = [];
+                let innerTempDate = [];
+                let outTempDate = [];
+                let cha = [];
+
+                for (p in ls) {
+                    let avgIn;
+                    let totalTemp = 0;
+                    let mark = 1;
+                    cangkuDate.push("仓库" + p);
+                    for (let i = 0; i < ls[p].length; i++) {
+                        let info = ls[p][i];
+                        // console.log("info:" + JSON.stringify(info));
+                        let batchId = info.batchId;
+                        let depotId = info.depotId;
+                        let innerTemp = info.innerTemp;
+                        let outDoor = -info.outDoor;
+                        if (mark == 1) {
+                            outTempDate.push(outDoor);
+                        }
+                        if (depotId == p) {
+                            totalTemp += innerTemp;
+                            mark++;
+                        }
+                        // console.log("batchId:" + batchId);
+                    }
+                    avgIn = totalTemp / mark;
+                    innerTempDate.push(avgIn);
+                }
+                for (let i = 0; i < innerTempDate.length; i++) {
+                    let q = innerTempDate[i] + outTempDate[i];
+                    q = Math.round(q*100)/100;
+                    // console.log("q=" + q);
+                    cha.push(q);
+                }
+                console.log("仓库：" + cangkuDate);
+                console.log("avgTemp：" + innerTempDate);
+                console.log("outTemp：" + outTempDate);
+                // console.log("cha：" + cha);
+                let depotDate = [];
+
+                for (let i = 0; i < list.length; i++) {
+                    depotDate.push(list[i].depotId)
+                }
+
+                let dom = document.getElementById("grain");
+                let resizeMainContainer = function () {
+                    dom.style.width = dom.offsetWidth + 'px';
+                    console.log("width" + dom.style.width);
+                    dom.style.height = window.innerHeight * 0.8 + 'px';
+                    console.log("height" + dom.style.height);
+                };
+                //设置div容器高宽
+                resizeMainContainer();
+                let myChart = echarts.init(dom);
+                let app = {};
+                option = null;
+                option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: ['温差', '外温', '内温']
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: [
+                        {
+                            type: 'value'
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'category',
+                            axisTick: {
+                                show: false
+                            },
+                            data: cangkuDate,
+                            // ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '温差',
+                            type: 'bar',
+                            label: {
+                                show: true,
+                                position: 'inside'
+                            },
+                            data:cha,
+                                // [200, 170, 240, 244, 200, 220, 210]
+                        },
+                        {
+                            name: '内温',
+                            type: 'bar',
+                            stack: '总量',
+                            label: {
+                                show: true
+                            },
+                            data: innerTempDate,
+                            // [320, 302, 341, 374, 390, 450, 420]
+                        },
+                        {
+                            name: '外温',
+                            type: 'bar',
+                            stack: '总量',
+                            label: {
+                                show: true,
+                                position: 'left'
+                            },
+                            data: outTempDate,
+                            // [-120, -132, -101, -134, -190, -230, -210]
+                        }
+                    ]
+                };
+
+                if (option && typeof option === "object") {
+                    myChart.setOption(option, true);
+                }
+            }
+        });
+    }
+</script>
+
+
+</body>
+< /html>

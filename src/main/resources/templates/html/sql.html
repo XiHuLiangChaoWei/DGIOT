@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script type="text/javascript" src=" ../../js/jquery-1.8.3.min.js"></script>
+<div id="tableP">
+    <button id="b1">粮情最新封装</button>
+    <button id="b2">氮气最新封装</button>
+    <button id="b3">getNewN2Info.do?devBH=1&devZH=4</button>
+    <button id="b4">getNewGrain.do?devBH=1&devZH=1</button>
+    <button id="b5">getDepotList</button>
+    <button id="b6">sendTestOrder?devBH=1&devZH=1&devAddress=1&devNum=1&action=11</button>
+    <div id="2"></div>
+    <script type="text/javascript">
+        $("#b1").click(function () {
+            $.ajax({
+                "url": 1 + "/grain",
+                "type": "GET",
+                "dateType": "json",
+                "success": function (json) {
+                    let j = json.date;
+                    console.log(json)
+                }
+            })
+        })
+        $("#b2").click(function () {
+            $.ajax({
+                "url": 1 + "/N2",
+                "type": "GET",
+                "dateType": "json",
+                "success": function (json) {
+                    let j = json.date;
+                    console.log(json)
+                }
+            })
+        })
+        $("#b3").click(function () {
+            $.ajax({
+                "url": "/app/getNewN2Info.do?depotId=1",
+                "type": "GET",
+                "dateType": "json",
+                "success": function (json) {
+                    let j = json.date;
+                    console.log(json)
+                }
+            })
+        })
+
+        $("#b4").click(function () {
+            $.ajax({
+                "url": "/app/getNewGrain.do?depotId=1",
+                "type": "GET",
+                "dateType": "json",
+                "success": function (json) {
+                    let j = json.date;
+                    console.log(json)
+                }
+            })
+        })
+
+        $("#b5").click(function () {
+            $.ajax({
+                "url": "/app/getDepotList",
+                "type": "GET",
+                "dateType": "json",
+                "success": function (json) {
+                    let j = json.date;
+                    console.log(json)
+                }
+            })
+        })
+        $("#b6").click(function () {
+            $.ajax({
+                "url": "/app/sendTestOrder?depotId=1&devAddress=1&devNum=1&action=11",
+                "type": "GET",
+                "dateType": "json",
+                "success": function (json) {
+                    let j = json.date;
+                    console.log(json)
+                }
+            })
+        })
+    </script>
+</div>
+</div>
+</body>
+</html>

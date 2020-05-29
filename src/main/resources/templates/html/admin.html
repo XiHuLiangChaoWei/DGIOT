@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>DGCC - Layui</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">DGCC 阿里云物联平台</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left" th:remove="body">
+            <li class="layui-nav-item"><a href="" th:text="${msg}">控制台</a></li>
+            <li class="layui-nav-item"><a href="">商品管理</a></li>
+            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    管理员
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">00</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:" id="backTop">所有产品</a>
+                    <dl class="layui-nav-child" id="productId">
+                        <dd><a href="javascript:">列表一</a></dd>
+                        <dd><a href="javascript:">列表二</a></dd>
+                        <dd><a href="javascript:">列表三</a></dd>
+                        <dd><a href="">超链接</a></dd>
+                    </dl>
+                </li>
+                <!--                <li class="layui-nav-item">-->
+                <!--                    <a href="javascript:;">解决方案</a>-->
+                <!--                    <dl class="layui-nav-child" id="TopicId">-->
+                <!--                        <dd><a href="javascript:;">列表一</a></dd>-->
+                <!--                        <dd><a href="javascript:;">列表二</a></dd>-->
+                <!--                        <dd><a href="">超链接</a></dd>-->
+                <!--                    </dl>-->
+                <!--                </li>-->
+                <!--                <li class="layui-nav-item"><a href="">云市场</a></li>-->
+                <!--                <li class="layui-nav-item"><a href="">发布商品</a></li>-->
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" style="background-color:#c2c2c2">
+        <!--            <div class="layui-row">-->
+        <div class="layui-tab">
+            <!--            <div class="layui-container">-->
+            <div class="layui-row">
+                <div class="layui-col-md6">
+                    <!--            <ul class="layui-tab-title">-->
+                    <!--                <li class="layui-this"></li>-->
+                    <!--            </ul>-->
+                    <div class="layui-tab-content" id="centerAll">
+                        <!-- 内容主体区域 -->
+                        <div style="padding: 15px;">
+                            <div class="jumbotron">
+                                <h1>Hello, world!</h1>
+                                <p>...</p>
+                                <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+                            </div>
+                        </div>
+
+                        <div class="layui-card">
+                            <div class="layui-card-header">卡片面板</div>
+                            <div class="layui-card-body">
+                                卡片式面板面板通常用于非白色背景色的主体内<br>
+                                从而映衬出边框投影
+                            </div>
+                        </div>
+                        <div class="layui-card">
+                            <div class="layui-card-header">卡片面板</div>
+                            <div class="layui-card-body">
+                                卡片式面板面板通常用于非白色背景色的主体内<br>
+                                从而映衬出边框投影
+                            </div>
+                        </div>
+                        <div class="layui-card">
+                            <div class="layui-card-header">卡片面板</div>
+                            <div class="layui-card-body">
+                                卡片式面板面板通常用于非白色背景色的主体内<br>
+                                从而映衬出边框投影
+                            </div>
+                        </div>
+                        <div class="layui-card">
+                            <div class="layui-card-header">卡片面板</div>
+                            <div class="layui-card-body">
+                                卡片式面板面板通常用于非白色背景色的主体内<br>
+                                从而映衬出边框投影
+                            </div>
+                        </div>
+                        <!--                </div>-->
+                        <!--            </div>-->
+                    </div>
+                </div>
+                <div class="layui-col-md6 layui-col-space30" style="float:right">
+                    <div class="layui-col-md6 ">
+                        <div class="layui-card">
+                            <div class="layui-tab-content" id="midAll">
+                                <div style="padding: 15px;">
+                                </div>
+                                <div class="layui-card-header">发送消息</div>
+                                <div class="layui-card-body" style="height: 750px;word-wrap:break-word;overflow-y:auto">
+                                    <ul class="layui-timeline" id="sendMsg">
+                                        <li class="layui-timeline-item">
+                                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                                            <div class="layui-timeline-content layui-text">
+                                                <h3 class="layui-timeline-title">8月18日</h3>
+                                                <p>
+                                                    layui 2.0 的一切准备工作似乎都已到位。发布之弦，一触即发。
+                                                    <br>不枉近百个日日夜夜与之为伴。因小而大，因弱而强。
+                                                    <br>无论它能走多远，抑或如何支撑？至少我曾倾注全心，无怨无悔 <i class="layui-icon"></i>
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6">
+                        <div class="layui-card">
+                            <div class="layui-tab-content" id="rightAll">
+                                <div style="padding: 15px;">
+                                </div>
+                                <div class="layui-card-header">接收消息</div>
+                                <div class="layui-card-body" style="height: 750px;word-wrap:break-word;overflow-y:auto">
+                                    <ul class="layui-timeline" id="reciveMsg">
+                                        <li class="layui-timeline-item">
+                                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                                            <div class="layui-timeline-content layui-text">
+                                                <h3 class="layui-timeline-title">8月18日</h3>
+                                                <p>
+                                                    layui 2.0 的一切准备工作似乎都已到位。发布之弦，一触即发。
+                                                    <br>不枉近百个日日夜夜与之为伴。因小而大，因弱而强。
+                                                    <br>无论它能走多远，抑或如何支撑？至少我曾倾注全心，无怨无悔 <i class="layui-icon"></i>
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-footer">
+        <div id="sse">
+            <a href="javascript:WebSocketTest()">运行 WebSocket</a>
+        </div>
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+<script src="../layui/layui.all.js"></script>
+<script src="../jquery-3.4.1.min.js"/>
+
+
+<link th:href="@{../layui/layui.all.js}" rel="stylesheet"/>
+<script th:src="@{../jquery-3.4.1.min.js}"></script>
+<script th:src="@{../DGCC.js}"></script>
+
+<!--<style>-->
+<!--    .my-skin .layui-layer-btn0 {-->
+<!--        height: 28px;-->
+<!--        line-height: 28px;-->
+<!--        margin: 5px 5px 0;-->
+<!--        padding: 0 15px;-->
+<!--        border: 1px solid #dedede;-->
+<!--        background-color: #fff;-->
+<!--        color: #333;-->
+<!--        border-radius: 2px;-->
+<!--        font-weight: 400;-->
+<!--        cursor: pointer;-->
+<!--        text-decoration: none;-->
+<!--    }-->
+<!--</style>-->
+
+<script type="text/javascript" th:inline="javascript">
+    //JavaScript代码区域   webSocket
+
+</script>
+
+
+</body>
+< /html>

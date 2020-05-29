@@ -1,0 +1,154 @@
+.button_1{
+    margin: 0 5px;
+    height: 28px;
+    width: 80px;
+    color: #606060;
+    border: solid 1px #b7b7b7;
+    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+    zoom: 1;
+    display: inline;
+    vertical-align: baseline;
+    outline: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font: 14px/100% Arial, Helvetica, sans-serif;
+    padding: 4px;
+    text-shadow: 0 1px 1px rgba(0,0,0,.3);
+    border-radius: .5em;
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+select{
+    margin-right:80px;
+}
+.tab_1{
+    line-height: 38px;
+    font-size: 16px;
+    margin: 10px 0 10px 20px;
+}
+
+.tab_2{
+    font-weight: bold;
+    border: 1px solid #ECECEC;
+    border-radius: 15px;
+    margin: 10px;
+}
+.tab_3{
+
+}
+
+select{
+    font-family: "微软雅黑", serif;
+    /* margin:100px;*/
+    background: rgba(0,0,0,0);
+    width: 190px;
+    height: 26px;
+    font-size: 16px;
+    /*color: white;*/
+    text-align: center;
+    border: 1px #1a1a1a solid;
+    border-radius: 4px;
+}
+option{
+    color: black;
+    background: #f4f4f4;
+    line-height: 20px;
+}
+select:focus{
+    border: 2px #ddd solid;
+    box-shadow: 0 0 15px 1px #DDDDDD;
+}
+option:hover{
+    background: #EBCCD1;
+}
+td{
+    width: 93px;
+    font-size: 18px;
+    text-align: center;
+}
+
+
+#Main {
+    width: 600px;
+    text-align: center;
+    margin: 0 auto;
+}
+#table_1 {
+    width: 97%;
+    border-collapse: collapse;
+    text-align: left;
+    margin: 10px 5px 5px 10px;
+    cursor: default;
+    border: 1px solid #ccc;
+    margin-top:20px;
+    /*box-shadow: 0px 0px 10px rgba(0,255,255,0.75);*/
+    /*border: 1px solid rgba(127,255,255,0.75);
+    -webkit-box-shadow: 0px 0px 8px rgba(0,255,255,0.75);
+    -moz-box-shadow: 0px 0px 8px rgba(0,255,255,0.75);
+    box-shadow: 0px 0px 8px rgba(0,255,255,0.75);*/
+}
+.tbTitle>th {
+    border: 1px solid #ececec;
+    font-weight: 300;
+    text-align: center;
+    padding: 10px 0 10px 0;
+    font: 18px "微软雅黑", Arial, Helvetica, sans-serif;
+    /*background-color: rgb(247, 247, 247);*/
+    background-color: #ddd;
+    /*color: #efefef;
+    text-shadow: 0px 0px 20px rgba(127,255,255,1);*/
+}
+#table_1 > th, #table_1 > td {
+    border: 1px solid rgb(187,187,187);
+
+}
+.tbContext0{
+    background-color: #eee;
+}
+
+.tbContext1{
+    background-color: #fff;
+}
+.tbContext:hover {
+    background-color: rgba(187, 187, 187, 0.9) !important;
+}
+#table_1 > td,#table_1 >td>a {
+    font: 13px "微软雅黑", Arial, Helvetica, sans-serif;
+    text-align: center;
+    padding: 6px 0 6px 0;
+    color: rgba(127,255,255,0.75);
+    text-shadow: 0px 0px 20px rgba(0,255,255,0.75);
+}
+.tbContext:nth-child(2n_1) {
+    background-color: rgba(0,127,127,0.1);
+}
+.tbContext > td{
+    border: 1px solid #aaa0;
+    font-weight: 300;
+    text-align: center;
+    padding: 10px 0 10px 0;
+    font: 18px "微软雅黑", Arial, Helvetica, sans-serif;
+    /* background-color: rgb(247, 247, 247); */
+}
+.tbContext0 > td{
+    border: 1px none white;
+    border-right-style: solid;
+}
+
+.button_2 {
+    color: #444444;
+    background: #F3F3F3;
+    border: 1px #DADADA solid;
+    padding: 5px 10px;
+    border-radius: 9px;
+    font-weight: bold;
+    font-size: 9pt;
+    outline: none;
+}
+
+.button_2:hover {
+    border: 1px #C6C6C6 solid;
+    box-shadow: 1px 1px 1px #EAEAEA;
+    color: #333333;
+    background: #F7F7F7;
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zz.dgcc.DGIOT.mapper.OrderMapper">
+    <resultMap id="OrderResultMap" type="cn.zz.dgcc.DGIOT.entity.Order">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="is_success" property="isSuccess"/>
+        <result column="content" property="messageContent"/>
+        <result column="msg_id" property="messageId"/>
+        <result column="msg_type" property="msgType"/>
+        <result column="dev_id" property="devId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="result" property="result"/>
+    </resultMap>
+
+    <update id="update">
+        UPDATE
+            Iorder
+        SET
+            is_success = 1
+    </update>
+
+    <select id="getNewOpen1" resultMap="OrderResultMap">
+        SELECT
+            *
+        FROM
+            Iorder
+        WHERE
+            content = #{s}
+        ORDER By
+            create_time
+            DESC
+            Limit 1
+    </select>
+
+    <insert id="insert" parameterType="cn.zz.dgcc.DGIOT.entity.Order" useGeneratedKeys="true" keyProperty="id">
+             INSERT  INTO
+                Iorder
+                 (user_id,is_success,content,msg_id,
+                 msg_type,dev_id,create_time,result)
+        VALUES
+                 (#{userId},#{isSuccess},#{messageContent},#{messageId},
+                 #{msgType},#{devId},#{createTime},#{result})
+    </insert>
+
+
+    <select id="getAll" resultMap="OrderResultMap">
+        SELECT
+            *
+        FROM
+            Iorder
+
+    </select>
+
+</mapper>

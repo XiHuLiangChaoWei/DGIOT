@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zz.dgcc.DGIOT.mapper.DepotDevMapper">
+    <select id="selectDevNameByDepotIdAndType" resultType="java.lang.String">
+        SELECT
+            dev_name
+        FROM
+            depot_dev
+        WHERE
+            depot_id = #{depotId} and dev_type = #{type}
+    </select>
+
+    <select id="selectDepotIdByDevName" resultType="java.lang.Integer">
+        SELECT
+            depot_id
+        FROM
+            depot_dev
+        WHERE
+            dev_name = #{devName}
+    </select>
+
+    <select id="selectDevNamesByDepotId" resultType="java.lang.String">
+           SELECT
+            dev_name
+        FROM
+            depot_dev
+        WHERE
+            depot_id = #{depotId}
+    </select>
+</mapper>

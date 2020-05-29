@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zz.dgcc.DGIOT.mapper.OrderMapper">
+    <resultMap id="ConfResultMap" type="cn.zz.dgcc.DGIOT.entity.N2Configure">
+        <result column="id" property="id"/>
+        <result column="dev_name" property="devName"/>
+        <result column="dev_id" property="devId"/>
+        <result column="commond_type" property="commondType"/>
+        <result column="dev_bh" property="devBH"/>
+        <result column="dev_zh" property="devZH"/>
+        <result column="type" property="type"/>
+        <result column="bus_type" property="busType"/>
+        <result column="dieF_Fk" property="dieFFK"/>
+        <result column="zlfj_Fk" property="zlfjFk"/>
+        <result column="dieF_time" property="dieFTime"/>
+        <result column="nongdu_upper" property="n2NDUpper"/>
+        <result column="nongdu_lower" property="n2NDLower"/>
+        <result column="fuya_upper" property="n2FYUpper"/>
+        <result column="fuya_lower" property="n2FYLower"/>
+        <result column="chongqi_time" property="n2CQTime"/>
+        <result column="time_inerval" property="timeInterval"/>
+        <result column="cycle_measure" property="cycleMeasure"/>
+        <result column="air_tightness" property="airTightness"/>
+        <result column="start_ch" property="startCH"/>
+        <result column="end_ch" property="endCH"/>
+        <result column="chouqi_time" property="cqTime"/>
+    </resultMap>
+
+    <insert id="insertNewConf">
+        INSERT INTO dev_conf () VALUES ()
+    </insert>
+
+    <select id="selectConfByDevName" resultMap="ConfResultMap">
+        SELECT
+            *
+        FROM
+            dev_conf
+        WHERE
+            dev_name = #{devName}
+        ORDER BY
+            id
+        DESC LIMIT 1
+    </select>
+
+</mapper>

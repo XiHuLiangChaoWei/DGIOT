@@ -1,0 +1,16 @@
+{
+  "productKey": "a1gQiP9WsBk",
+  "deviceName": "02020050914-31",
+  "productSecret":"",
+  "deviceSecret": "11gFT2HiECzwcFEL3bmFqHJ7mMAMXAbp",
+  "subDevice": [
+    {
+      "productKey": "",
+      "deviceName": ""
+    },
+    {
+      "productKey": "",
+      "deviceName": ""
+    }
+  ]
+}

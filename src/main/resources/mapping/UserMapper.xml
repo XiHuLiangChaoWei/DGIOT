@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zz.dgcc.DGIOT.mapper.UserMapper">
+    <resultMap id="UserResultMap" type="cn.zz.dgcc.DGIOT.entity.User">
+        <result column="id" property="userId"/>
+        <result column="username" property="userName"/>
+        <result column="password" property="password"/>
+        <result column="company_id" property="companyId"/>
+        <result column="user_type" property="type"/>
+        <result column="phone" property="phone"/>
+        <result column="nick_name" property="name"/>
+        <result column="salt" property="salt"/>
+        <result column="is_deleted" property="isDeleted"/>
+
+    </resultMap>
+
+
+    <insert id="insertUser" parameterType="cn.zz.dgcc.DGIOT.entity.User" useGeneratedKeys="true">
+         insert into
+            iuser
+            (username, password, company_id,user_type,salt,phone,nick_name)
+         values
+            (#{userName}, #{password},
+            #{companyId},#{type},#{salt},#{phone},#{name})
+    </insert>
+
+    <select id="selectByUserId" resultMap="UserResultMap">
+            SELECT
+                *
+            FROM
+                iuser
+            WHERE
+                id = #{userId}
+
+    </select>
+
+    <select id="getAll" resultMap="UserResultMap">
+        SELECT
+            *
+        FROM
+            iuser
+
+    </select>
+
+    <select id="selectByUserName" resultMap="UserResultMap">
+        SELECT
+            *
+        FROM
+            iuser
+        WHERE
+            username = #{userName}
+    </select>
+
+    <select id="findById" resultMap="UserResultMap">
+        SELECT
+            *
+        FROM
+            iuser
+        WHERE
+            id =#{id}
+    </select>
+
+
+    <update id="updatePasswordByUid">
+        UPDATE iuser SET
+			password = #{password},
+		WHERE
+			id =#{id}
+    </update>
+
+</mapper>

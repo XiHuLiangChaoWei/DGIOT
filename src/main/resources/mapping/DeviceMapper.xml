@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zz.dgcc.DGIOT.mapper.DeviceMapper">
+    <resultMap id="DeviceResultMap" type="cn.zz.dgcc.DGIOT.entity.Device">
+        <result column="user_id" property="userId"/>
+        <result column="product_name" property="productName"/>
+        <result column="product_key" property="productKey"/>
+        <result column="device_name" property="deviceName"/>
+        <result column="device_status" property="deviceStatus"/>
+        <result column="device_secret" property="deviceSecret"/>
+        <result column="device_nick_name" property="deviceNickName"/>
+        <result column="device_ipAddress" property="deviceIpAddress"/>
+
+        <result column="is_used" property="isUsed"/>
+        <result column="Dev_Id" property="DevId"/>
+        <result column="Dtu_id" property="DtuId"/>
+        <result column="devNote" property="devNote"/>
+        <result column="devBH" property="devBH"/>
+        <result column="devZH" property="devZH"/>
+        <result column="type" property="type"/>
+        <result column="bus_type" property="busType"/>
+        <result column="cc_id" property="ccId"/>
+    </resultMap>
+
+    <select id="selectN2DevByUserId" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            type = 5 AND user_id = #{userId}
+        LIMIT 1
+    </select>
+
+
+    <select id="selectN2Dev" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            type = 5
+        LIMIT 1
+    </select>
+
+    <select id="selectDevByBHAndZH" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            devBH = #{devBH} AND devZH = #{devZH} AND type = #{type}
+    </select>
+
+    <select id="selectCountByType" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            iot_device_list
+        WHERE
+            product_key = #{productKey}
+    </select>
+
+    <select id="selectX" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            iot_device_list
+    </select>
+
+    <update id="resetDevInfoByDtuId">
+        UPDATE
+            iot_device_list
+        SET
+            is_used = 0,Dev_Id = null,
+            Dtu_id = null,devNote = null,
+            devBH = null,devZH = null,
+            bus_type = null
+        WHERE
+            Dtu_id = #{DtuId}
+    </update>
+
+    <update id="resetDevInfoByDevId">
+        UPDATE
+            iot_device_list
+        SET
+            is_used = 0,Dev_Id = null,
+            Dtu_id = null,devNote = null,
+            devBH = null,devZH = null,
+            bus_type = null
+        WHERE
+            Dev_Id = #{DevId}
+    </update>
+
+    <update id="resetDtuId">
+        UPDATE
+            iot_device_list
+        SET
+            Dtu_id = null
+        WHERE
+            Dtu_id = #{DtuId}
+    </update>
+
+    <update id="updataDeviceInfoByDS" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+        UPDATE
+            iot_device_list
+        SET
+            is_used = 1,Dev_Id =#{DevId},
+            Dtu_id=#{DtuId},devNote=#{devNote},
+            devBH=#{devBH},devZH=#{devZH},
+            bus_type=#{busType}，cc_id=#{ccId}
+        WHERE
+            device_secret = #{deviceSecret}
+    </update>
+
+    <update id="updataDeviceInfoByDevInfo" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+        UPDATE
+            iot_device_list
+        SET
+            is_used = 1,Dev_Id =#{DevId},
+            Dtu_id=#{DtuId},devNote=#{devNote},
+            devBH=#{devBH},devZH=#{devZH},
+            bus_type=#{busType}
+        WHERE
+            devNote=#{devNote} AND devBH=#{devBH} AND devZH=#{devZH} AND bus_type=#{busType} AND type = #{type}
+    </update>
+
+    <select id="selectCountDevByDevInfoWWithoutDevAndDtu" resultType="java.lang.Integer" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+        SELECT
+            count(*)
+        FROM
+            iot_device_list
+        WHERE
+            devNote=#{devNote} AND
+            devBH=#{devBH} AND devZH=#{devZH} AND
+            bus_type=#{busType} AND type =#{type}
+    </select>
+
+    <select id="selectDevByUpInfo" resultMap="DeviceResultMap" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+        SELECT
+            count(*)
+        FROM
+            iot_device_list
+        WHERE
+            devNote=#{devNote} AND
+            devBH=#{devBH} AND devZH=#{devZH} AND
+            bus_type=#{busType} AND type =#{type}
+    </select>
+
+    <select id="selectCountDevByDevInfo" resultType="java.lang.Integer" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+        SELECT
+            count(*)
+        FROM
+            iot_device_list
+        WHERE
+            devNote=#{devNote} AND
+            devBH=#{devBH} AND devZH=#{devZH} AND
+            bus_type=#{busType} AND type =#{type} AND Dtu_id=#{DtuId} AND Dev_Id =#{DevId}
+    </select>
+
+    <select id="selectCountDevByDevAndDtu" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            iot_device_list
+        WHERE
+            Dtu_id = #{dtuId} AND Dev_Id = #{devId}
+    </select>
+
+    <select id="selectDevByDevInfo" resultMap="DeviceResultMap" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            devNote=#{devNote} AND
+            devBH=#{devBH} AND devZH=#{devZH} AND
+            bus_type=#{busType} AND type =#{type}
+    </select>
+
+    <select id="selectDevByDevAndDtu" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            Dtu_id = #{dtuId} AND Dev_Id = #{devId}
+    </select>
+
+
+    <select id="selectNoUsedDevByType" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            type = #{type} AND is_used = 0
+        ORDER BY
+            device_name
+    </select>
+
+    <select id="selectDevByDevName" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            device_name = #{devName}
+    </select>
+
+
+    <select id="selectDevByType" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            type = #{type}
+        ORDER BY
+            device_name
+    </select>
+
+    <select id="selectDevByDS" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            device_secret = #{devSecret}
+    </select>
+
+    <select id="selectDevByDev" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            Dev_Id = #{DevId}
+    </select>
+
+
+    <select id="selectDevByDtu" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            Dtu_id = #{dtuId}
+    </select>
+
+
+    <insert id="insertDevice" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+         insert into
+            iot_device_list
+            (user_id,  product_name,
+            product_key,device_name,device_status,
+            device_secret,device_nick_name,device_ipAddress)
+         values
+           (#{userId}, #{productName},
+            #{productKey},#{productSecret},#{deviceName},#{deviceStatus},
+            #{deviceSecret},#{deviceNickName},#{deviceIpAddress})
+    </insert>
+
+
+    <insert id="insertDeviceList" parameterType="java.util.List" useGeneratedKeys="false">
+        INSERT ignore
+        INTO iot_device_list
+        (user_id,product_name,
+        product_key,
+        device_name,device_status,
+        device_secret,device_nick_name,
+        device_ipAddress,type)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.userId},
+            #{item.productName},
+            #{item.productKey},
+            #{item.deviceName},
+            #{item.deviceStatus},
+            #{item.deviceSecret},
+            #{item.deviceNickName},
+            #{item.deviceIpAddress},
+            #{item.type}
+            )
+        </foreach>
+    </insert>
+
+
+    <select id="getAll" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+
+    </select>
+
+
+</mapper>

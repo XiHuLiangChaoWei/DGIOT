@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zz.dgcc.DGIOT.mapper.GrainMapper">
+    <resultMap id="GrainResultMap" type="cn.zz.dgcc.DGIOT.entity.Grain">
+        <result column="id" property="id"/>
+        <result column="dev_name" property="devName"/>
+        <result column="rec_time" property="recivedTime"/>
+        <result column="content" property="content"/>
+        <result column="msg_id" property="msgId"/>
+        <result column="batch_id" property="batchId"/>
+    </resultMap>
+    <select id="selectChooseGrainInfo" resultMap="GrainResultMap">
+        SELECT
+            *
+        FROM
+            grain
+        WHERE
+            batch_id = #{batchId}
+    </select>
+    
+    <select id="selectGrainInfoByDevName" resultMap="GrainResultMap">
+        SELECT
+            *
+        FROM
+            grain
+        WHERE
+            dev_name = #{devName}
+        ORDER BY
+            batch_id
+        DESC
+    </select>
+
+    <select id="selectNewContentByDevName" resultMap="GrainResultMap">
+        SELECT
+            *
+        FROM
+            grain
+        WHERE
+            dev_name = #{devName}
+        ORDER BY
+            id
+        DESC
+        LIMIT 1
+    </select>
+
+    <insert id="insert" parameterType="cn.zz.dgcc.DGIOT.entity.Grain" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+            grain
+            (dev_name,rec_time,content,msg_id,batch_id)
+        VALUES
+            (#{devName},#{recivedTime},#{content},#{msgId},#{batchId})
+    </insert>
+
+
+    <select id="getAll" resultMap="GrainResultMap">
+        SELECT
+            *
+        FROM
+            grain
+        ORDER
+            dev_name
+    </select>
+
+
+</mapper>

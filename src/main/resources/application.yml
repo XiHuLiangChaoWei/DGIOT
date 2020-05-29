@@ -1,0 +1,46 @@
+server:
+  port: 80
+
+
+#jetcache:
+#  statIntervalMinutes: 15
+#  areaInCacheName: false
+#  local:
+#    default:
+#      type: linkedhashmap
+#      keyConvertor: fastjson
+
+spring:
+  application:
+    name: dgiot
+
+  freemarker:
+    # 设置模板后缀名
+    suffix: .ftl
+    # 设置文档类型
+    content-type: text/html
+    # 设置页面编码格式
+    charset: UTF-8
+    # 设置页面缓存
+    cache: false
+    # 设置ftl文件路径，默认是/templates，为演示效果添加role
+    template-loader-path: classpath:/templates/ftl/
+    mvc:
+      static-path-pattern: /static/**
+    check-template-location: true
+
+  thymeleaf:
+    cache: false
+
+
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://139.224.82.154:3306/dgiot?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT
+    username: dgcc
+    password: admin
+
+
+Mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  type-aliases-package: cn.zz.dgcc.DGIOT.entity

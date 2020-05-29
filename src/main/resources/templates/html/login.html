@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>智慧粮库管理系统-登录</title>
+    <link rel="stylesheet" type="text/css" href="../../static/style2.0.css">
+    <style type="text/css">
+        ul li {
+            font-size: 30px;
+            color: #2ec0f6;
+        }
+
+        .tyg-div {
+            z-index: -1000;
+            float: left;
+            position: absolute;
+            left: 5%;
+            top: 20%;
+        }
+
+        .tyg-p {
+            font-size: 14px;
+            font-family: 'microsoft yahei';
+            position: absolute;
+            top: 135px;
+            left: 60px;
+        }
+
+        .tyg-div-denglv {
+            z-index: 1000;
+            float: right;
+            position: absolute;
+            right: 3%;
+            top: 10%;
+        }
+
+        .tyg-div-form {
+            background-color: #23305a;
+            width: 300px;
+            height: auto;
+            margin: 120px auto 0 auto;
+            color: #2ec0f6;
+        }
+
+        .tyg-div-form form {
+            padding: 10px;
+        }
+
+        .tyg-div-form form input[type="text"] {
+            width: 270px;
+            height: 30px;
+            margin: 25px 10px 0px 0px;
+        }
+
+        .tyg-div-form form input[type="password"] {
+            width: 270px;
+            height: 30px;
+            margin: 25px 10px 0px 0px;
+        }
+
+        .tyg-div-form form button {
+            cursor: pointer;
+            width: 270px;
+            height: 44px;
+            margin-top: 25px;
+            padding: 0;
+            background: #2ec0f6;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            border: 1px solid #2ec0f6;
+            -moz-box-shadow: 0 15px 30px 0 rgba(255, 255, 255, .25) inset, 0 2px 7px 0 rgba(0, 0, 0, .2);
+            -webkit-box-shadow: 0 15px 30px 0 rgba(255, 255, 255, .25) inset, 0 2px 7px 0 rgba(0, 0, 0, .2);
+            box-shadow: 0 15px 30px 0 rgba(255, 255, 255, .25) inset, 0 2px 7px 0 rgba(0, 0, 0, .2);
+            font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+            -o-transition: all .2s;
+            -moz-transition: all .2s;
+            -webkit-transition: all .2s;
+            -ms-transition: all .2s;
+        }
+
+        html, body {
+            color: #000;
+            font-size: 18px;
+            text-align: left;
+            height: 100%;
+            width: 100%;
+            background: url(background.png);
+        }
+
+        p, li, div {
+            line-height: 26px;
+        }
+
+        div {
+            display: block;
+        }
+
+        #box_top_sub1 {
+            width: 74%;
+            margin: 0 auto;
+        }
+
+        #box_top {
+            height: 3%;
+            background: #efeded;
+        }
+
+        #box_header {
+            height: 12%;
+            background: #ffffff;
+        }
+
+        #box_header_sub1 {
+            width: 75%;
+            margin: 0 auto;
+        }
+
+        #box_header_sub1_sub2 {
+            float: right;
+            width: 80%;
+        }
+
+        #box_header_sub1_sub2 p {
+            line-height: 115px;
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<div id="box_top">
+    <div id="box_top_sub1">
+        <p>欢迎使用大公粮仓智能控制系统！</p>
+    </div>
+</div>
+
+
+<div id="box_header">
+    <div id="box_header_sub1">
+        <img alt="" src="logo.png">
+
+        <div id="box_header_sub1_sub2">
+            <p>唯实 · 唯信 · 唯公</p>
+        </div>
+    </div>
+</div>
+<div>
+    <img src="login.png">
+</div>
+
+
+<div class="tyg-div-denglv">
+    <div class="tyg-div-form">
+
+        <form method="post">
+            <h2>登录</h2>
+            <p id="info" class="tyg-p">欢迎访问</p>
+            <div style="margin: 5px 0px;">
+                <input id="Text1" type="text" name="username_" placeholder="请输入账号...">
+            </div>
+            <div style="margin: 5px 0px;">
+                <input id="Text2" type="password" name="password_" placeholder="请输入密码...">
+            </div>
+            <div style="margin: 5px 0px;">
+                <input id="Text3" type="text" name="captcha_"
+                       style="width: 135px; background-color: rgb(204, 232, 207);" placeholder="验证码...">
+                <img id="captchaImg" src="" width="120px"
+                     onclick="refreshCaptcha()" style="vertical-align: bottom;" alt="验证码">
+            </div>
+            <button type="button" onclick="check()">
+                登<span style="width: 20px;"></span>录
+            </button>
+        </form>
+    </div>
+
+
+</div>
+
+
+<script type="text/javascript" src="jquery-3.4.1.min.js"></script>
+
+<script type="text/javascript">
+
+    //验证码生成
+    function refreshCaptcha() {
+        var img = document.getElementById("captchaImg");
+        img.src = "/Login/getCaptcha.do?rnd=" + Math.random();
+    }
+
+    $(document).ready(function () {
+        refreshCaptcha();
+    });
+
+
+    function check() {
+        var text1 = document.getElementById("Text1").value;
+        var text2 = document.getElementById("Text2").value;
+        var text3 = document.getElementById("Text3").value;
+        var info = document.getElementById("info");
+
+        if (null == text1 || "" === text1) {
+            info.innerText = "提示：用户名不能为空！！";
+            return false;
+        } else if (null == text2 || "" === text2) {
+            info.innerText = "提示：密码不能为空！！";
+            return false;
+        } else if (null == text3 || "" === text3) {
+            info.innerText = "提示：验证码不能为空！！";
+            return false;
+        }
+
+        $.ajax({
+            url: "/Login/loginCheck.do",
+            data: {username: text1, password: text2, captcha: text3},
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (null == data) {
+                    info.innerText = "提示：登录请求出错！！";
+                }
+                if (data.flag == "00") {
+                    info.innerText = "提示：账号或密码错误！！";
+                    return false;
+                }
+                if (data.flag == "01") {
+                    info.innerText = "提示：验证码错误！！";
+                    return false;
+                }
+                if (data.flag == "02") {
+                    location.href = "index2";
+                    // let redirect1 = window.location.host;
+                    // console.log(redirect1);
+                    // window.location = redirect1+"/hello1.html";
+                }
+            },
+            error: function () {
+                info.innerText = "提示：验证码错误！！";
+            }
+        });
+    }
+
+
+</script>
+
+
+</body>
+</html>

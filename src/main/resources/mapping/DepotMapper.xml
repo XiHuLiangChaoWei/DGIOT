@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zz.dgcc.DGIOT.mapper.DepotMapper">
+    <resultMap id="DepotResultMap" type="cn.zz.dgcc.DGIOT.entity.Depot">
+        <result column="id" property="id"/>
+        <result column="depot_id" property="depotId"/>
+        <result column="company_id" property="companyId"/>
+        <result column="devNote" property="devNote"/>
+        <result column="start_" property="start"/>
+        <result column="end_" property="end"/>
+        <result column="xx" property="xx"/>
+        <result column="yy" property="yy"/>
+        <result column="zz" property="zz"/>
+        <result column="inner_temp" property="innerTemp"/>
+        <result column="out_temp" property="outTemp"/>
+        <result column="mqtt_info" property="mqttInfo"/>
+        <result column="design_min" property="designMin"/>
+        <result column="design_max" property="designMax"/>
+        <result column="keeper" property="keeper"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+        <result column="max_temp" property="maxTemp"/>
+        <result column="min_temp" property="minTemp"/>
+        <result column="avg_temp" property="avgTemp"/>
+    </resultMap>
+
+    <update id="upTempDateById">
+        UPDATE
+            depot
+        SET
+            max_temp = #{maxTemp},min_temp=#{minTemp},avg_temp=#{avgTemp}
+        WHERE
+            id = #{id}
+    </update>
+
+    <select id="selectDepotsOnCompany" resultMap="DepotResultMap">
+        SELECT *
+        FROM depot
+        WHERE company_id = #{companyId}
+    </select>
+
+    <select id="selectAll" resultMap="DepotResultMap">
+      SELECT
+        *
+        FROM
+        depot
+    </select>
+
+    <select id="selectDepotByDevName" resultMap="DepotResultMap">
+        SELECT
+        *
+        FROM
+        depot
+        WHERE
+        dev_name = #{devName}
+    </select>
+
+    <select id="selectDepotByDepotId" resultMap="DepotResultMap">
+        SELECT
+            *
+        FROM
+            depot
+        WHERE
+            depot_id = #{depotId}
+    </select>
+
+</mapper>
