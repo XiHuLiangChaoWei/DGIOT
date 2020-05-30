@@ -154,8 +154,8 @@ public class Dg4AnalysisN2 {
 
             n2VO.setO2(parseCC(O2, O2Num + 1));
             n2VO.setCO2(parseCC(CO2, O2Num + 1));
-            n2VO.setQiufaNum(Integer.parseInt(qiufaNum));
-            n2VO.setQiufaNum(Integer.parseInt(qibengNum));
+            n2VO.setQiufaNum(Integer.parseInt(qiufaNum,16));
+            n2VO.setQiufaNum(Integer.parseInt(qibengNum,16));
             n2VO.setDevName(devName);
 //            n2VO.setDevNote(devNote);
         }

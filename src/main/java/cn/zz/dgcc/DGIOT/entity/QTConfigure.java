@@ -55,6 +55,10 @@ public class QTConfigure {
         this.cqTime = cqTime;
     }
 
+    public QTConfigure() {
+
+    }
+
     public String getDevName() {
         return devName;
     }
@@ -223,4 +227,28 @@ public class QTConfigure {
         this.cqTime = cqTime;
     }
 
+    @Override
+    public String toString() {
+        return "{\"devName\":\"" + devName +
+                "\",\"devId\":" + devId +
+                ",\"commond type\":\"" + commondType +
+                "\",\"dev BH\":" + devBH +
+                ",\"dev ZH\":" + devZH +
+                ",\"type\":" + type +
+                ",\"busType\":\"" + busType +
+                "\",\"DieF FK\":\"" + dieFFK +
+                "\",\"ZLFJ FK\":\"" + zlfjFk +
+                "\",\"DieF Time\":\"" + dieFTime +
+                "\",\"N2 ND Upper\":" + n2NDUpper +
+                ",\"N2 ND lower\":" + n2NDLower +
+                ",\"N2 FY Upper\":" + n2FYUpper +
+                ",\"N2 FY lower\":" + n2FYLower +
+                ",\"N2 Cq Time\":\"" + n2CQTime +
+                "\",\"N2 Time interval\":\"" + timeInterval +
+                "\",\"N2 Cycle measure\":" + cycleMeasure +
+                ",\"Air tightness\":\"" + airTightness +
+                "\",\"Sta Ch\":" + startCH +
+                ",\"End Ch\":" + endCH +
+                ",\"CQ Time\":\"" + cqTime + "\"}";
+    }
 }

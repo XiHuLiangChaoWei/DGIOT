@@ -316,6 +316,32 @@ public class AppDateController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //解析气调信息后，获取新的气调信息
+        Device rs = deviceService.getDevByDevName(devName);
+        log.info("IndexController=" + rs);
+        String devBH = rs.getDevBH();
+        String devZH = rs.getDevZH();
+
+        GrainInfoCommondBuilder grainInfoCommondBuilder = GrainInfoCommondBuilder.getGrainInfoCommondBuilder();
+        grainInfoCommondBuilder.setDevBH(devBH);
+        grainInfoCommondBuilder.setDevZH(devZH);
+        BuildMessage grainMsg = grainInfoCommondBuilder.build();
+
+
+        String pk = rs.getProductKey();
+        devName = rs.getDeviceName();
+        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
+        log.info(grainMsg.toString() + "-----" + topicFullName);
+        JSONObject json = ioTService.pub(topicFullName, grainMsg.toString(), pk, "1");
+        log.info(json.toJSONString());
+        Order o = new Order(getUserIdFromSession(session), 0, json.getString("MessageId"), 3, grainMsg.toString(),
+                ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
+        System.out.println("OOOO----" + o);
+        int r = orderService.save(o);
+        if (r == 1) {
+            log.info("保存命令成功");
+        }
         log.info("APPController = " + js);
         return new JsonResult<>(success, js, "grainInfo");
     }
@@ -342,26 +368,22 @@ public class AppDateController extends BaseController {
         //将气调信息解析
         js = dg4AnalysisN2.analysisN2Info(n2, devName, depot);
 
-
-        //解析气调信息后，获取新的气调信息
+        log.info("下发查询N2命令");
         Device rs = deviceService.getDevByDevName(devName);
         log.info("IndexController=" + rs);
+        GasInfoCommondBuilder gasInfoCommondBuilder = GasInfoCommondBuilder.getInstance();
         String devBH = rs.getDevBH();
         String devZH = rs.getDevZH();
-
-        GrainInfoCommondBuilder grainInfoCommondBuilder = GrainInfoCommondBuilder.getGrainInfoCommondBuilder();
-        grainInfoCommondBuilder.setDevBH(devBH);
-        grainInfoCommondBuilder.setDevZH(devZH);
-        BuildMessage grainMsg = grainInfoCommondBuilder.build();
-
-
+        gasInfoCommondBuilder.setDevBH(devBH);
+        gasInfoCommondBuilder.setDevZH(devZH);
+        BuildMessage gasMsg = gasInfoCommondBuilder.build();
         String pk = rs.getProductKey();
         devName = rs.getDeviceName();
         String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        log.info(grainMsg.toString() + "-----" + topicFullName);
-        JSONObject json = ioTService.pub(topicFullName, grainMsg.toString(), pk, "1");
+        log.info(gasMsg.toString() + "-----" + topicFullName);
+        JSONObject json = ioTService.pub(topicFullName, gasMsg.toString(), pk, "1");
         log.info(json.toJSONString());
-        Order o = new Order(getUserIdFromSession(session), 0, json.getString("MessageId"), 3, grainMsg.toString(),
+        Order o = new Order(getUserIdFromSession(session), 0, json.getString("MessageId"), 2, gasMsg.toString(),
                 ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
         System.out.println("OOOO----" + o);
         int r = orderService.save(o);
