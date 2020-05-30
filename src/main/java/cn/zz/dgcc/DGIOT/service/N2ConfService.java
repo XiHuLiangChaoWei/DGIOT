@@ -1,6 +1,6 @@
 package cn.zz.dgcc.DGIOT.service;
 
-import cn.zz.dgcc.DGIOT.entity.N2Configure;
+import cn.zz.dgcc.DGIOT.entity.QTConfigure;
 
 /**
  * Created by: YYL
@@ -9,7 +9,7 @@ import cn.zz.dgcc.DGIOT.entity.N2Configure;
  * ->
  */
 public interface N2ConfService {
-    N2Configure getPZByDevName(String devName);
+    QTConfigure getPZByDevName(String devName);
 
-    int saveConf(N2Configure n2conf);
+    int saveConf(QTConfigure n2conf);
 }

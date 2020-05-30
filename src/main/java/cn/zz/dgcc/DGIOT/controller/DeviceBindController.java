@@ -11,6 +11,7 @@ import cn.zz.dgcc.DGIOT.service.IotDeviceService;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
 import cn.zz.dgcc.DGIOT.utils.DeviceUtil;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -175,8 +176,12 @@ public class DeviceBindController extends BaseController {
             String[] can = new String[]{downDevInfo.toString()};
             HelloWorld h = new HelloWorld();
             h.main(can);
-
-
+            //增加延迟 以保证信息下发成功率
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             //调用下发API 下发三元组信息
             JSONObject jsonRs = ioTService.pub("/a1gQiP9WsBk/000000/user/dev/register/response", downDevInfo.toString(),
                     "a1gQiP9WsBk", null);
@@ -185,12 +190,12 @@ public class DeviceBindController extends BaseController {
                 log.info("第一次三元组信息下发成功");
             }
 
-            jsonRs = ioTService.pub("/a1gQiP9WsBk/000000/user/dev/register/response", downDevInfo.toString(),
-                    "a1gQiP9WsBk", null);
-            succ = jsonRs.getString("Success");
-            if ("true".equals(succ)) {
-                log.info("第二次三元组信息下发成功");
-            }
+//            jsonRs = ioTService.pub("/a1gQiP9WsBk/000000/user/dev/register/response", downDevInfo.toString(),
+//                    "a1gQiP9WsBk", null);
+//            succ = jsonRs.getString("Success");
+//            if ("true".equals(succ)) {
+//                log.info("第二次三元组信息下发成功");
+//            }
         }
 
     }

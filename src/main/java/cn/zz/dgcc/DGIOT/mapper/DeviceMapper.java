@@ -61,4 +61,6 @@ public interface DeviceMapper {
     Device selectN2Dev();
 
     Device selectN2DevByUserId(int userId);
+
+    List<Device> selectAll();
 }

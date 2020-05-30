@@ -1,6 +1,6 @@
 package cn.zz.dgcc.DGIOT.utils.MsgBuilder;
 
-import cn.zz.dgcc.DGIOT.entity.N2Configure;
+import cn.zz.dgcc.DGIOT.entity.QTConfigure;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
@@ -22,18 +22,18 @@ public class ConfCommondBuilder extends CommondBuild{
         return instance;
     }
 
-    private N2Configure n2Configure;
+    private QTConfigure QTConfigure;
 
-    public N2Configure getN2Configure() {
-        return n2Configure;
+    public QTConfigure getQTConfigure() {
+        return QTConfigure;
     }
 
-    public void setN2Configure(N2Configure n2Configure) {
-        this.n2Configure = n2Configure;
+    public void setQTConfigure(QTConfigure QTConfigure) {
+        this.QTConfigure = QTConfigure;
     }
 
     public String n2ConfToCommond(){
-        return new Gson().toJson(this.n2Configure);
+        return new Gson().toJson(this.QTConfigure);
     }
 
     public String setTimes(String devId){

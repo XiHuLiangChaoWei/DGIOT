@@ -38,7 +38,25 @@ public class N2VO {
     int endWay;      //测气结束通道
     List<Double> O2;   //O2浓度
     List<Double> CO2;  //CO2浓度
+    int qiufaNum;
+    int qibengNum;
     String CRC;
+
+    public int getQiufaNum() {
+        return qiufaNum;
+    }
+
+    public void setQiufaNum(int qiufaNum) {
+        this.qiufaNum = qiufaNum;
+    }
+
+    public int getQibengNum() {
+        return qibengNum;
+    }
+
+    public void setQibengNum(int qibengNum) {
+        this.qibengNum = qibengNum;
+    }
 
     public int getDepotId() {
         return depotId;

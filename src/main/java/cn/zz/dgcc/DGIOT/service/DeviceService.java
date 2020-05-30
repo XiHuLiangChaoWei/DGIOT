@@ -41,4 +41,6 @@ public interface DeviceService {
     Device getN2Dev();
 
     Device getN2DevByUser(int userId);
+
+    List<Device> getAllDev();
 }

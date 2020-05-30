@@ -1,6 +1,6 @@
 package cn.zz.dgcc.DGIOT.mapper;
 
-import cn.zz.dgcc.DGIOT.entity.N2Configure;
+import cn.zz.dgcc.DGIOT.entity.QTConfigure;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface N2ConfMapper {
-    N2Configure selectConfByDevName(String devName);
+    QTConfigure selectConfByDevName(String devName);
 
-    int insertNewConf(N2Configure n2conf);
+    int insertNewConf(QTConfigure n2conf);
 }

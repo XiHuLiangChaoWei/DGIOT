@@ -8,7 +8,7 @@ import java.util.Objects;
  * ClassExplain :
  * ->
  */
-public class N2Configure {
+public class QTConfigure {
     private String devName;
     private String devId;
     private String commondType;
@@ -30,6 +30,30 @@ public class N2Configure {
     private int startCH;
     private int endCH;
     private String cqTime;
+
+    public QTConfigure(String devName, String devId, String commondType, int devBH, int devZH, int type, String busType, String dieFFK, String zlfjFk, String dieFTime, int n2NDUpper, int n2NDLower, int n2FYUpper, int n2FYLower, String n2CQTime, String timeInterval, int cycleMeasure, String airTightness, int startCH, int endCH, String cqTime) {
+        this.devName = devName;
+        this.devId = devId;
+        this.commondType = commondType;
+        this.devBH = devBH;
+        this.devZH = devZH;
+        this.type = type;
+        this.busType = busType;
+        this.dieFFK = dieFFK;
+        this.zlfjFk = zlfjFk;
+        this.dieFTime = dieFTime;
+        this.n2NDUpper = n2NDUpper;
+        this.n2NDLower = n2NDLower;
+        this.n2FYUpper = n2FYUpper;
+        this.n2FYLower = n2FYLower;
+        this.n2CQTime = n2CQTime;
+        this.timeInterval = timeInterval;
+        this.cycleMeasure = cycleMeasure;
+        this.airTightness = airTightness;
+        this.startCH = startCH;
+        this.endCH = endCH;
+        this.cqTime = cqTime;
+    }
 
     public String getDevName() {
         return devName;

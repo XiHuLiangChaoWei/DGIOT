@@ -32,7 +32,7 @@ public class HelloWorld {
 
 
     public static void main(String[] args) {
-        ALog.d(TAG, "Hello world!");
+//        ALog.d(TAG, "Hello world!");
         ALog.setLevel(ALog.LEVEL_DEBUG);
         HelloWorld manager = new HelloWorld();
         ALog.d(TAG, "args=" + Arrays.toString(args));

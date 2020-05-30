@@ -1,6 +1,6 @@
 package cn.zz.dgcc.DGIOT.controller;
 
-import cn.zz.dgcc.DGIOT.entity.N2Configure;
+import cn.zz.dgcc.DGIOT.entity.QTConfigure;
 import cn.zz.dgcc.DGIOT.entity.*;
 import cn.zz.dgcc.DGIOT.service.*;
 import cn.zz.dgcc.DGIOT.utils.ContextUtil;
@@ -11,7 +11,6 @@ import cn.zz.dgcc.DGIOT.utils.MsgBuilder.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -569,7 +570,7 @@ public class AppDateController extends BaseController {
         devName = rs.getDeviceName();
         String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
         log.info(buildMessage.toString() + "-----" + topicFullName);
-        // TODO: 2020/5/20
+
         JSONObject json = ioTService.pub(topicFullName, buildMessage.toString(), pk, "1");
         log.info(json.toJSONString());
         Order o = new Order(getUserIdFromSession(session), 0, json.getString("MessageId"), 2, buildMessage.toString(),
@@ -585,49 +586,92 @@ public class AppDateController extends BaseController {
         return new JsonResult<>(success, "sendMsg failed");
     }
 
-
+    /**
+     * 同步时间              修改-》遍历所有设备下发指令
+     *
+     * @param depotId
+     * @param h
+     */
     @RequestMapping("/JsonTime.do")
     @ResponseBody
-    public void setTime(int depotId, HttpSession h) {
-        String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
-        Device rs = deviceService.getDevByDevName(devName);
-        String devId = rs.getDevId();
+    public JsonResult<String> setTime(int depotId, HttpSession h) {
         ConfCommondBuilder confCommondBuilder = ConfCommondBuilder.getInstance();
-        String commond = confCommondBuilder.setTimes(devId);
-        String pk = rs.getProductKey();
-        devName = rs.getDeviceName();
-        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        log.info(commond + "-----" + topicFullName);
-        JSONObject json = ioTService.pub(topicFullName, commond, pk, null);
-        log.info(json.toJSONString());
-        //保存 已经下发的命令
-        Order o = new Order(getUserIdFromSession(h), 0, json.getString("MessageId"), 2, commond,
-                ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
-        System.out.println("OOOO----" + o);
-        int r = orderService.save(o);
-        if (r == 1) {
-            log.info("保存命令成功");
-            r = 0;
+        String commond;
+        String devId;
+        String pk;
+        String topicFullName;
+        List<Device> allDev = deviceService.getAllDev();
+        String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
+        for (Device d : allDev
+        ) {
+            devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
+            devId = d.getDevId();
+            commond = confCommondBuilder.setTimes(devId);
+            pk = d.getProductKey();
+            topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
+            log.info(commond + "-----" + topicFullName);
+            JSONObject json = ioTService.pub(topicFullName, commond, pk, null);
+            log.info(json.toJSONString());
+            Order o = new Order(getUserIdFromSession(h), 0, json.getString("MessageId"), 2, commond,
+                    ContextUtil.getTimeYMDHMM(null), d.getDeviceName(), json.getString("Success"));
+            int r = orderService.save(o);
+            if (r == 1) {
+                log.info("保存命令成功");
+                r = 0;
+            }
         }
+        return new JsonResult<>(success, "同步时间成功");
     }
 
+    public QTConfigure parseJson2QT(JSONObject jsonObject) {
+        String devName = jsonObject.getString("devName");
+        String devId = jsonObject.getString("devId");
+        String commondType = jsonObject.getString("commondType");
+        int devBH = jsonObject.getInteger("devBH");
+        int devZH = jsonObject.getInteger("devZH");
+        int type = jsonObject.getInteger("type");
+        String busType = jsonObject.getString("busType");
+        String dieFFK = jsonObject.getString("dieFFK");
+        String zlfjFk = jsonObject.getString("zlfjFk");
+        String dieFTime = jsonObject.getString("dieFTime");
+        int n2NDUpper = jsonObject.getInteger("n2NDUpper");
+        int n2NDLower = jsonObject.getInteger("n2NDLower");
+        int n2FYUpper = jsonObject.getInteger("n2FYUpper");
+        int n2FYLower = jsonObject.getInteger("n2FYLower");
+        String n2CQTime = jsonObject.getString("n2CQTime");
+        String timeInterval = jsonObject.getString("timeInterval");
+        int cycleMeasure = jsonObject.getInteger("cycleMeasure");
+        String airTightness = jsonObject.getString("airTightness");
+        int startCH = jsonObject.getInteger("startCH");
+        int endCH = jsonObject.getInteger("endCH");
+        String cqTime = jsonObject.getString("cqTime");
+        return new QTConfigure(devName,devId,commondType,devBH,devZH,type,busType,dieFFK,
+                zlfjFk,dieFTime,n2NDUpper,n2NDLower,n2FYUpper,n2FYLower,n2CQTime,timeInterval,
+                cycleMeasure,airTightness,startCH,endCH,cqTime);
+    }
 
     /**
      * json格式 系统配置 下发
-     *
-     * @param depotId     仓库id
-     * @param n2Configure n2Configure是一个javabean
+     * @param depotId
+     * @param jsonDate   json格式属性设置
+     * @param httpServletRequest
+     * @param httpServletResponse
      * @param h
      * @return
+     * @throws InterruptedException
      */
     @RequestMapping("/JsonSetConfMsg.do")
     @ResponseBody
-    public JsonResult<JSONObject> jsonMsg(int depotId, N2Configure n2Configure, HttpSession h) {
+    public JsonResult<JSONObject> jsonMsg(int depotId, String jsonDate,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpSession h) throws InterruptedException {
+        JSONObject jo = JSONObject.parseObject(jsonDate);
+        QTConfigure qtConfigure = parseJson2QT(jo);
+
+
         //设置属性
         String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
         Device rs = deviceService.getDevByDevName(devName);
         ConfCommondBuilder ccb = ConfCommondBuilder.getInstance();
-        ccb.setN2Configure(n2Configure);
+        ccb.setQTConfigure(qtConfigure);
         String commond = ccb.n2ConfToCommond();
         //获取 下发目标信息
         String pk = rs.getProductKey();
@@ -645,6 +689,7 @@ public class AppDateController extends BaseController {
             log.info("保存命令成功");
             r = 0;
         }
+        Thread.sleep(1000);
         //设置命令下发完成,下发查询参数命令
         String devId = rs.getDevId();
         String cx = ccb.getPZCXInfo(devId);//查询配置命令
@@ -669,12 +714,15 @@ public class AppDateController extends BaseController {
     @RequestMapping("/JsonGetConfMsg.do")
     @ResponseBody
     public JsonResult<JSONObject> jsonM(int depotId, HttpSession h) {
+        //
         String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
         Device rs = deviceService.getDevByDevName(devName);
-        N2Configure n2Configure = n2ConfService.getPZByDevName(devName);
+        QTConfigure QTConfigure = n2ConfService.getPZByDevName(devName);
         Gson g = new Gson();
-        String json = g.toJson(n2Configure);
+        String json = g.toJson(QTConfigure);
         JSONObject jo = JSONObject.parseObject(json);
+
+
         return new JsonResult<>(success, jo);
     }
 
@@ -708,7 +756,6 @@ public class AppDateController extends BaseController {
         devName = rs.getDeviceName();
         String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
         log.info(modeCommond + "-----" + topicFullName);
-        // TODO: 2020/5/20
         JSONObject json = ioTService.pub(topicFullName, modeCommond, pk, "1");
         Order o = new Order(getUserIdFromSession(h), 0, json.getString("MessageId"), 2, modeCommond,
                 ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
@@ -723,10 +770,8 @@ public class AppDateController extends BaseController {
 
 
     /**
-     * TODO
-     *
-     * @param depotId
-     * @param action
+     * @param depotId 仓库id
+     * @param action  1-"RESET DTU"  2-"RESET DEV"
      * @param session
      */
     @RequestMapping("jsonAction.do")
@@ -753,7 +798,6 @@ public class AppDateController extends BaseController {
         devName = rs.getDeviceName();
         String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
         log.info(com + "-----" + topicFullName);
-        // TODO: 2020/5/20
         JSONObject json = ioTService.pub(topicFullName, com, pk, "1");
         Order o = new Order(getUserIdFromSession(session), 0, json.getString("MessageId"), 2, com,
                 ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));

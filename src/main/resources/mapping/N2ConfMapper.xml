@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.zz.dgcc.DGIOT.mapper.OrderMapper">
-    <resultMap id="ConfResultMap" type="cn.zz.dgcc.DGIOT.entity.N2Configure">
+    <resultMap id="ConfResultMap" type="cn.zz.dgcc.DGIOT.entity.QTConfigure">
         <result column="id" property="id"/>
         <result column="dev_name" property="devName"/>
         <result column="dev_id" property="devId"/>

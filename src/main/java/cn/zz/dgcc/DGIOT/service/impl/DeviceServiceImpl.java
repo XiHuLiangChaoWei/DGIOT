@@ -290,6 +290,12 @@ public class DeviceServiceImpl implements DeviceService {
         return deviceMapper.selectN2DevByUserId(userId);
     }
 
+    @Override
+    public List<Device> getAllDev() {
+        List<Device> rs = deviceMapper.selectAll();
+        return rs;
+    }
+
     public List<Device> getNoUsedDeviceListByType(int type) {
         List<Device> rs = deviceMapper.selectNoUsedDevByType(type);
         return rs;

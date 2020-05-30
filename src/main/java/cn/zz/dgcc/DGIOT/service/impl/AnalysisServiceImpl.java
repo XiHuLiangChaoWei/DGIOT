@@ -8,7 +8,6 @@ import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg3AnalysisGrain;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisN2;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
-import com.sun.org.apache.xpath.internal.operations.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,7 +91,7 @@ public class AnalysisServiceImpl implements AnalysisService {
             JSONObject jo = jsonParse(content);
             if ("CXPZ".equals(jo.getString("response"))) {
                 Gson g = new Gson();
-                N2Configure n2conf = g.fromJson(jo.toJSONString(), N2Configure.class);
+                QTConfigure n2conf = g.fromJson(jo.toJSONString(), QTConfigure.class);
                 int rs = n2ConfService.saveConf(n2conf);
             }
         }
