@@ -40,6 +40,16 @@ public class N2VO {
     List<Double> CO2;  //CO2浓度
     int qiufaNum;
     int qibengNum;
+    int chouqiTime;
+
+    public int getChouqiTime() {
+        return chouqiTime;
+    }
+
+    public void setChouqiTime(int chouqiTime) {
+        this.chouqiTime = chouqiTime;
+    }
+
     String CRC;
 
     public int getQiufaNum() {

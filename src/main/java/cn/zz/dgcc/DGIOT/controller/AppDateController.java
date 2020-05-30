@@ -649,52 +649,68 @@ public class AppDateController extends BaseController {
         String devName = jsonObject.getString("devName");
         String devId = jsonObject.getString("devId");
         String commondType = jsonObject.getString("commondType");
-        int devBH = jsonObject.getInteger("devBH");
-        int devZH = jsonObject.getInteger("devZH");
-        int type = jsonObject.getInteger("type");
-        String busType = jsonObject.getString("busType");
-        String dieFFK = jsonObject.getString("dieFFK");
-        String zlfjFk = jsonObject.getString("zlfjFk");
-        String dieFTime = jsonObject.getString("dieFTime");
-        int n2NDUpper = jsonObject.getInteger("n2NDUpper");
-        int n2NDLower = jsonObject.getInteger("n2NDLower");
-        int n2FYUpper = jsonObject.getInteger("n2FYUpper");
-        int n2FYLower = jsonObject.getInteger("n2FYLower");
-        String n2CQTime = jsonObject.getString("n2CQTime");
-        String timeInterval = jsonObject.getString("timeInterval");
-        int cycleMeasure = jsonObject.getInteger("cycleMeasure");
-        String airTightness = jsonObject.getString("airTightness");
-        int startCH = jsonObject.getInteger("startCH");
-        int endCH = jsonObject.getInteger("endCH");
-        String cqTime = jsonObject.getString("cqTime");
-        return new QTConfigure(devName,devId,commondType,devBH,devZH,type,busType,dieFFK,
-                zlfjFk,dieFTime,n2NDUpper,n2NDLower,n2FYUpper,n2FYLower,n2CQTime,timeInterval,
-                cycleMeasure,airTightness,startCH,endCH,cqTime);
+        int devBH = null == jsonObject.getInteger("devBH") ? 0 : jsonObject.getInteger("devBH");
+        int devZH = null == jsonObject.getInteger("devZH") ? 0 : jsonObject.getInteger("devZH");
+        int type = null == jsonObject.getInteger("type") ? 0 : jsonObject.getInteger("type");
+        int busType = null == jsonObject.getInteger("busType") ? 0 : jsonObject.getInteger("busType");
+        int dieFFK = null == jsonObject.getInteger("dieFFK") ? 0 : jsonObject.getInteger("dieFFK");
+        int hlfjFk = null == jsonObject.getInteger("hlfjFk") ? 0 : jsonObject.getInteger("hlfjFk");
+        int dieFTime = null == jsonObject.getInteger("dieFTime") ? 0 : jsonObject.getInteger("dieFTime");
+        int n2NDUpper = null == jsonObject.getInteger("n2NDUpper") ? 0 : jsonObject.getInteger("n2NDUpper");
+        int n2NDLower = null == jsonObject.getInteger("n2NDLower") ? 0 : jsonObject.getInteger("n2NDLower");
+        int n2FYUpper = null == jsonObject.getInteger("n2FYUpper") ? 0 : jsonObject.getInteger("n2FYUpper");
+        int n2FYLower = null == jsonObject.getInteger("n2FYLower") ? 0 : jsonObject.getInteger("n2FYLower");
+        int n2CQTime = null == jsonObject.getInteger("n2CQTime") ? 0 : jsonObject.getInteger("n2CQTime");
+        int timeInterval = null == jsonObject.getInteger("timeInterval") ? 0 : jsonObject.getInteger("timeInterval");
+        int cycleMeasure = null == jsonObject.getInteger("cycleMeasure") ? 0 : jsonObject.getInteger("cycleMeasure");
+        int airTightness = null == jsonObject.getInteger("airTightness") ? 0 : jsonObject.getInteger("airTightness");
+        int startCH = null == jsonObject.getInteger("startCH") ? 0 : jsonObject.getInteger("startCH");
+        int endCH = null == jsonObject.getInteger("endCH") ? 0 : jsonObject.getInteger("endCH");
+        int cqTime = null == jsonObject.getInteger("n2NDUpper") ? 0 : jsonObject.getInteger("n2NDUpper");
+        return new QTConfigure(devName,
+                devId,
+                commondType,
+                devBH,
+                devZH,
+                type,
+                busType,
+                dieFFK,
+                hlfjFk,
+                dieFTime,
+                n2NDUpper,
+                n2NDLower,
+                n2FYUpper,
+                n2FYLower,
+                n2CQTime,
+                timeInterval,
+                cycleMeasure,
+                airTightness,
+                startCH,
+                endCH,
+                cqTime);
     }
 
     /**
      * json格式 系统配置 下发
+     *
      * @param depotId
-     * @param jsonDate   json格式属性设置
-     * @param httpServletRequest
-     * @param httpServletResponse
+     * @param jsonDate json格式属性设置
      * @param h
      * @return
      * @throws InterruptedException
      */
     @RequestMapping("/JsonSetConfMsg.do")
     @ResponseBody
-    public JsonResult<JSONObject> jsonMsg(int depotId, String jsonDate,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpSession h) throws InterruptedException {
+    public JsonResult<JSONObject> jsonMsg(int depotId, String jsonDate, HttpSession h) throws InterruptedException {
         JSONObject jo = JSONObject.parseObject(jsonDate);
         QTConfigure qtConfigure = parseJson2QT(jo);
-
-
         //设置属性
         String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
         Device rs = deviceService.getDevByDevName(devName);
+        String devId = rs.getDevId();
         ConfCommondBuilder ccb = ConfCommondBuilder.getInstance();
         ccb.setQTConfigure(qtConfigure);
-        String commond = ccb.n2ConfToCommond();
+        String commond = ccb.n2ConfToCommond(devId);
         //获取 下发目标信息
         String pk = rs.getProductKey();
         devName = rs.getDeviceName();
@@ -713,7 +729,7 @@ public class AppDateController extends BaseController {
         }
         Thread.sleep(1000);
         //设置命令下发完成,下发查询参数命令
-        String devId = rs.getDevId();
+        devId = rs.getDevId();
         String cx = ccb.getPZCXInfo(devId);//查询配置命令
         json = ioTService.pub(topicFullName, cx, pk, null);
         o = new Order(getUserIdFromSession(h), 0, json.getString("MessageId"), 2, cx,
@@ -778,7 +794,7 @@ public class AppDateController extends BaseController {
         devName = rs.getDeviceName();
         String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
         log.info(modeCommond + "-----" + topicFullName);
-        JSONObject json = ioTService.pub(topicFullName, modeCommond, pk, "1");
+        JSONObject json = ioTService.pub(topicFullName, modeCommond, pk, null);
         Order o = new Order(getUserIdFromSession(h), 0, json.getString("MessageId"), 2, modeCommond,
                 ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
         System.out.println("OOOO----" + o);
@@ -820,7 +836,7 @@ public class AppDateController extends BaseController {
         devName = rs.getDeviceName();
         String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
         log.info(com + "-----" + topicFullName);
-        JSONObject json = ioTService.pub(topicFullName, com, pk, "1");
+        JSONObject json = ioTService.pub(topicFullName, com, pk, null);
         Order o = new Order(getUserIdFromSession(session), 0, json.getString("MessageId"), 2, com,
                 ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
         System.out.println("OOOO----" + o);

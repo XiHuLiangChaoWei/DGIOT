@@ -4,7 +4,9 @@ import cn.zz.dgcc.DGIOT.entity.QTConfigure;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -37,18 +39,25 @@ public class ConfCommondBuilder extends CommondBuild {
     }
 
 
-    public static void main(String[] args) {
-        getInstance().qTConfigure = new QTConfigure("1","1","1",1,1,1,"1","1","1","1",1,1,1,1,"1","1",1,"1",1,1,"1");
-        getInstance().qTConfigure.setDevId(null);
-        getInstance().qTConfigure.setCqTime("0");
-        getInstance().qTConfigure.setN2CQTime("0");
-        JSONObject jo = JSONObject.parseObject(getInstance().qTConfigure.toString());
-        System.err.println(getInstance().n2ConfToCommond());
-        System.err.println(jo);
-    }
+//    public static void main(String[] args) throws IllegalAccessException {
+//        getInstance().qTConfigure = new QTConfigure("null","1","1",1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);
+//        getInstance().qTConfigure.setDevId(null);
+//        getInstance().qTConfigure.setCqTime(0);
+//        getInstance().qTConfigure.setCqTime(0);
+//        System.err.println(getInstance().qTConfigure.toString());
+//        JSONObject jo = JSONObject.parseObject(getInstance().qTConfigure.toString());
+//        System.err.println(jo);
+////        jo = (JSONObject) JSON.toJSON(getInstance().qTConfigure);
+////        System.err.println(jo);
+//
+//    }
 
-    public String n2ConfToCommond() {
+
+    public String n2ConfToCommond(String devId) {
         JSONObject jo = JSONObject.parseObject(getInstance().qTConfigure.toString());
+        jo.put("devId", devId);
+        jo.put("commond type", "SZCS");
+        jo.put("Set Dev config", "CDQT");
         return jo.toJSONString();
     }
 

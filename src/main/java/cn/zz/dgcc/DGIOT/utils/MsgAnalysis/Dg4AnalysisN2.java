@@ -108,9 +108,11 @@ public class Dg4AnalysisN2 {
         int qibengStart = qiufaEnd;
         int qibengEnd = qibengStart+2;
         String qibengNum = msg.substring(qibengStart,qibengEnd);
-
+        int chouqiStart = qibengEnd;
+        int chouqiEnd = chouqiStart+2;
+        String chouqiTime = msg.substring(chouqiStart,chouqiEnd);
         //CRC
-        int CRCS = passwayCO2E;
+        int CRCS = chouqiEnd;
         int CRCE = CRCS + 4;
         String CRC = msg.substring(CRCS, CRCE);
 
@@ -156,6 +158,7 @@ public class Dg4AnalysisN2 {
             n2VO.setCO2(parseCC(CO2, O2Num + 1));
             n2VO.setQiufaNum(Integer.parseInt(qiufaNum,16));
             n2VO.setQiufaNum(Integer.parseInt(qibengNum,16));
+            n2VO.setChouqiTime(Integer.parseInt(chouqiTime,16));
             n2VO.setDevName(devName);
 //            n2VO.setDevNote(devNote);
         }

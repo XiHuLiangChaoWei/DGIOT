@@ -113,6 +113,7 @@ public class ModelCommondBuilder extends CommondBuild {
         //预留位
         sb.append("FF");
         //开关动作
+        if(model.equals("00")) action="00";
         sb.append(action);
         //氮气目标浓度
         sb.append(targetCC);
