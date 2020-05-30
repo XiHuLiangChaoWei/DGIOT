@@ -60,9 +60,9 @@
     <insert id="insert" parameterType="cn.zz.dgcc.DGIOT.entity.N2" useGeneratedKeys="true" keyProperty="id">
         INSERT  INTO
             n2
-            (dev_name,rec_time,content,msg_id,batch_id)
+            (dev_name,rec_time,content,msg_id,batch_id,n2dev_action)
         VALUES
-            (#{devName},#{recivedTime},#{content},#{msgId},#{batchId})
+            (#{devName},#{recivedTime},#{content},#{msgId},#{batchId},#{n2devAction})
     </insert>
 
 

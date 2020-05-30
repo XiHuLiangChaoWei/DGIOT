@@ -53,7 +53,9 @@ public class AppDateController extends BaseController {
 
 
     /**
-     * @param type 1-开关制氮机  2-查询命令
+     * type 1-开关制氮机  2-查询命令
+     *
+     * @param
      * @return
      */
     private String getN2DevR(String type) {
@@ -61,8 +63,6 @@ public class AppDateController extends BaseController {
         String devRepeat = rs.getContent().toUpperCase();
         return devRepeat;
     }
-
-
     @RequestMapping("/t")
     public String t(Model model) {
         return "html/sql";
@@ -89,7 +89,7 @@ public class AppDateController extends BaseController {
         if ("on".equals(controller)) {
             Thread t = new Thread(() -> {
                 String[] on = N2DevCommondBuilder.getN2DevOn();
-                JSONObject json = ioTService.pub(topicFullName, on[0], pk, "1");
+                JSONObject json = ioTService.pub(topicFullName, on[0].replace(" ",""), pk, "1");
                 Order o = new Order(userId, 0, json.getString("MessageId"), 5, on[0],
                         ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
                 System.out.println("OOOO----" + o);
@@ -98,26 +98,27 @@ public class AppDateController extends BaseController {
                     log.info("保存命令成功");
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1200);
                 } catch (InterruptedException e) {
-                    json = ioTService.pub(topicFullName, on[1], pk, "1");
-                    o = new Order(userId, 0, json.getString("MessageId"), 5, on[1],
-                            ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-                    System.out.println("1111----" + o);
-                    r = orderService.save(o);
-                    if (r == 1) {
-                        log.info("保存命令成功");
-                    }
+
+                }
+                json = ioTService.pub(topicFullName, on[1].replace(" ",""), pk, "1");
+                o = new Order(userId, 0, json.getString("MessageId"), 5, on[1],
+                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
+                System.out.println("1111----" + o);
+                r = orderService.save(o);
+                if (r == 1) {
+                    log.info("保存命令成功");
                 }
 
             });
             t.start();
-            if ("030600230001B822".equals(getN2DevR("1"))) {
-                t.interrupt();
-            }
-            if ("03060023000079E2".equals(getN2DevR("1"))) {
-                return new JsonResult<>(success, "下发成功");
-            }
+//            if ("030600230001B822".equals(getN2DevR("1"))) {
+//                t.interrupt();
+//            }
+//            if ("03060023000079E2".equals(getN2DevR("1"))) {
+//                return new JsonResult<>(success, "下发成功");
+//            }
 
         } else if ("off".equals(controller)) {
             Thread t = new Thread(() -> {
@@ -131,25 +132,26 @@ public class AppDateController extends BaseController {
                     log.info("保存命令成功");
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1500);
                 } catch (InterruptedException e) {
-                    json = ioTService.pub(topicFullName, off[1], pk, "1");
-                    o = new Order(userId, 0, json.getString("MessageId"), 5, off[1],
-                            ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-                    System.out.println("1111----" + o);
-                    r = orderService.save(o);
-                    if (r == 1) {
-                        log.info("保存命令成功");
-                    }
+
+                }
+                json = ioTService.pub(topicFullName, off[1], pk, "1");
+                o = new Order(userId, 0, json.getString("MessageId"), 5, off[1],
+                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
+                System.out.println("1111----" + o);
+                r = orderService.save(o);
+                if (r == 1) {
+                    log.info("保存命令成功");
                 }
             });
             t.start();
-            if ("03060024000109E3".equals(getN2DevR("1"))) {
-                t.interrupt();
-            }
-            if ("030600240000C823".equals(getN2DevR("1"))) {
-                return new JsonResult<>(success, "下发成功");
-            }
+//            if ("03060024000109E3".equals(getN2DevR("1"))) {
+//                t.interrupt();
+//            }
+//            if ("030600240000C823".equals(getN2DevR("1"))) {
+//                return new JsonResult<>(success, "下发成功");
+//            }
         }
         return new JsonResult<>(success, "下发成功");
     }
@@ -244,14 +246,14 @@ public class AppDateController extends BaseController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        String repeat = getN2DevR("2");
-        if (repeat.startsWith("030304")) {
-            JSONObject jsonObject = new JSONObject();
-            Float rs = BytesUtil.Hex2Float(repeat);
-            jsonObject.put(String.valueOf(choose), rs + msgFix);
-
-            return new JsonResult<>(success, jsonObject);
-        }
+//        String repeat = getN2DevR("2");
+//        if (repeat.startsWith("030304")) {
+//            JSONObject jsonObject = new JSONObject();
+//            Float rs = BytesUtil.Hex2Float(repeat);
+//            jsonObject.put(String.valueOf(choose), rs + msgFix);
+//
+//            return new JsonResult<>(success, jsonObject);
+//        }
         return new JsonResult<>(success, "");
     }
 
@@ -306,6 +308,9 @@ public class AppDateController extends BaseController {
         String devName = depotService.getDevNameByDepotIdAndType(depotId, 3);
         //获取指定设备最新消息
         Grain grainInfo = grainService.getNewGrainInfoByDevName(devName);
+        if (grainInfo == null) {
+            return new JsonResult<>(servWrong, "没有获取到历史粮情");
+        }
         String content = grainInfo.getContent();
         //解析粮情信息
         Dg3AnalysisGrain dg3AnalysisGrain = Dg3AnalysisGrain.newInstance();
@@ -315,9 +320,12 @@ public class AppDateController extends BaseController {
             e.printStackTrace();
         }
 
-        //解析气调信息后，获取新的气调信息
+        //解析气调信息后，获取新的粮情信息
         Device rs = deviceService.getDevByDevName(devName);
         log.info("IndexController=" + rs);
+        if (rs.getDtuId() == null) {
+            return new JsonResult<>(success, js, "grainInfo");
+        }
         String devBH = rs.getDevBH();
         String devZH = rs.getDevZH();
 
@@ -368,6 +376,9 @@ public class AppDateController extends BaseController {
 
         log.info("下发查询N2命令");
         Device rs = deviceService.getDevByDevName(devName);
+        if (rs.getDtuId() == null) {
+            return new JsonResult<>(success, js, "N2Info");
+        }
         log.info("IndexController=" + rs);
         GasInfoCommondBuilder gasInfoCommondBuilder = GasInfoCommondBuilder.getInstance();
         String devBH = rs.getDevBH();

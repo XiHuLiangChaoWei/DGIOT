@@ -69,7 +69,7 @@ public class N2ServiceImpl implements N2Service {
     @Override
     public int saveN2(N2 n2) {
         int rs = n2Mapper.insert(n2);
-        return 0;
+        return rs;
     }
 
     @Override
