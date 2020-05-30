@@ -174,11 +174,14 @@ public class DeviceServiceImpl implements DeviceService {
                     deviceMapper.selectDevByDevInfo(device);
             //云端存在该设备，判断存储的dev和dtu信息是否相符
             log.info("查询云端设备信息：" + rs1);
-            if (!device.getDtuId().equals(rs1.getDtuId().trim()) | !device.getDevId().equals(rs1.getDevId().trim())) {
-                log.info("云端设备信息与上报信息不符");
-                //TODO 更新设备信息
-                return 1;
-            }
+            log.info("更新云端信息····");
+            int rs2 = deviceMapper.updataDeviceInfoByDevInfo(device);
+//            if (!device.getDevId().equals(rs1.getDevId().trim()) | !device.getDtuId().equals(rs1.getDtuId().trim())) {
+//                log.info("云端设备信息与上报信息不符");
+//                //TODO 更新设备信息
+//                return 1;
+//            }
+            return 1;
         }
         return 2;
     }

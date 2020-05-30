@@ -1,8 +1,8 @@
 package cn.zz.dgcc.DGIOT.service.impl;
 
 import cn.zz.dgcc.DGIOT.entity.QTConfigure;
-import cn.zz.dgcc.DGIOT.mapper.N2ConfMapper;
-import cn.zz.dgcc.DGIOT.service.N2ConfService;
+import cn.zz.dgcc.DGIOT.mapper.QTConfMapper;
+import cn.zz.dgcc.DGIOT.service.QTConfService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -14,20 +14,20 @@ import javax.annotation.Resource;
  * ->
  */
 @Service
-public class N2ConfServicImpl implements N2ConfService {
+public class QTConfServicImpl implements QTConfService {
     @Resource
-    N2ConfMapper n2ConfMapper;
+    QTConfMapper QTConfMapper;
 
 
     @Override
     public QTConfigure getPZByDevName(String devName) {
-        QTConfigure rs = n2ConfMapper.selectConfByDevName(devName);
+        QTConfigure rs = QTConfMapper.selectConfByDevName(devName);
         return rs;
     }
 
     @Override
     public int saveConf(QTConfigure n2conf) {
-        int rs = n2ConfMapper.insertNewConf(n2conf);
-        return 0;
+        int rs = QTConfMapper.insertNewConf(n2conf);
+        return rs;
     }
 }

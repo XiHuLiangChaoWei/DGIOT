@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.zz.dgcc.DGIOT.mapper.OrderMapper">
+<mapper namespace="cn.zz.dgcc.DGIOT.mapper.QTConfMapper">
     <resultMap id="ConfResultMap" type="cn.zz.dgcc.DGIOT.entity.QTConfigure">
         <result column="id" property="id"/>
         <result column="dev_name" property="devName"/>
@@ -8,10 +8,10 @@
         <result column="commond_type" property="commondType"/>
         <result column="dev_bh" property="devBH"/>
         <result column="dev_zh" property="devZH"/>
-        <result column="type" property="type"/>
+        <result column="i_type" property="type"/>
         <result column="bus_type" property="busType"/>
         <result column="dieF_Fk" property="dieFFK"/>
-        <result column="zlfj_Fk" property="zlfjFk"/>
+        <result column="hlfj_Fk" property="hlfjFk"/>
         <result column="dieF_time" property="dieFTime"/>
         <result column="nongdu_upper" property="n2NDUpper"/>
         <result column="nongdu_lower" property="n2NDLower"/>
@@ -26,8 +26,15 @@
         <result column="chouqi_time" property="cqTime"/>
     </resultMap>
 
-    <insert id="insertNewConf">
-        INSERT INTO dev_conf () VALUES ()
+    <insert id="insertNewConf" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO dev_conf (dev_name,dev_id,commond_type,dev_bh,dev_zh,
+                            i_type,but_type,dieF_FK,zlfj_Fk,dieF_time,nongdu_upper,
+                            nongdu_lower,fuya_upper,fuya_lower,chongqi_time,time_inerval,
+                            cycle_measure,air_tightness,start_ch,end_ch,chouqi_time) VALUES (
+                            #{devName},#{devId},#{commondType},#{devBH},#{devZH},#{type},#{busType},#{dieFFK},#{zlfjFk},#{dieFTime},#{n2NDUpper},
+                            #{n2NDLower},#{n2FYUpper},#{n2FYLower},#{n2CQTime},#{timeInterval},#{cycleMeasure},#{airTightness},
+                            #{startCH},#{endCH},#{cqTime}
+                            )
     </insert>
 
     <select id="selectConfByDevName" resultMap="ConfResultMap">

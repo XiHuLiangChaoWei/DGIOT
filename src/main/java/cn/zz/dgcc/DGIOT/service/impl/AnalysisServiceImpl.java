@@ -7,7 +7,6 @@ import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg3AnalysisGrain;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisN2;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,7 @@ public class AnalysisServiceImpl implements AnalysisService {
     @Autowired
     OrderService orderService;
     @Autowired
-    N2ConfService n2ConfService;
+    QTConfService QTConfService;
 
     private static String 开关动作 = "1";
     private static String 查询动作 = "2";
@@ -88,11 +87,34 @@ public class AnalysisServiceImpl implements AnalysisService {
 
         String content = amqpMessage.getContent();
         if (content.startsWith("{")) {
-            JSONObject jo = jsonParse(content);
-            if ("CXPZ".equals(jo.getString("response"))) {
-                Gson g = new Gson();
-                QTConfigure n2conf = g.fromJson(jo.toJSONString(), QTConfigure.class);
-                int rs = n2ConfService.saveConf(n2conf);
+            JSONObject jsonObject = jsonParse(content);
+            if ("CXPZ".equals(jsonObject.getString("response"))) {
+                String devId = jsonObject.getString("devId");
+                int devBH = null == jsonObject.getInteger("dev BH") ? 0 : jsonObject.getInteger("devBH");
+                int devZH = null == jsonObject.getInteger("dev ZH") ? 0 : jsonObject.getInteger("devZH");
+                int type = null == jsonObject.getInteger("type") ? 0 : jsonObject.getInteger("type");
+                int busType = null == jsonObject.getInteger("busType") ? 0 : jsonObject.getInteger("busType");
+                int dieFFK = null == jsonObject.getInteger("DieF FK") ? 0 : jsonObject.getInteger("DieF FK");
+                int hlfjFk = null == jsonObject.getInteger("HLFJ Fk") ? 0 : jsonObject.getInteger("HLFJ Fk");
+                int dieFTime = null == jsonObject.getInteger("DieF Time") ? 0 : jsonObject.getInteger("DieF Time");
+                int n2NDUpper = null == jsonObject.getInteger("N2 ND Upper") ? 0 : jsonObject.getInteger("N2 ND Upper");
+                int n2NDLower = null == jsonObject.getInteger("N2 ND Lower") ? 0 : jsonObject.getInteger("N2 ND Lower");
+                int n2FYUpper = null == jsonObject.getInteger("N2 FY Upper") ? 0 : jsonObject.getInteger("N2 FY Upper");
+                int n2FYLower = null == jsonObject.getInteger("N2 FY Lower") ? 0 : jsonObject.getInteger("N2 FY Lower");
+                int n2CQTime = null == jsonObject.getInteger("N2 Cq Time") ? 0 : jsonObject.getInteger("N2 Cq Time");
+                int timeInterval = null == jsonObject.getInteger("N2 Time interval") ? 0 : jsonObject.getInteger("N2 Cycle measure");
+                int cycleMeasure = null == jsonObject.getInteger("N2 Cycle measure") ? 0 : jsonObject.getInteger("cycleMeasure");
+                int airTightness = null == jsonObject.getInteger("Air tightness") ? 0 : jsonObject.getInteger("Air tightness");
+                int startCH = null == jsonObject.getInteger("Sta Ch") ? 0 : jsonObject.getInteger("Sta Ch");
+                int endCH = null == jsonObject.getInteger("End Ch") ? 0 : jsonObject.getInteger("End Ch");
+                int cqTime = null == jsonObject.getInteger("CQ Time") ? 0 : jsonObject.getInteger("CQ Time");
+                QTConfigure n2conf = new QTConfigure(devId,devBH,devZH,type,busType,dieFFK,hlfjFk,dieFTime,n2NDUpper,
+                        n2NDLower,n2FYUpper,n2FYLower,n2CQTime ,timeInterval,cycleMeasure,airTightness,startCH,endCH,cqTime);
+                n2conf.setDevName(devName);
+                int rs = QTConfService.saveConf(n2conf);
+                if(rs==1){
+                    log.info("保存设置信息成功");
+                }
             }
         }
 

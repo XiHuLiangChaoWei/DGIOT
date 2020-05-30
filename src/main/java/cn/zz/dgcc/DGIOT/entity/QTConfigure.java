@@ -60,6 +60,30 @@ public class QTConfigure {
 
     }
 
+    public QTConfigure(String devId, int devBH, int devZH, int type, int busType, int dieFFK, int hlfjFk, int dieFTime, int n2NDUpper, int n2NDLower, int n2FYUpper, int n2FYLower, int n2CQTime, int timeInterval, int cycleMeasure, int airTightness, int startCH, int endCH, int cqTime) {
+        this.devName = devName;
+        this.devId = devId;
+        this.commondType = commondType;
+        this.devBH = devBH;
+        this.devZH = devZH;
+        this.type = type;
+        this.busType = busType;
+        this.dieFFK = dieFFK;//蝶阀反馈 0-无反馈 1-有反馈
+        this.hlfjFk = hlfjFk;//轴流风机反馈  0-无反馈 1-有反馈
+        this.dieFTime = dieFTime;// 蝶阀时间
+        this.n2NDUpper = n2NDUpper;// 充气浓度上限 %
+        this.n2NDLower = n2NDLower;// 充气浓度下限%
+        this.n2FYUpper = n2FYUpper;// 负压上限
+        this.n2FYLower = n2FYLower;// 负压下限
+        this.n2CQTime = n2CQTime;//充气时间 min
+        this.timeInterval = timeInterval;//氮气浓度监测时间 间隔
+        this.cycleMeasure = cycleMeasure;//循环测试标记
+        this.airTightness = airTightness;//气密性半衰气压力值
+        this.startCH = startCH;// 开始通道
+        this.endCH = endCH;// 结束通道
+        this.cqTime = cqTime;// 抽气时间
+    }
+
     public String getDevName() {
         return devName;
     }

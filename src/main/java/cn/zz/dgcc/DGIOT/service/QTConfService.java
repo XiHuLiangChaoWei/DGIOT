@@ -8,7 +8,7 @@ import cn.zz.dgcc.DGIOT.entity.QTConfigure;
  * ClassExplain :
  * ->
  */
-public interface N2ConfService {
+public interface QTConfService {
     QTConfigure getPZByDevName(String devName);
 
     int saveConf(QTConfigure n2conf);

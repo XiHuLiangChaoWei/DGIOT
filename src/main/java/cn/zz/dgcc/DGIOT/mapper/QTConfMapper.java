@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * ->
  */
 @Mapper
-public interface N2ConfMapper {
+public interface QTConfMapper {
     QTConfigure selectConfByDevName(String devName);
 
     int insertNewConf(QTConfigure n2conf);

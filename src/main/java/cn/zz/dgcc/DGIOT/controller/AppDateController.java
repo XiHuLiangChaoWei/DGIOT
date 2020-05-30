@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -51,7 +49,7 @@ public class AppDateController extends BaseController {
     @Autowired
     UserService userService;
     @Autowired
-    N2ConfService n2ConfService;
+    QTConfService QTConfService;
 
 
     /**
@@ -666,7 +664,7 @@ public class AppDateController extends BaseController {
         int airTightness = null == jsonObject.getInteger("airTightness") ? 0 : jsonObject.getInteger("airTightness");
         int startCH = null == jsonObject.getInteger("startCH") ? 0 : jsonObject.getInteger("startCH");
         int endCH = null == jsonObject.getInteger("endCH") ? 0 : jsonObject.getInteger("endCH");
-        int cqTime = null == jsonObject.getInteger("n2NDUpper") ? 0 : jsonObject.getInteger("n2NDUpper");
+        int cqTime = null == jsonObject.getInteger("cqTime") ? 0 : jsonObject.getInteger("cqTime");
         return new QTConfigure(devName,
                 devId,
                 commondType,
@@ -755,7 +753,7 @@ public class AppDateController extends BaseController {
         //
         String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
         Device rs = deviceService.getDevByDevName(devName);
-        QTConfigure QTConfigure = n2ConfService.getPZByDevName(devName);
+        QTConfigure QTConfigure = QTConfService.getPZByDevName(devName);
         Gson g = new Gson();
         String json = g.toJson(QTConfigure);
         JSONObject jo = JSONObject.parseObject(json);
@@ -768,7 +766,8 @@ public class AppDateController extends BaseController {
      * 通过json格式下发模式命令
      *
      * @param depotId 仓库id
-     * @param model   模式类型             case 1 : str = "ddcq";break; 单独测气
+     * @param model   模式类型
+     *                case 1 : str = "ddcq";break; 单独测气
      *                case 2 : str = "scxp";break; 上充下排
      *                case 3 : str = "xcsp";break; 下充上排
      *                case 4 : str = "hlxz";break; 环流熏蒸
