@@ -53,7 +53,7 @@ public class Dg3AnalysisGrain {
     /**
      * 解析函数
      *
-     * @param grain  粮情消息
+     * @param grain 粮情消息
      * @param depot 通过上传设备匹配的仓库信息
      * @return 一个json格式的单仓粮情解析数据 包含 仓库信息，和各测温点温度数据
      * @throws Exception
@@ -121,10 +121,23 @@ public class Dg3AnalysisGrain {
             }
         }
         System.err.println(temps);
+        String start_ = depot.getStart();
+        String end_ = depot.getEnd();
+        int l = Integer.parseInt(start_) - Integer.parseInt(end_);
+        int innH = 0;
+        int innT = 0;
+        String innerTH = msg.substring(2020, 2020 + l * 6);
+        for (int i = 0; i < innerTH.length(); i += 6) {
+            String strH = innerTH.substring(i, i + 2);
+            String strT = innerTH.substring(i + 2, i + 6);
+            innH = Integer.parseInt(strH,16);
+        }
+
+
 //        Date date = new Date();
         String batchId = grain.getBatchId();
         Date date = grain.getRecivedTime();
-        return this.addPoint(temps, date, depot,batchId);
+        return this.addPoint(temps, date, depot, batchId);
     }
 
     public static String tran_LH(String info) {
@@ -132,7 +145,7 @@ public class Dg3AnalysisGrain {
     }
 
 
-    private JSONObject addPoint(List<Double> temps, Date receiveDate, Depot depot,String batchId) throws Exception {
+    private JSONObject addPoint(List<Double> temps, Date receiveDate, Depot depot, String batchId) throws Exception {
         List<GrainInfo> grains = new ArrayList();
         GrainInfo info = null;
         int x = 0, y = 0, z = 0, fz = 0;
@@ -157,14 +170,14 @@ public class Dg3AnalysisGrain {
             }
             grains.add(info);
         }
-        JSONObject jsonResult = grainList2JsonArray(grains, depot,batchId);
+        JSONObject jsonResult = grainList2JsonArray(grains, depot, batchId);
         this.log.info("粮情解析成功:" + receiveDate.toString());
 //        String j = jsonResult.toJSONString();
 //        log.info(j);
         return jsonResult;
     }
 
-    private JSONObject grainList2JsonArray(List<GrainInfo> grains, Depot depot,String batchId) {
+    private JSONObject grainList2JsonArray(List<GrainInfo> grains, Depot depot, String batchId) {
         JSONObject rs = new JSONObject();
         JSONArray js = new JSONArray();
         double maxTemp = 0;
@@ -196,7 +209,7 @@ public class Dg3AnalysisGrain {
             vo.setTemp(g.getInnerTemp());
             js.add(vo);
         }
-        avgTemp = avgTemp/index;
+        avgTemp = avgTemp / index;
         rs.put("batchId", batchId);
         rs.put("depotId", depot.getDepotId());
         rs.put("devNote", depot.getDevNote());
@@ -209,7 +222,7 @@ public class Dg3AnalysisGrain {
         rs.put("designMin", depot.getDesignMin());
         rs.put("maxTemp", maxTemp);
         rs.put("minTemp", minTemp);
-        rs.put("avgTemp",avgTemp);
+        rs.put("avgTemp", avgTemp);
         rs.put("date", js);
 
         return rs;
