@@ -111,8 +111,7 @@ public class AppDateController extends BaseController {
      */
     private String getN2DevR(String type) {
         N2 rs = n2Service.getNewInfoByDevName2("ZD000001", type);
-        String devRepeat = rs.getContent().toUpperCase();
-        return devRepeat;
+        return rs.getContent().toUpperCase();
     }
 
     @RequestMapping("/t")
@@ -137,7 +136,7 @@ public class AppDateController extends BaseController {
         String pk = n2.getProductKey();
         String devName = n2.getDeviceName();
         String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-
+        //新建进程执行制氮机开操作
         if ("on".equals(controller)) {
             Thread t = new Thread(() -> {
                 String[] on = N2DevCommondBuilder.getN2DevOn();
@@ -233,7 +232,11 @@ public class AppDateController extends BaseController {
         if (r == 1) {
             log.info("保存命令成功");
         }
-
+        try {
+            Thread.sleep(1200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         String repeat = getN2DevR("2");
         if ("0303020008C042".equals(repeat)) {
             return new JsonResult<>(success, "设备正在运行！");
@@ -298,14 +301,14 @@ public class AppDateController extends BaseController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-//        String repeat = getN2DevR("2");
-//        if (repeat.startsWith("030304")) {
-//            JSONObject jsonObject = new JSONObject();
-//            Float rs = BytesUtil.Hex2Float(repeat);
-//            jsonObject.put(String.valueOf(choose), rs + msgFix);
-//
-//            return new JsonResult<>(success, jsonObject);
-//        }
+        String repeat = getN2DevR("2");
+        if (repeat.startsWith("030304")) {
+            JSONObject jsonObject = new JSONObject();
+            Float rs = BytesUtil.Hex2Float(repeat);
+            jsonObject.put(String.valueOf(choose), rs + msgFix);
+
+            return new JsonResult<>(success, jsonObject);
+        }
         return new JsonResult<>(success, "");
     }
 
