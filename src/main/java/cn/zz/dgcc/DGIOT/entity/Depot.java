@@ -19,6 +19,7 @@ public class Depot {
     int yy;
     int zz;
     double innerTemp;
+    double innerH;
     double outTemp;
     String mqttInfo;
     int designMax;
@@ -29,32 +30,6 @@ public class Depot {
     String maxTemp;
     String minTemp;
     String avgTemp;
-
-    @Override
-    public String toString() {
-        return "Depot{" +
-                "id=" + id +
-                ", depotId=" + depotId +
-                ", companyId=" + companyId +
-                ", devNote='" + devNote + '\'' +
-                ", start='" + start + '\'' +
-                ", end='" + end + '\'' +
-                ", xx=" + xx +
-                ", yy=" + yy +
-                ", zz=" + zz +
-                ", innerTemp=" + innerTemp +
-                ", outTemp=" + outTemp +
-                ", mqttInfo='" + mqttInfo + '\'' +
-                ", designMax=" + designMax +
-                ", designMin=" + designMin +
-                ", keeper='" + keeper + '\'' +
-                ", phone='" + phone + '\'' +
-                ", address='" + address + '\'' +
-                ", maxTemp='" + maxTemp + '\'' +
-                ", minTemp='" + minTemp + '\'' +
-                ", avgTemp='" + avgTemp + '\'' +
-                '}';
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -68,6 +43,7 @@ public class Depot {
                 yy == depot.yy &&
                 zz == depot.zz &&
                 Double.compare(depot.innerTemp, innerTemp) == 0 &&
+                Double.compare(depot.innerH, innerH) == 0 &&
                 Double.compare(depot.outTemp, outTemp) == 0 &&
                 designMax == depot.designMax &&
                 designMin == depot.designMin &&
@@ -85,7 +61,42 @@ public class Depot {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, depotId, companyId, devNote, start, end, xx, yy, zz, innerTemp, outTemp, mqttInfo, designMax, designMin, keeper, phone, address, maxTemp, minTemp, avgTemp);
+        return Objects.hash(id, depotId, companyId, devNote, start, end, xx, yy, zz, innerTemp, innerH, outTemp, mqttInfo, designMax, designMin, keeper, phone, address, maxTemp, minTemp, avgTemp);
+    }
+
+    @Override
+    public String toString() {
+        return "Depot{" +
+                "id=" + id +
+                ", depotId=" + depotId +
+                ", companyId=" + companyId +
+                ", devNote='" + devNote + '\'' +
+                ", start='" + start + '\'' +
+                ", end='" + end + '\'' +
+                ", xx=" + xx +
+                ", yy=" + yy +
+                ", zz=" + zz +
+                ", innerTemp=" + innerTemp +
+                ", innerH=" + innerH +
+                ", outTemp=" + outTemp +
+                ", mqttInfo='" + mqttInfo + '\'' +
+                ", designMax=" + designMax +
+                ", designMin=" + designMin +
+                ", keeper='" + keeper + '\'' +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                ", maxTemp='" + maxTemp + '\'' +
+                ", minTemp='" + minTemp + '\'' +
+                ", avgTemp='" + avgTemp + '\'' +
+                '}';
+    }
+
+    public double getInnerH() {
+        return innerH;
+    }
+
+    public void setInnerH(double innerH) {
+        this.innerH = innerH;
     }
 
     public int getId() {

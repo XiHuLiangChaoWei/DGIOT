@@ -26,7 +26,7 @@ public class QueryProduct {
         request.setVersion("2018-01-20");
         request.setAction("QueryProductList");
         request.putQueryParameter("RegionId", "cn-shanghai");
-//        request.putQueryParameter("ProductKey", "a1gQiP9WsBk");
+//        request.putQueryParameter("ProductKey", "a1KhXudYrKw");
         request.putQueryParameter("PageSize","200");
         request.putQueryParameter("CurrentPage","1");
         try {

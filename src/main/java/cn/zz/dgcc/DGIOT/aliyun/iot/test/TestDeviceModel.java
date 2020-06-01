@@ -7,7 +7,7 @@ package cn.zz.dgcc.DGIOT.aliyun.iot.test;
  * ->
  */
 public class TestDeviceModel {
-    final String productKey = "a1gQiP9WsBk";
+    final String productKey = "a1KhXudYrKw";
     final String deviceName = "DGCC_TEST1";
     final String deviceSecret = "MNoq0cjyGZWxvdd36P8hovHt4bSl68eg";
     final String region = "cn-shanghai";

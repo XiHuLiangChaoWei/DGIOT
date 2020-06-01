@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zz.dgcc.DGIOT.mapper.AppVersionMapper">
+    <resultMap id="AppResultMap" type="cn.zz.dgcc.DGIOT.entity.AppVersion">
+        <result column="id" property="id"/>
+        <result column="ver_name" property="verName"/>
+        <result column="ver_code" property="verCode"/>
+        <result column="ver_note" property="verNote"/>
+        <result column="address" property="address"/>
+    </resultMap>
+
+    <select id="selectNewVersion" resultMap="AppResultMap">
+        SELECT
+        *
+        FROM
+        version
+        ORDER BY
+        id
+        DESC LIMIT 1
+    </select>
+
+</mapper>

@@ -23,7 +23,7 @@ public class DepotServiceImpl implements DepotService {
     @Resource
     DepotDevMapper depotDevMapper;
 
-    int getDeoptIdByDevName(String devName){
+    int getDeoptIdByDevName(String devName) {
         int rs = depotDevMapper.selectDepotIdByDevName(devName);
         return rs;
     }
@@ -43,8 +43,8 @@ public class DepotServiceImpl implements DepotService {
 
 
     @Override
-    public String getDevNameByDepotIdAndType(int depotId,int type) {
-        String devName =depotDevMapper.selectDevNameByDepotIdAndType(depotId,type);
+    public String getDevNameByDepotIdAndType(int depotId, int type) {
+        String devName = depotDevMapper.selectDevNameByDepotIdAndType(depotId, type);
         return devName;
     }
 
@@ -67,8 +67,8 @@ public class DepotServiceImpl implements DepotService {
     }
 
     @Override
-    public int updateTempInfoById(double maxTemp, double minTemp, double avgTemp, int id) {
-        int rs = depotMapper.upTempDateById(id,maxTemp,minTemp,avgTemp);
+    public int updateTempInfoById(double maxTemp, double minTemp, double avgTemp, double innH, double innT, int id) {
+        int rs = depotMapper.upTempDateById(id, maxTemp, minTemp,innH,innT, avgTemp);
         return rs;
     }
 }

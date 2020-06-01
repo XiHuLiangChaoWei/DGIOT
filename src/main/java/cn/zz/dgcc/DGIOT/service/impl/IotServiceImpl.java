@@ -85,22 +85,22 @@ public class IotServiceImpl implements IoTService {
                 a.setDeviceStatus(row.getString("DeviceStatus"));
                 a.setDeviceNickName("NickName");
                 switch (row.getString("ProductKey")) {
-                    case "a1gQiP9WsBk":
+                    case "a1KhXudYrKw":
                         a.setType(测试设备);
                         break;
-                    case "a1nc5ers34P":
+                    case "a1fmlHyzz82":
                         a.setType(环流设备);
                         break;
-                    case "a1OOyueWEYZ":
+                    case "a1zuatjJlcg":
                         a.setType(通风设备);
                         break;
-                    case "a1EgaQkuZDn":
+                    case "a1RnedE9Gfb":
                         a.setType(粮情设备);
                         break;
-                    case "a1eGsyDXOlR":
+                    case "a1bop2X1JTB":
                         a.setType(制氮设备);
                         break;
-                    case "a1NXIYnqFcv":
+                    case "a1J3Y773MWq":
                         a.setType(气调设备);
                         break;
                 }
@@ -123,15 +123,15 @@ public class IotServiceImpl implements IoTService {
     public static void main(String[] args) {
 //        IotServiceImpl is = new IotServiceImpl();
 //        is.queryProductList();
-//        is.queryProduct("a1gQiP9WsBk");
-//        is.queryDevice("a1gQiP9WsBk");
+//        is.queryProduct("a1KhXudYrKw");
+//        is.queryDevice("a1KhXudYrKw");
 //        is.queryDeviceDetail("kFdPCUwLAvSEM4uf6w5x000100",null,null);
-//        is.queryProductTopic("a1gQiP9WsBk");
+//        is.queryProductTopic("a1KhXudYrKw");
 //        is.deleteProductTopic("9217766");
-//        is.createProductTopic("ADDTEST","a1gQiP9WsBk","sub","试一试");
+//        is.createProductTopic("ADDTEST","a1KhXudYrKw","sub","试一试");
 //        is.updateProductTopic("升级试一试","all","UPdateTest","9218128");
-//        is.pub("/a1gQiP9WsBk/DGCC_TEST1/user/UPdateTest", "大帅逼", "a1gQiP9WsBk", "0");
-//        is.pubBoradcast("小帅逼","a1gQiP9WsBk",null);
+//        is.pub("/a1KhXudYrKw/DGCC_TEST1/user/UPdateTest", "大帅逼", "a1KhXudYrKw", "0");
+//        is.pubBoradcast("小帅逼","a1KhXudYrKw",null);
     }
 
 
@@ -163,12 +163,12 @@ public class IotServiceImpl implements IoTService {
      * @return
      */
     static CommonRequest commonRequest() {
-
         CommonRequest request = new CommonRequest();
         request.setMethod(MethodType.POST);
         request.setDomain("iot.cn-shanghai.aliyuncs.com");
         request.setVersion("2018-01-20");
         request.putQueryParameter("RegionId", "cn-shanghai");
+        request.putQueryParameter("IotInstanceId", "iot-cn-v641mge9j01");
         return request;
     }
 
@@ -480,6 +480,7 @@ public class IotServiceImpl implements IoTService {
 //        }
 
         CommonRequest cr = commonRequest();
+        cr.putQueryParameter("IotInstanceId", "iot-cn-v641mge9j01");
         IAcsClient client = commonClient();
         cr.setAction("Pub");
         cr.putQueryParameter("TopicFullName", topicFullName);

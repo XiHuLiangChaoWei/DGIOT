@@ -123,21 +123,26 @@ public class Dg3AnalysisGrain {
         System.err.println(temps);
         String start_ = depot.getStart();
         String end_ = depot.getEnd();
-        int l = Integer.parseInt(start_) - Integer.parseInt(end_);
-        int innH = 0;
-        int innT = 0;
+        int l = Integer.parseInt(start_) - Integer.parseInt(end_) + 1;
+        double innH = 0;
+        double innT = 0;
+        int num = 0;
         String innerTH = msg.substring(2020, 2020 + l * 6);
         for (int i = 0; i < innerTH.length(); i += 6) {
             String strH = innerTH.substring(i, i + 2);
             String strT = innerTH.substring(i + 2, i + 6);
-            innH = Integer.parseInt(strH,16);
+            innH += Integer.parseInt(strH, 16);
+            innT += Integer.parseInt(strT, 16);
+            num = i + 1;
         }
+        double finalInnH = innH / num;
+        double finalInnT = innT / num;
 
 
 //        Date date = new Date();
         String batchId = grain.getBatchId();
         Date date = grain.getRecivedTime();
-        return this.addPoint(temps, date, depot, batchId);
+        return this.addPoint(temps, date, depot, batchId, finalInnH, finalInnT);
     }
 
     public static String tran_LH(String info) {
@@ -145,7 +150,7 @@ public class Dg3AnalysisGrain {
     }
 
 
-    private JSONObject addPoint(List<Double> temps, Date receiveDate, Depot depot, String batchId) throws Exception {
+    private JSONObject addPoint(List<Double> temps, Date receiveDate, Depot depot, String batchId, double finalInnH, double finalInnT) throws Exception {
         List<GrainInfo> grains = new ArrayList();
         GrainInfo info = null;
         int x = 0, y = 0, z = 0, fz = 0;
@@ -170,14 +175,14 @@ public class Dg3AnalysisGrain {
             }
             grains.add(info);
         }
-        JSONObject jsonResult = grainList2JsonArray(grains, depot, batchId);
+        JSONObject jsonResult = grainList2JsonArray(grains, depot, batchId, finalInnH, finalInnT);
         this.log.info("粮情解析成功:" + receiveDate.toString());
 //        String j = jsonResult.toJSONString();
 //        log.info(j);
         return jsonResult;
     }
 
-    private JSONObject grainList2JsonArray(List<GrainInfo> grains, Depot depot, String batchId) {
+    private JSONObject grainList2JsonArray(List<GrainInfo> grains, Depot depot, String batchId, double finalInnH, double finalInnT) {
         JSONObject rs = new JSONObject();
         JSONArray js = new JSONArray();
         double maxTemp = 0;
@@ -224,7 +229,8 @@ public class Dg3AnalysisGrain {
         rs.put("minTemp", minTemp);
         rs.put("avgTemp", avgTemp);
         rs.put("date", js);
-
+        rs.put("innerH", finalInnH);
+        rs.put("InnerTemp", finalInnT);
         return rs;
     }
 }

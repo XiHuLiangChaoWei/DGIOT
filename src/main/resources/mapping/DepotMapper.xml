@@ -28,7 +28,7 @@
         UPDATE
             depot
         SET
-            max_temp = #{maxTemp},min_temp=#{minTemp},avg_temp=#{avgTemp}
+            max_temp = #{maxTemp},min_temp=#{minTemp},avg_temp=#{avgTemp},inner_humidity=#{innH},inner_temp=#{innT}
         WHERE
             id = #{id}
     </update>

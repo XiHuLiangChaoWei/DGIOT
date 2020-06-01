@@ -39,8 +39,26 @@ public class N2VO {
     List<Double> O2;   //O2浓度
     List<Double> CO2;  //CO2浓度
     int qiufaNum;
+    List<Integer> qiufaStatus;
     int qibengNum;
+    List<Integer> qibengStatus;
     int chouqiTime;
+
+    public List<Integer> getQiufaStatus() {
+        return qiufaStatus;
+    }
+
+    public void setQiufaStatus(List<Integer> qiufaStatus) {
+        this.qiufaStatus = qiufaStatus;
+    }
+
+    public List<Integer> getQibengStatus() {
+        return qibengStatus;
+    }
+
+    public void setQibengStatus(List<Integer> qibengStatus) {
+        this.qibengStatus = qibengStatus;
+    }
 
     public int getChouqiTime() {
         return chouqiTime;

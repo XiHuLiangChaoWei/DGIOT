@@ -34,7 +34,7 @@ public class MessageTest {
     }
 
     public void Push2Topic(String str){
-        MessageBrokerManager.pub("a1gQiP9WsBk","/a1gQiP9WsBk/000000/user/sev/downdate",str,0);
+        MessageBrokerManager.pub("a1KhXudYrKw","/a1KhXudYrKw/000000/user/sev/downdate",str,0);
     }
 
 }

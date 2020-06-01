@@ -27,5 +27,7 @@ public interface DepotMapper {
     int upTempDateById(@Param("id") int id,
                        @Param("maxTemp") double maxTemp,
                        @Param("minTemp") double minTemp,
-                       @Param("avgTemp") double avgTemp);
+                       @Param("avgTemp") double avgTemp,
+                       @Param("innH") double innH,
+                       @Param("innT") double innT);
 }

@@ -50,6 +50,16 @@ public class AppDateController extends BaseController {
     UserService userService;
     @Autowired
     QTConfService QTConfService;
+    @Autowired
+    AppVersionService appVersionService;
+
+    @RequestMapping("getAppVersion")
+    @ResponseBody
+    public JsonResult<AppVersion> getVersion(){
+        AppVersion appVersion = appVersionService.getNowAppVersion();
+        return new JsonResult<>(success,appVersion);
+    }
+
 
 
     /**

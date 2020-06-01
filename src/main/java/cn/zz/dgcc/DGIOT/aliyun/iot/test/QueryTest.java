@@ -46,14 +46,14 @@ public class QueryTest {
         查询产品详细信息
      */
     public void queryTest2(){
-        QueryProductResponse.Data data = queryProductTest("a1gQiP9WsBk");
+        QueryProductResponse.Data data = queryProductTest("a1KhXudYrKw");
         System.out.println(data);
     }
     /*
         查询产品下设备列表
      */
     public void queryTest3(){
-        List<QueryDeviceResponse.DeviceInfo> list = queryDevice("a1gQiP9WsBk",1,null);
+        List<QueryDeviceResponse.DeviceInfo> list = queryDevice("a1KhXudYrKw",1,null);
         for (QueryDeviceResponse.DeviceInfo data:
              list) {
             System.out.println(data);
@@ -63,7 +63,7 @@ public class QueryTest {
         设备运行状态查询
      */
     public void queryTest4(){
-        GetDeviceStatusResponse.Data data = getDeviceStatus("a1gQiP9WsBk","DGCC_TEST1",null);
+        GetDeviceStatusResponse.Data data = getDeviceStatus("a1KhXudYrKw","DGCC_TEST1",null);
         System.out.println(data);
     }
 
@@ -71,7 +71,7 @@ public class QueryTest {
         查询指定设备上传的历史文件（失败，未提供正确的设备id）
      */
     public void queryTest5(){
-        List<QueryDeviceFileListResponse.FileSummary> list = queryDeviceFileList("kFdPCUwLAvSEM4uf6w5x","a1gQiP9WsBk","DGCC_TEST1",1,null);
+        List<QueryDeviceFileListResponse.FileSummary> list = queryDeviceFileList("kFdPCUwLAvSEM4uf6w5x","a1KhXudYrKw","DGCC_TEST1",1,null);
     }
 
 }

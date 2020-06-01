@@ -172,7 +172,9 @@ public class AnalysisServiceImpl implements AnalysisService {
                 double maxTemp = j.getDouble("maxTemp");
                 double minTemp = j.getDouble("minTemp");
                 double avgTemp = j.getDouble("avgTemp");
-                int r = depotService.updateTempInfoById(maxTemp, minTemp, avgTemp, id);
+                double innH = j.getDouble("innerH");
+                double innT = j.getDouble("InnerTemp");
+                int r = depotService.updateTempInfoById(maxTemp, minTemp, avgTemp,innH,innT, id);
                 if (r != 1) {
                     throw new ISqlException("更新失败");
                 }

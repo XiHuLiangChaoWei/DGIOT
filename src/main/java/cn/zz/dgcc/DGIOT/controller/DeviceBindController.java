@@ -183,15 +183,15 @@ public class DeviceBindController extends BaseController {
                 e.printStackTrace();
             }
             //调用下发API 下发三元组信息
-            JSONObject jsonRs = ioTService.pub("/a1gQiP9WsBk/000000/user/dev/register/response", downDevInfo.toString(),
-                    "a1gQiP9WsBk", null);
+            JSONObject jsonRs = ioTService.pub("/a1KhXudYrKw/000000/user/dev/register/response", downDevInfo.toString(),
+                    "a1KhXudYrKw", null);
             String succ = jsonRs.getString("Success");
             if ("true".equals(succ)) {
                 log.info("第一次三元组信息下发成功");
             }
 
-//            jsonRs = ioTService.pub("/a1gQiP9WsBk/000000/user/dev/register/response", downDevInfo.toString(),
-//                    "a1gQiP9WsBk", null);
+//            jsonRs = ioTService.pub("/a1KhXudYrKw/000000/user/dev/register/response", downDevInfo.toString(),
+//                    "a1KhXudYrKw", null);
 //            succ = jsonRs.getString("Success");
 //            if ("true".equals(succ)) {
 //                log.info("第二次三元组信息下发成功");

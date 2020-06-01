@@ -23,5 +23,5 @@ public interface DepotService {
 
     List<Depot> getDepotListOnCompanyId(int userId);
 
-    int updateTempInfoById(double maxTemp, double minTemp, double avgTemp, int id);
+    int updateTempInfoById(double maxTemp, double minTemp, double avgTemp,double innH,double innT, int id);
 }

@@ -53,9 +53,10 @@ public class AMQPServiceUtils {
 
     public static void initAMQPClient() throws Exception {
         //参数说明，请参见上一篇文档：AMQP客户端接入说明。
-        String accessKey = "LTAI4FtLrEDXjUoG8vy9hqga";
-        String accessSecret = "N25z0lGWyu6mB6DxrGxI9mtIswkDeo";
+        String accessKey = "LTAI4Fo7DGZq2QP1ddPgBkmu";
+        String accessSecret = "jPtEyZUeQkOHTodidA8xirLjug4nAO";
         String consumerGroupId = "DEFAULT_GROUP";
+        String iotInstanceId = "iot-cn-v641mge9j01";
         long timeStamp = System.currentTimeMillis();
         //签名方法：支持hmacmd5，hmacsha1和hmacsha256
         String signMethod = "hmacsha1";
@@ -64,12 +65,20 @@ public class AMQPServiceUtils {
         String clientId = getMac();
 
         //UserName组装方法，请参见上一篇文档：AMQP客户端接入说明。
+//        String userName = clientId + "|authMode=aksign"
+//                + ",signMethod=" + signMethod
+//                + ",timestamp=" + timeStamp
+//                + ",authId=" + accessKey
+//                + ",consumerGroupId=" + consumerGroupId
+//                + "|";
         String userName = clientId + "|authMode=aksign"
                 + ",signMethod=" + signMethod
                 + ",timestamp=" + timeStamp
                 + ",authId=" + accessKey
+                + ",iotInstanceId=" + iotInstanceId
                 + ",consumerGroupId=" + consumerGroupId
                 + "|";
+
         //password组装方法，请参见上一篇文档：AMQP客户端接入说明。
         String signContent = "authId=" + accessKey + "&timestamp=" + timeStamp;
         String password = doSign(signContent, accessSecret, signMethod);
@@ -149,6 +158,9 @@ public class AMQPServiceUtils {
      */
     private static void processMessage(Message message) {
         try {
+//            if(message.getBody(byte[].class)==null){
+//                return;
+//            }
             //将message主体转化成字符串类型数据
             byte[] body = message.getBody(byte[].class);
 
@@ -168,7 +180,7 @@ public class AMQPServiceUtils {
             //拼装消息对象
             amqpMessage = new AMQPMessage(topic, messageId, content,body);
             //判断dtu接入topic
-            if ("/a1gQiP9WsBk/000000/user/dev/register".equals(topic)) {
+            if ("/a1KhXudYrKw/000000/user/dev/register".equals(topic)) {
                 amqpServiceUtils.registerDevice(amqpMessage);
             }else if(topic.contains("/user/dev/Login")){
                 amqpServiceUtils.deviceLogin(amqpMessage);
