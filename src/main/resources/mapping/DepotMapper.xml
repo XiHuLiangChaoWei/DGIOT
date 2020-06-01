@@ -22,7 +22,15 @@
         <result column="max_temp" property="maxTemp"/>
         <result column="min_temp" property="minTemp"/>
         <result column="avg_temp" property="avgTemp"/>
+        <result column="qt_status" property="QTStatus"/>
     </resultMap>
+    <update id="upQTStatusById">
+        UPDATE
+            depot
+        SET qt_status = #{clStatus}
+        WHERE
+            id=#{id}
+    </update>
 
     <update id="upTempDateById">
         UPDATE

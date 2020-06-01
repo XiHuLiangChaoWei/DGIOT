@@ -30,6 +30,7 @@ public class Depot {
     String maxTemp;
     String minTemp;
     String avgTemp;
+    int QTStatus;
 
     @Override
     public boolean equals(Object o) {
@@ -47,6 +48,7 @@ public class Depot {
                 Double.compare(depot.outTemp, outTemp) == 0 &&
                 designMax == depot.designMax &&
                 designMin == depot.designMin &&
+                QTStatus == depot.QTStatus &&
                 Objects.equals(devNote, depot.devNote) &&
                 Objects.equals(start, depot.start) &&
                 Objects.equals(end, depot.end) &&
@@ -61,7 +63,7 @@ public class Depot {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, depotId, companyId, devNote, start, end, xx, yy, zz, innerTemp, innerH, outTemp, mqttInfo, designMax, designMin, keeper, phone, address, maxTemp, minTemp, avgTemp);
+        return Objects.hash(id, depotId, companyId, devNote, start, end, xx, yy, zz, innerTemp, innerH, outTemp, mqttInfo, designMax, designMin, keeper, phone, address, maxTemp, minTemp, avgTemp, QTStatus);
     }
 
     @Override
@@ -88,15 +90,8 @@ public class Depot {
                 ", maxTemp='" + maxTemp + '\'' +
                 ", minTemp='" + minTemp + '\'' +
                 ", avgTemp='" + avgTemp + '\'' +
+                ", QTStatus=" + QTStatus +
                 '}';
-    }
-
-    public double getInnerH() {
-        return innerH;
-    }
-
-    public void setInnerH(double innerH) {
-        this.innerH = innerH;
     }
 
     public int getId() {
@@ -179,6 +174,14 @@ public class Depot {
         this.innerTemp = innerTemp;
     }
 
+    public double getInnerH() {
+        return innerH;
+    }
+
+    public void setInnerH(double innerH) {
+        this.innerH = innerH;
+    }
+
     public double getOutTemp() {
         return outTemp;
     }
@@ -257,5 +260,13 @@ public class Depot {
 
     public void setAvgTemp(String avgTemp) {
         this.avgTemp = avgTemp;
+    }
+
+    public int getQTStatus() {
+        return QTStatus;
+    }
+
+    public void setQTStatus(int QTStatus) {
+        this.QTStatus = QTStatus;
     }
 }

@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.logging.Logger;
@@ -53,13 +56,51 @@ public class AppDateController extends BaseController {
     @Autowired
     AppVersionService appVersionService;
 
-    @RequestMapping("getAppVersion")
+
+    @RequestMapping("DGCC.apk")
     @ResponseBody
-    public JsonResult<AppVersion> getVersion(){
-        AppVersion appVersion = appVersionService.getNowAppVersion();
-        return new JsonResult<>(success,appVersion);
+    public void download(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws UnsupportedEncodingException {
+        String downloadFilePath = "D:/dgcc";//被下载的文件在服务器中的路径,
+        String fileName = "DGCC.apk";//被下载文件的名称
+        File file = new File(downloadFilePath + "/" + fileName);
+        if (file.exists()) {
+            httpServletResponse.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            httpServletResponse.setCharacterEncoding("UTF-8");
+            httpServletResponse.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(fileName, "UTF-8"));
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = null;
+            BufferedInputStream bis = null;
+            OutputStream os = null;
+            try {
+                os = httpServletResponse.getOutputStream();
+                fis = new FileInputStream(file);
+                bis = new BufferedInputStream(fis);
+                int i = bis.read(buffer);
+                while (i != -1) {
+                    os.write(buffer);
+                    i = bis.read(buffer);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                bis.close();
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
 
+
+    @RequestMapping("getAppVersion")
+    @ResponseBody
+    public JsonResult<AppVersion> getVersion() {
+        AppVersion appVersion = appVersionService.getNowAppVersion();
+        return new JsonResult<>(success, appVersion);
+    }
 
 
     /**
@@ -73,6 +114,7 @@ public class AppDateController extends BaseController {
         String devRepeat = rs.getContent().toUpperCase();
         return devRepeat;
     }
+
     @RequestMapping("/t")
     public String t(Model model) {
         return "html/sql";
@@ -99,7 +141,7 @@ public class AppDateController extends BaseController {
         if ("on".equals(controller)) {
             Thread t = new Thread(() -> {
                 String[] on = N2DevCommondBuilder.getN2DevOn();
-                JSONObject json = ioTService.pub(topicFullName, on[0].replace(" ",""), pk, "1");
+                JSONObject json = ioTService.pub(topicFullName, on[0].replace(" ", ""), pk, "1");
                 Order o = new Order(userId, 0, json.getString("MessageId"), 5, on[0],
                         ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
                 System.out.println("OOOO----" + o);
@@ -112,7 +154,7 @@ public class AppDateController extends BaseController {
                 } catch (InterruptedException e) {
 
                 }
-                json = ioTService.pub(topicFullName, on[1].replace(" ",""), pk, "1");
+                json = ioTService.pub(topicFullName, on[1].replace(" ", ""), pk, "1");
                 o = new Order(userId, 0, json.getString("MessageId"), 5, on[1],
                         ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
                 System.out.println("1111----" + o);

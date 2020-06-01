@@ -71,4 +71,9 @@ public class DepotServiceImpl implements DepotService {
         int rs = depotMapper.upTempDateById(id, maxTemp, minTemp,innH,innT, avgTemp);
         return rs;
     }
+
+    @Override
+    public int updateQTStatusById(int clStatus, int id) {
+        return depotMapper.upQTStatusById(id,clStatus);
+    }
 }

@@ -1,11 +1,13 @@
 package cn.zz.dgcc.DGIOT.service.impl;
 
+import cn.zz.dgcc.DGIOT.VO.N2VO;
 import cn.zz.dgcc.DGIOT.entity.*;
 import cn.zz.dgcc.DGIOT.service.*;
 import cn.zz.dgcc.DGIOT.service.Exception.ISqlException;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg3AnalysisGrain;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisN2;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -108,11 +110,11 @@ public class AnalysisServiceImpl implements AnalysisService {
                 int startCH = null == jsonObject.getInteger("Sta Ch") ? 0 : jsonObject.getInteger("Sta Ch");
                 int endCH = null == jsonObject.getInteger("End Ch") ? 0 : jsonObject.getInteger("End Ch");
                 int cqTime = null == jsonObject.getInteger("CQ Time") ? 0 : jsonObject.getInteger("CQ Time");
-                QTConfigure n2conf = new QTConfigure(devId,devBH,devZH,type,busType,dieFFK,hlfjFk,dieFTime,n2NDUpper,
-                        n2NDLower,n2FYUpper,n2FYLower,n2CQTime ,timeInterval,cycleMeasure,airTightness,startCH,endCH,cqTime);
+                QTConfigure n2conf = new QTConfigure(devId, devBH, devZH, type, busType, dieFFK, hlfjFk, dieFTime, n2NDUpper,
+                        n2NDLower, n2FYUpper, n2FYLower, n2CQTime, timeInterval, cycleMeasure, airTightness, startCH, endCH, cqTime);
                 n2conf.setDevName(devName);
                 int rs = QTConfService.saveConf(n2conf);
-                if(rs==1){
+                if (rs == 1) {
                     log.info("保存设置信息成功");
                 }
             }
@@ -152,7 +154,11 @@ public class AnalysisServiceImpl implements AnalysisService {
             int rs = n2Service.saveN2(n2);
             if (rs == 1) {
                 Dg4AnalysisN2 dg4AnalysisN2 = Dg4AnalysisN2.newInstance();
-                dg4AnalysisN2.analysisN2Info(n2, devName, depot);
+                JSONObject jo = dg4AnalysisN2.analysisN2Info(n2, devName, depot);
+                N2VO n2VO = (N2VO) jo.get("气调信息");
+                int clStatus = n2VO.getCLStatus();
+                int r = depotService.updateQTStatusById(clStatus,depot.getId());
+
             }
         }
         if (msg.startsWith("AAB0") || msg.startsWith("AAB1")) {
@@ -174,7 +180,7 @@ public class AnalysisServiceImpl implements AnalysisService {
                 double avgTemp = j.getDouble("avgTemp");
                 double innH = j.getDouble("innerH");
                 double innT = j.getDouble("InnerTemp");
-                int r = depotService.updateTempInfoById(maxTemp, minTemp, avgTemp,innH,innT, id);
+                int r = depotService.updateTempInfoById(maxTemp, minTemp, avgTemp, innH, innT, id);
                 if (r != 1) {
                     throw new ISqlException("更新失败");
                 }

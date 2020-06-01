@@ -34,6 +34,11 @@ public class Dg4AnalysisN2 {
     private Dg4AnalysisN2() {
     }
 
+//    public static void main(String[] args) {
+//        String str = "AA 55 E4 03 01 01 00 00 FF FF FF FF FF FF FF FF FF FF FF FF 00 00 00 C8 FF FF FF FF 05 00 00 00 00 00 01 00 00 FF FF FF FF 00 01 0A FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 0A 00 00 00 00 00 00 00 00 00 00 01 00 02 64 53 EF EF ".replace(" ","");
+//    System.err.println(str);
+//    }
+
     private static final Dg4AnalysisN2 Dg4AnalysisN2 = new Dg4AnalysisN2();
 
     public static Dg4AnalysisN2 newInstance() {
@@ -151,6 +156,7 @@ public class Dg4AnalysisN2 {
             n2VO.setValveStatus(parseStatus(valveStatus, valveNum));//阀门状态
             n2VO.setFanNum(fanNum); //风机数量
             n2VO.setFanStatus(parseStatus(fanStatus, fanNum));//风机状态
+
             n2VO.setCLStatus(setStatus(status));//测气状态
 
             n2VO.setRealTimeO2(parseCC(realTimeO2) / 10);//氧气浓度

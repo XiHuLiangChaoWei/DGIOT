@@ -30,4 +30,6 @@ public interface DepotMapper {
                        @Param("avgTemp") double avgTemp,
                        @Param("innH") double innH,
                        @Param("innT") double innT);
+
+    int upQTStatusById(int id, int clStatus);
 }
