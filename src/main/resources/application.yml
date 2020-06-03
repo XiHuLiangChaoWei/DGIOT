@@ -30,6 +30,7 @@ spring:
       static-path-pattern: /static/**
     check-template-location: true
 
+
   thymeleaf:
     cache: false
 
@@ -44,6 +45,10 @@ spring:
     multipart:
       max-file-size: -1
       max-request-size: -1
+  mvc:
+    static-path-pattern: /app/**
+  resources:
+    static-locations: file:d://dgcc/
 
 
 Mybatis:

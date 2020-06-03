@@ -57,42 +57,42 @@ public class AppDateController extends BaseController {
     AppVersionService appVersionService;
 
 
-    @RequestMapping("DGCC.apk")
-    @ResponseBody
-    public void download(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws UnsupportedEncodingException {
-        String downloadFilePath = "D:/dgcc";//被下载的文件在服务器中的路径,
-        String fileName = "DGCC.apk";//被下载文件的名称
-        File file = new File(downloadFilePath + "/" + fileName);
-        if (file.exists()) {
-            httpServletResponse.setContentType("application/vnd.ms-excel;charset=UTF-8");
-            httpServletResponse.setCharacterEncoding("UTF-8");
-            httpServletResponse.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(fileName, "UTF-8"));
-            byte[] buffer = new byte[1024];
-            FileInputStream fis = null;
-            BufferedInputStream bis = null;
-            OutputStream os = null;
-            try {
-                os = httpServletResponse.getOutputStream();
-                fis = new FileInputStream(file);
-                bis = new BufferedInputStream(fis);
-                int i = bis.read(buffer);
-                while (i != -1) {
-                    os.write(buffer);
-                    i = bis.read(buffer);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                bis.close();
-                fis.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-    }
+//    @RequestMapping("DGCC.apk")
+//    @ResponseBody
+//    public File download(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws UnsupportedEncodingException {
+//        String downloadFilePath = "D:/dgcc";//被下载的文件在服务器中的路径,
+//        String fileName = "DGCC.apk";//被下载文件的名称
+//        File file = new File(downloadFilePath + "/" + fileName);
+//        if (file.exists()) {
+////            httpServletResponse.setContentType("application/vnd.ms-excel;charset=UTF-8");
+////            httpServletResponse.setCharacterEncoding("UTF-8");
+////            httpServletResponse.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(fileName, "UTF-8"));
+////            byte[] buffer = new byte[1024];
+////            FileInputStream fis = null;
+////            BufferedInputStream bis = null;
+////            OutputStream os = null;
+////            try {
+////                os = httpServletResponse.getOutputStream();
+////                fis = new FileInputStream(file);
+////                bis = new BufferedInputStream(fis);
+////                int i = bis.read(buffer);
+////                while (i != -1) {
+////                    os.write(buffer);
+////                    i = bis.read(buffer);
+////                }
+////            } catch (Exception e) {
+////                e.printStackTrace();
+////            }
+////            try {
+////                bis.close();
+////                fis.close();
+////            } catch (IOException e) {
+////                e.printStackTrace();
+////            }
+//            return file;
+//        }
+//        return null;
+//    }
 
 
     @RequestMapping("getAppVersion")
