@@ -77,7 +77,6 @@ public class AnalysisServiceImpl implements AnalysisService {
         log.info("解析开始~~~~~~~~~~~~~~~~~~~~~~~~");
         byte[] bytes = amqpMessage.getBody();
         String msg = bytesToHexString(bytes).toUpperCase();
-        ;
         String topic = amqpMessage.getTopic();
         String[] topicSplit = topic.split("/");
         String pk = topicSplit[1];

@@ -4,10 +4,7 @@ import cn.zz.dgcc.DGIOT.VO.DownDevInfo;
 import cn.zz.dgcc.DGIOT.aliyun.JavaLinkKitDemo.demo.HelloWorld;
 import cn.zz.dgcc.DGIOT.entity.Device;
 import cn.zz.dgcc.DGIOT.entity.Product;
-import cn.zz.dgcc.DGIOT.service.AnalysisService;
-import cn.zz.dgcc.DGIOT.service.DeviceService;
-import cn.zz.dgcc.DGIOT.service.IoTService;
-import cn.zz.dgcc.DGIOT.service.IotDeviceService;
+import cn.zz.dgcc.DGIOT.service.*;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
 import cn.zz.dgcc.DGIOT.utils.DeviceUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -38,21 +35,25 @@ public class DeviceBindController extends BaseController {
     IotDeviceService iotDeviceService;
     @Autowired
     AnalysisService analysisService;
+    @Autowired
+    FirewareService firewareService;
+
+
+    public void firewareUpdate(AMQPMessage amqpMessage) {
+
+    }
 
     /**
      * 解析消息
      */
     public void parseInfo(AMQPMessage amqpMessage) {
-//        String content = amqpMessage.getContent();
-//        log.info("UpdateMsg="+content);
-//        String topic = amqpMessage.getTopic();
-//        String[] topicSplit = topic.split("/");
-//        String pk = topicSplit[1];
-//        String devName = topicSplit[2];
-
+        if (amqpMessage.getTopic().contains("/user/dev/version/upgrade/request")) {
+            firewareService.analysisInfo(amqpMessage);
+        }
         analysisService.analysisInfo(amqpMessage);
 
     }
+
 
 
     List<Device> getTotalList() {

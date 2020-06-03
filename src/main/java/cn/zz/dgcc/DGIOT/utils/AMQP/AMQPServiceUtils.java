@@ -187,6 +187,7 @@ public class AMQPServiceUtils {
             }else if(topic.contains("/dev/update")){
                 amqpServiceUtils.parseMsg(amqpMessage);
             }
+            amqpServiceUtils.parseMsg(amqpMessage);
             alertMsg(amqpMessage);
 
         } catch (Exception e) {
@@ -194,9 +195,9 @@ public class AMQPServiceUtils {
         }
     }
 
-    private void deviceLogin(AMQPMessage amqpMessage) {
-        deviceBindController.loginDevice(amqpMessage);
-    }
+    private void firewareUpdate(AMQPMessage amqpMessage) { deviceBindController.firewareUpdate(amqpMessage); }
+
+    private void deviceLogin(AMQPMessage amqpMessage) { deviceBindController.loginDevice(amqpMessage); }
 
     private void registerDevice(AMQPMessage amqpMessage) {
         deviceBindController.registerDevice(amqpMessage);

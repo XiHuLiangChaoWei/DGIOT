@@ -14,6 +14,7 @@ spring:
   application:
     name: dgiot
 
+
   freemarker:
     # 设置模板后缀名
     suffix: .ftl
@@ -39,6 +40,10 @@ spring:
     url: jdbc:mysql://139.224.82.154:3306/dgiot?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT
     username: dgcc
     password: admin
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
 
 
 Mybatis:

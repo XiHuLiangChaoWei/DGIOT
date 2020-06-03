@@ -20,6 +20,9 @@
         <result column="type" property="type"/>
         <result column="bus_type" property="busType"/>
         <result column="cc_id" property="ccId"/>
+        <result column="dev_ver" property="devVersion"/>
+        <result column="dtu_ver" property="dtuVersion"/>
+
     </resultMap>
 
     <select id="selectAll" resultMap="DeviceResultMap">
@@ -115,7 +118,7 @@
             is_used = 1,Dev_Id =#{DevId},
             Dtu_id=#{DtuId},devNote=#{devNote},
             devBH=#{devBH},devZH=#{devZH},
-            bus_type=#{busType},cc_id=#{ccId}
+            bus_type=#{busType},cc_id=#{ccId},dev_ver=#{devVersion},dtu_ver =#{dtuVersion}
         WHERE
             device_secret = #{deviceSecret}
     </update>
@@ -127,12 +130,13 @@
             is_used = 1,Dev_Id =#{DevId},
             Dtu_id=#{DtuId},devNote=#{devNote},
             devBH=#{devBH},devZH=#{devZH},
-            bus_type=#{busType}
+            bus_type=#{busType},cc_id=#{ccId},dev_ver=#{devVersion},dtu_ver =#{dtuVersion}
         WHERE
             devNote=#{devNote} AND devBH=#{devBH} AND devZH=#{devZH} AND bus_type=#{busType} AND type = #{type}
     </update>
 
-    <select id="selectCountDevByDevInfoWWithoutDevAndDtu" resultType="java.lang.Integer" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+    <select id="selectCountDevByDevInfoWWithoutDevAndDtu" resultType="java.lang.Integer"
+            parameterType="cn.zz.dgcc.DGIOT.entity.Device">
         SELECT
             count(*)
         FROM

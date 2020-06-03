@@ -26,13 +26,63 @@ public class Device {
     String busType;
     String UserId;
     String ccId;
+    String devVersion;
+    String dtuVersion;
 
-    public String getCcId() {
-        return ccId;
+    @Override
+    public String toString() {
+        return "Device{" +
+                "productName='" + productName + '\'' +
+                ", productKey='" + productKey + '\'' +
+                ", deviceName='" + deviceName + '\'' +
+                ", deviceStatus='" + deviceStatus + '\'' +
+                ", deviceSecret='" + deviceSecret + '\'' +
+                ", deviceNickName='" + deviceNickName + '\'' +
+                ", deviceIpAddress='" + deviceIpAddress + '\'' +
+                ", isUsed=" + isUsed +
+                ", DevId='" + DevId + '\'' +
+                ", DtuId='" + DtuId + '\'' +
+                ", devNote='" + devNote + '\'' +
+                ", devBH='" + devBH + '\'' +
+                ", devZH='" + devZH + '\'' +
+                ", type=" + type +
+                ", busType='" + busType + '\'' +
+                ", UserId='" + UserId + '\'' +
+                ", ccId='" + ccId + '\'' +
+                ", devVersion='" + devVersion + '\'' +
+                ", dtuVersion='" + dtuVersion + '\'' +
+                '}';
     }
 
-    public void setCcId(String ccId) {
-        this.ccId = ccId;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Device device = (Device) o;
+        return isUsed == device.isUsed &&
+                type == device.type &&
+                Objects.equals(productName, device.productName) &&
+                Objects.equals(productKey, device.productKey) &&
+                Objects.equals(deviceName, device.deviceName) &&
+                Objects.equals(deviceStatus, device.deviceStatus) &&
+                Objects.equals(deviceSecret, device.deviceSecret) &&
+                Objects.equals(deviceNickName, device.deviceNickName) &&
+                Objects.equals(deviceIpAddress, device.deviceIpAddress) &&
+                Objects.equals(DevId, device.DevId) &&
+                Objects.equals(DtuId, device.DtuId) &&
+                Objects.equals(devNote, device.devNote) &&
+                Objects.equals(devBH, device.devBH) &&
+                Objects.equals(devZH, device.devZH) &&
+                Objects.equals(busType, device.busType) &&
+                Objects.equals(UserId, device.UserId) &&
+                Objects.equals(ccId, device.ccId) &&
+                Objects.equals(devVersion, device.devVersion) &&
+                Objects.equals(dtuVersion, device.dtuVersion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productName, productKey, deviceName, deviceStatus, deviceSecret, deviceNickName, deviceIpAddress, isUsed, DevId, DtuId, devNote, devBH, devZH, type, busType, UserId, ccId, devVersion, dtuVersion);
     }
 
     public String getProductName() {
@@ -50,7 +100,6 @@ public class Device {
     public void setProductKey(String productKey) {
         this.productKey = productKey;
     }
-
 
     public String getDeviceName() {
         return deviceName;
@@ -152,8 +201,8 @@ public class Device {
         return busType;
     }
 
-    public void setBusType(String butType) {
-        this.busType = butType;
+    public void setBusType(String busType) {
+        this.busType = busType;
     }
 
     public String getUserId() {
@@ -164,55 +213,27 @@ public class Device {
         UserId = userId;
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-                "productName='" + productName + '\'' +
-                ", productKey='" + productKey + '\'' +
-                ", deviceName='" + deviceName + '\'' +
-                ", deviceStatus='" + deviceStatus + '\'' +
-                ", deviceSecret='" + deviceSecret + '\'' +
-                ", deviceNickName='" + deviceNickName + '\'' +
-                ", deviceIpAddress='" + deviceIpAddress + '\'' +
-                ", isUsed=" + isUsed +
-                ", DevId='" + DevId + '\'' +
-                ", DtuId='" + DtuId + '\'' +
-                ", devNote='" + devNote + '\'' +
-                ", devBH='" + devBH + '\'' +
-                ", devZH='" + devZH + '\'' +
-                ", type=" + type +
-                ", busType='" + busType + '\'' +
-                ", UserId='" + UserId + '\'' +
-                ", ccId='" + ccId + '\'' +
-                '}';
+    public String getCcId() {
+        return ccId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Device device = (Device) o;
-        return isUsed == device.isUsed &&
-                type == device.type &&
-                Objects.equals(productName, device.productName) &&
-                Objects.equals(productKey, device.productKey) &&
-                Objects.equals(deviceName, device.deviceName) &&
-                Objects.equals(deviceStatus, device.deviceStatus) &&
-                Objects.equals(deviceSecret, device.deviceSecret) &&
-                Objects.equals(deviceNickName, device.deviceNickName) &&
-                Objects.equals(deviceIpAddress, device.deviceIpAddress) &&
-                Objects.equals(DevId, device.DevId) &&
-                Objects.equals(DtuId, device.DtuId) &&
-                Objects.equals(devNote, device.devNote) &&
-                Objects.equals(devBH, device.devBH) &&
-                Objects.equals(devZH, device.devZH) &&
-                Objects.equals(busType, device.busType) &&
-                Objects.equals(UserId, device.UserId) &&
-                Objects.equals(ccId, device.ccId);
+    public void setCcId(String ccId) {
+        this.ccId = ccId;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(productName, productKey, deviceName, deviceStatus, deviceSecret, deviceNickName, deviceIpAddress, isUsed, DevId, DtuId, devNote, devBH, devZH, type, busType, UserId, ccId);
+    public String getDevVersion() {
+        return devVersion;
+    }
+
+    public void setDevVersion(String devVersion) {
+        this.devVersion = devVersion;
+    }
+
+    public String getDtuVersion() {
+        return dtuVersion;
+    }
+
+    public void setDtuVersion(String dtuVersion) {
+        this.dtuVersion = dtuVersion;
     }
 }

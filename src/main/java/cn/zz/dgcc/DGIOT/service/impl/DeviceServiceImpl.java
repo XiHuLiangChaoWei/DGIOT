@@ -161,7 +161,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     int isExistInYun(Device device) {
         int rs =
-//                deviceMapper.selectCountDevByDevAndDtu(device.getDevId(), device.getDtuId());
+                //deviceMapper.selectCountDevByDevAndDtu(device.getDevId(), device.getDtuId());
                 //修改 通过分机5元作为身份验证
                 deviceMapper.selectCountDevByDevInfoWWithoutDevAndDtu(device);
         if (rs == 0) {
@@ -170,7 +170,7 @@ public class DeviceServiceImpl implements DeviceService {
             return 0;
         } else if (rs == 1) {
             Device rs1 =
-//                    deviceMapper.selectDevByDevAndDtu(device.getDevId(), device.getDtuId());
+                //deviceMapper.selectDevByDevAndDtu(device.getDevId(), device.getDtuId());
                     deviceMapper.selectDevByDevInfo(device);
             //云端存在该设备，判断存储的dev和dtu信息是否相符
             log.info("查询云端设备信息：" + rs1);

@@ -30,6 +30,8 @@ public class DeviceUtil {
         int type = content.getInteger("type");
         String busType = content.getString("busType");
         String ccId = content.getString("CCID");
+        String devVersion = content.getString("ver");
+        String dtuVersion = content.getString("Dtuver");
         if (devNote.equals(null)) {
             devNote = "";
         }
