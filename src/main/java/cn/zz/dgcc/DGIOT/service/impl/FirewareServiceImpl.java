@@ -67,6 +67,7 @@ public class FirewareServiceImpl implements FirewareService {
             JSONObject jo1 = JSON.parseObject(content);
             String reqVer = jo1.getString("Req_Ver");
             int reqNum = jo1.getInteger("Req_Num");
+            String nowVer = jo1.getString("Now_Ver");
 
             Fireware fireware = firewareMapper.selectFirewareVersion(reqVer);
             String url = fireware.getPath();
@@ -83,24 +84,27 @@ public class FirewareServiceImpl implements FirewareService {
                         JSONObject jo = ja.getJSONObject(i);
                         byte[] bytes = jo.getBytes("fileData");
                         targetByte = bytes;
+                        total = jo.getInteger("sum");
                     }
-
-
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            String hexStr = bytesToHexString(targetByte);
+            String wholeCheckSum = Integer.toHexString(total).toUpperCase();
+            wholeCheckSum = ContextUtil.FormatHEXString(wholeCheckSum, 4);
+
+            String hexStr = bytesToHexString(targetByte).toUpperCase();
             //拼装下发topic
-            String fullTopic = "/" + pk + "/" + devName + "/user/dev/version/upgrade";
+            String fullTopic = "/" + pk + "/" + devName + "/user/dev/version/upgrade/response";
             JSONObject jo = new JSONObject();
-            jo.put("Res_Ver",reqVer);
-            jo.put("Res_ Num",reqNum);
+            jo.put("Res_Ver", reqVer);
+            jo.put("Res_Num", reqNum);
+            jo.put("Now_Ver",nowVer);
             String targetStr = jo.toJSONString();
             String contentStart = ContextUtil.stringToHexString(targetStr);
             String contentEnd = hexStr;
 
-            JSONObject rs =ioTService.pub(fullTopic,contentStart+contentEnd,pk,"1");
+            JSONObject rs = ioTService.pub(fullTopic, contentStart + wholeCheckSum + contentEnd, pk, "1");
         }
     }
 

@@ -412,7 +412,7 @@ public class IotServiceImpl implements IoTService {
      * @param topicFullName
      * @param messageContent
      * @param productKey
-     * @param qos
+     * @param qos   0-ASCII发送    1-HEX发送
      * @return
      */
     @Override

@@ -14,49 +14,6 @@ import java.util.*;
  * ->
  */
 public class FileUtils {
-//    public static void main(String[] args) throws IOException {
-//        String url = "F:/GIT/A101.bin";
-//        File file = getFile(url);
-//        Map map = getFileSplit(file);
-//        System.out.println("通过Map.entrySet使用iterator遍历key和value：");
-//        Iterator<Map.Entry<Integer, byte[]>> it = map.entrySet().iterator();
-//        while (it.hasNext()) {
-//            Map.Entry<Integer, byte[]> entry = it.next();
-//            System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
-//        }
-//    }
-
-//    public static void main(String[] args) throws IOException {
-//        String url = "F:/GIT/A101.bin";
-//        File file = getFile(url);
-//        JSONArray ja = getFileSplit(file);
-//        for (int i = 0; i < ja.size(); i++) {
-//            JSONObject jo = ja.getJSONObject(i);
-//            int index = jo.getInteger("index");
-//            int sum = jo.getInteger("sum");
-//            byte[] bytes = jo.getBytes("fileData");
-//            System.out.println("index = " + index);
-//            System.out.println("sum = " + sum);
-//            System.out.println("bytes = " + bytes);
-//        }
-//        byte[] a = new byte[]{11, 11, 22, 33, 44};
-//        byte[] c = fixWith0(a);
-//        System.out.println(new String(c));
-//        for (byte d:c
-//             ) {
-//            byteToInt(d);
-//        }
-//        String str = "AA554499223331FF";
-//        byte[] mid = null;
-//        for (int i = 0; i < str.length() / 2; i++) {
-//            System.out.println("---------------------------------------------------------");
-//            System.out.println(str.substring(i * 2, i * 2 + 2));
-//            System.out.println(Integer.parseInt(str.substring(i * 2, i * 2 + 2), 16));
-//            System.out.println((byte) (Integer.parseInt(str.substring(i * 2, i * 2 + 2), 16)));
-//        }
-//        System.err.println(byteToInt((byte)-1));
-//    }
-
     public static File getFile(String url) {
         File file = new File(url);
         if (file.exists()) {
@@ -86,12 +43,22 @@ public class FileUtils {
         return sum;
     }
 
+//    public static void main(String[] args) throws IOException {
+//        File file = getFile("D:/update/Fireware/cbe962a3-d7d1-4555-b105-17118ee7b010.bin");
+//        JSONArray jr = getFileSplit(file);
+//        for (int i = 0; i < jr.size(); i++) {
+//            JSONObject jo = jr.getJSONObject(i);
+//            byte[] bytes = jo.getBytes("fileData");
+////            System.out.println(bytes.toString());
+//            System.out.println(jo.toJSONString());
+//            System.out.println(jo.getInteger("sum"));
+//        }
+//    }
 
 
     public static JSONArray getFileSplit(File file) throws IOException {
         JSONArray ja = new JSONArray();
         JSONObject jo;
-        Map<Integer, byte[]> tar = new HashMap<>();
         FileInputStream fis = null;
         //文件大小
         long length = file.length();
@@ -104,7 +71,7 @@ public class FileUtils {
         } catch (FileNotFoundException e) {
         }
         int len = 0;
-        int index = 1;
+        int index = 0;
         fileData = new byte[1024];
         while ((len = fis.read(fileData)) != -1) {
 //            System.err.println(len);
@@ -112,13 +79,20 @@ public class FileUtils {
 //            if(len!=1024){
 //                fixWith0(fileData);
 //            }
-            System.out.println("--------------------------" + index + "---------------------------");
-            int sum = getNum(fileData);
-            tar.put(index, fixWith0(fileData));
+//            System.out.println("--------------------------" + index + "---------------------------");
+
             jo = new JSONObject();
-            jo.put("sum", sum);
+            byte[] r = null;
             jo.put("index", index);
-            jo.put("fileData", fixWith0(fileData));
+            if ((length - index * 1024) < 1024) {
+                r=fixWith0(fileData, (int) (length - index * 1024));
+            } else {
+                r= fixWith0(fileData, 1024);
+            }
+            int sum = getNum(r);
+            jo.put("fileData", r);
+            jo.put("sum", sum);
+            jo.put("length", length);
             ja.add(jo);
             index++;
         }
@@ -127,9 +101,11 @@ public class FileUtils {
         return ja;
     }
 
-    public static byte[] fixWith0(byte[] bytes) {
-        byte[] newA = Arrays.copyOf(bytes, 1024);
-        Arrays.fill(newA, bytes.length, newA.length, (byte) -1);
-        return newA;
+    public static byte[] fixWith0(byte[] bytes, int len) {
+        byte[] newA = Arrays.copyOf(bytes, len);
+        byte[] newB = Arrays.copyOf(newA, 1024);
+        Arrays.fill(newB, len, 1024, (byte) -1);
+//        System.err.println(Arrays.toString(newB));
+        return newB;
     }
 }

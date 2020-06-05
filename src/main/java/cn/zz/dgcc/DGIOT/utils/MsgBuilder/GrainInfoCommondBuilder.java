@@ -83,7 +83,7 @@ public class GrainInfoCommondBuilder extends CommondBuild {
         //cmdData[cmdData.length - 4] = crc16Hex2Bytes[0];
         //cmdData[cmdData.length - 3] = crc16Hex2Bytes[1];
         String crc16Str = BytesUtil.bytesToString(crc16Hex2Bytes);
-        String rCrc16Str = crc16Str.substring(2,4);
+        String rCrc16Str = crc16Str.substring(2, 4);
         //将校验值 拼装到 body中
         message.setBodyContent(message.getBodyContent() + rCrc16Str);
     }

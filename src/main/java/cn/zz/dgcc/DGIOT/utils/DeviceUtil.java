@@ -30,7 +30,7 @@ public class DeviceUtil {
         int type = content.getInteger("type");
         String busType = content.getString("busType");
         String ccId = content.getString("CCID");
-        String devVersion = content.getString("ver");
+        String devVersion = content.getString("DevVer");
         String dtuVersion = content.getString("Dtuver");
         if (devNote.equals(null)) {
             devNote = "";
@@ -57,6 +57,7 @@ public class DeviceUtil {
         device.setType(type);
         device.setBusType(busType);
         device.setCcId(ccId);
+        device.setDevVersion(devVersion);
 //        System.out.println("解析本地设备信息：" + device.toString());
 
         //解析Topic 获取pk和deviceName

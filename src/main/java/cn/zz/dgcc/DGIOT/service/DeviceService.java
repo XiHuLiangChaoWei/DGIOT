@@ -43,4 +43,6 @@ public interface DeviceService {
     Device getN2DevByUser(int userId);
 
     List<Device> getAllDev();
+
+    List<Device> getAllQTDev();
 }

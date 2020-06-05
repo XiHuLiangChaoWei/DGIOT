@@ -77,7 +77,6 @@ public class DeviceBindController extends BaseController {
         boolean logSuccess = deviceService.loginDevice(amqpMessage);
         if (!logSuccess) {
             Device logDevice = DeviceUtil.parseDev(amqpMessage);
-
             String pk = logDevice.getProductKey();
             String deviceName = logDevice.getDeviceName();
             String fullTopic = "/" + pk + "/" + deviceName + "/user/dev/register/response";

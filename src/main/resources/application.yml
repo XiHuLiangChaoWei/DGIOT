@@ -1,7 +1,7 @@
 server:
   port: 80
-
-
+  tomcat:
+    basedir=dgcc/tomcat:
 #jetcache:
 #  statIntervalMinutes: 15
 #  areaInCacheName: false
@@ -13,6 +13,49 @@ server:
 spring:
   application:
     name: dgiot
+
+  profiles:
+    active: dev
+  quartz:
+    #相关属性配置
+    properties:
+      org:
+        quartz:
+          scheduler:
+            # 集群名，区分同一系统的不同实例，若使用集群功能，则每一个实例都要使用相同的名字
+            instanceName: clusteredScheduler
+            # 若是集群下，每个instanceId必须唯一
+            instanceId: AUTO
+
+          threadPool:
+            #一般使用这个便可
+            class: org.quartz.simpl.SimpleThreadPool
+            #线程数量，不会动态增加
+            threadCount: 10
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+          jobStore:
+            #选择JDBC的存储方式
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            useProperties: false
+            dataSource: mysql
+
+          datasource:
+            mysql:
+              driver: com.mysql.cj.jdbc.Driver
+              #基本属性
+              url: jdbc:mysql://139.224.82.154:3306/dgiot?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT
+              username: root
+              password: admin
+    job-store-type: jdbc
+    #是否等待任务执行完毕后，容器才会关闭
+    wait-for-jobs-to-complete-on-shutdown: false
+    #配置的job是否覆盖已经存在的JOB信息
+    overwrite-existing-jobs: false
+    jdbc:
+      initialize-schema:
 
 
   freemarker:
@@ -45,10 +88,10 @@ spring:
     multipart:
       max-file-size: -1
       max-request-size: -1
-  mvc:
-    static-path-pattern: /app/**
-  resources:
-    static-locations: file:d://dgcc/
+#  mvc:
+#    static-path-pattern: /app/**
+#  resources:
+#    static-locations: file:d://dgcc/
 
 
 Mybatis:

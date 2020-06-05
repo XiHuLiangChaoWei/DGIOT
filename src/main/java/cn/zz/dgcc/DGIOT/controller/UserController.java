@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 /**
@@ -20,38 +23,61 @@ import java.util.logging.Logger;
  */
 @RestController
 @RequestMapping("users")
-public class UserController extends BaseController{
+public class UserController extends BaseController {
     private final Logger log = Logger.getLogger(this.getClass().getSimpleName());
     @Autowired
     UserService userService;
+
     @RequestMapping("reg")
     public JsonResult<Void> reg(User user) {
         userService.reg(user);
         return new JsonResult<Void>(success);
     }
 
+    public String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        if (ip == null || ip.length() == 0 || ip.indexOf(":") > -1) {
+            try {
+                ip = InetAddress.getLocalHost().getHostAddress();
+            } catch (UnknownHostException e) {
+                ip = null;
+            }
+        }
+        return ip;
+    }
+
     /**
-     *          /users/login
+     * /users/login
+     *
      * @param username
      * @param password
      * @param session
      * @return
      */
     @RequestMapping("login")
-    public JsonResult<User> login(String username, String password, HttpSession session){
+    public JsonResult<User> login(HttpServletRequest h, String username, String password, HttpSession session) {
         User ok = userService.Login(username, password);
-        log.info("login name="+ok.getUserName());
-        log.info("login id="+ok.getUserId());
+        log.info("login name:" + ok.getUserName()+"==login id:" + ok.getUserId()+"==ip:"+getClientIp(h));
         session.setAttribute("username", ok.getUserName());
         session.setAttribute("userId", ok.getUserId());
-        session.setAttribute("userType",ok.getType());
-        session.setAttribute("company",ok.getCompanyId());
-        return new JsonResult<>(success,ok);
+        session.setAttribute("userType", ok.getType());
+        session.setAttribute("company", ok.getCompanyId());
+        return new JsonResult<>(success, ok);
 
     }
 
     /**
-     *        /user/change_password
+     * /user/change_password
+     *
      * @param session
      * @param password
      * @param exPwd
@@ -59,9 +85,9 @@ public class UserController extends BaseController{
      */
     @RequestMapping("change_password")
     public JsonResult<Void> changePwd(HttpSession session,
-                                      @RequestParam(value="new_password",required = false)String password,
-                                      @RequestParam(value="old_password",required = false)String exPwd){
-        log.info(password+":"+exPwd);
+                                      @RequestParam(value = "new_password", required = false) String password,
+                                      @RequestParam(value = "old_password", required = false) String exPwd) {
+        log.info(password + ":" + exPwd);
         Integer userId = getUserIdFromSession(session);
         String modifiedUser = getUserNameFromSession(session);
         userService.changePwd(userId, password, exPwd);
@@ -70,15 +96,15 @@ public class UserController extends BaseController{
 
 
     @RequestMapping("get_by_id")
-    public JsonResult<User> getById(HttpSession session){
+    public JsonResult<User> getById(HttpSession session) {
         Integer userId = getUserIdFromSession(session);
-        User ok =	userService.getByUid(userId);
+        User ok = userService.getByUid(userId);
         session.setAttribute("userId", ok.getUserId());
-        return new JsonResult<>(success,ok);
+        return new JsonResult<>(success, ok);
     }
 
     @RequestMapping("logout")
-    public JsonResult<Void> logout(HttpSession session){
+    public JsonResult<Void> logout(HttpSession session) {
         session.invalidate();
         return new JsonResult<>(success);
     }

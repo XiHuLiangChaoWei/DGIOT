@@ -245,6 +245,7 @@ public class DeviceServiceImpl implements DeviceService {
             return false;
         }
         log.info("信息匹配成功");
+        deviceMapper.updataDevVersion(logDevice);
         return true;
     }
 
@@ -297,6 +298,11 @@ public class DeviceServiceImpl implements DeviceService {
     public List<Device> getAllDev() {
         List<Device> rs = deviceMapper.selectAll();
         return rs;
+    }
+
+    @Override
+    public List<Device> getAllQTDev() {
+        return deviceMapper.selectAllQT();
     }
 
     public List<Device> getNoUsedDeviceListByType(int type) {

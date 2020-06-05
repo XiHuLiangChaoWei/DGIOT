@@ -4,6 +4,7 @@ import cn.zz.dgcc.DGIOT.entity.QTConfigure;
 import cn.zz.dgcc.DGIOT.entity.*;
 import cn.zz.dgcc.DGIOT.service.*;
 import cn.zz.dgcc.DGIOT.utils.ContextUtil;
+import cn.zz.dgcc.DGIOT.utils.DownOrderUtils;
 import cn.zz.dgcc.DGIOT.utils.JsonResult;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg3AnalysisGrain;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisN2;
@@ -18,10 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.logging.Logger;
@@ -36,7 +34,10 @@ import java.util.logging.Logger;
 @RequestMapping("/app")
 public class AppDateController extends BaseController {
     private final static Logger log = Logger.getLogger(AppDateController.class.getName());
-
+    @Autowired
+    DownOrderUtils downOrderUtils;
+    @Autowired
+    CompanyService companyService;
     @Autowired
     DepotService depotService;
     @Autowired
@@ -56,45 +57,6 @@ public class AppDateController extends BaseController {
     @Autowired
     AppVersionService appVersionService;
 
-
-//    @RequestMapping("DGCC.apk")
-//    @ResponseBody
-//    public File download(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws UnsupportedEncodingException {
-//        String downloadFilePath = "D:/dgcc";//被下载的文件在服务器中的路径,
-//        String fileName = "DGCC.apk";//被下载文件的名称
-//        File file = new File(downloadFilePath + "/" + fileName);
-//        if (file.exists()) {
-////            httpServletResponse.setContentType("application/vnd.ms-excel;charset=UTF-8");
-////            httpServletResponse.setCharacterEncoding("UTF-8");
-////            httpServletResponse.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(fileName, "UTF-8"));
-////            byte[] buffer = new byte[1024];
-////            FileInputStream fis = null;
-////            BufferedInputStream bis = null;
-////            OutputStream os = null;
-////            try {
-////                os = httpServletResponse.getOutputStream();
-////                fis = new FileInputStream(file);
-////                bis = new BufferedInputStream(fis);
-////                int i = bis.read(buffer);
-////                while (i != -1) {
-////                    os.write(buffer);
-////                    i = bis.read(buffer);
-////                }
-////            } catch (Exception e) {
-////                e.printStackTrace();
-////            }
-////            try {
-////                bis.close();
-////                fis.close();
-////            } catch (IOException e) {
-////                e.printStackTrace();
-////            }
-//            return file;
-//        }
-//        return null;
-//    }
-
-
     @RequestMapping("getAppVersion")
     @ResponseBody
     public JsonResult<AppVersion> getVersion() {
@@ -103,16 +65,6 @@ public class AppDateController extends BaseController {
     }
 
 
-    /**
-     * type 1-开关制氮机  2-查询命令
-     *
-     * @param
-     * @return
-     */
-    private String getN2DevR(String type) {
-        N2 rs = n2Service.getNewInfoByDevName2("ZD000001", type);
-        return rs.getContent().toUpperCase();
-    }
 
     @RequestMapping("/t")
     public String t(Model model) {
@@ -132,78 +84,7 @@ public class AppDateController extends BaseController {
         int userId = getUserIdFromSession(h);
         //获取当前用户管理下的制氮机
         Device n2 = deviceService.getN2DevByUser(userId);
-
-        String pk = n2.getProductKey();
-        String devName = n2.getDeviceName();
-        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        //新建进程执行制氮机开操作
-        if ("on".equals(controller)) {
-            Thread t = new Thread(() -> {
-                String[] on = N2DevCommondBuilder.getN2DevOn();
-                JSONObject json = ioTService.pub(topicFullName, on[0].replace(" ", ""), pk, "1");
-                Order o = new Order(userId, 0, json.getString("MessageId"), 5, on[0],
-                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-                System.out.println("OOOO----" + o);
-                int r = orderService.save(o);
-                if (r == 1) {
-                    log.info("保存命令成功");
-                }
-                try {
-                    Thread.sleep(1200);
-                } catch (InterruptedException e) {
-
-                }
-                json = ioTService.pub(topicFullName, on[1].replace(" ", ""), pk, "1");
-                o = new Order(userId, 0, json.getString("MessageId"), 5, on[1],
-                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-                System.out.println("1111----" + o);
-                r = orderService.save(o);
-                if (r == 1) {
-                    log.info("保存命令成功");
-                }
-
-            });
-            t.start();
-//            if ("030600230001B822".equals(getN2DevR("1"))) {
-//                t.interrupt();
-//            }
-//            if ("03060023000079E2".equals(getN2DevR("1"))) {
-//                return new JsonResult<>(success, "下发成功");
-//            }
-
-        } else if ("off".equals(controller)) {
-            Thread t = new Thread(() -> {
-                String[] off = N2DevCommondBuilder.getN2DevOff();
-                JSONObject json = ioTService.pub(topicFullName, off[0], pk, "1");
-                Order o = new Order(userId, 0, json.getString("MessageId"), 5, off[0],
-                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-                System.out.println("OOOO----" + o);
-                int r = orderService.save(o);
-                if (r == 1) {
-                    log.info("保存命令成功");
-                }
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-
-                }
-                json = ioTService.pub(topicFullName, off[1], pk, "1");
-                o = new Order(userId, 0, json.getString("MessageId"), 5, off[1],
-                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-                System.out.println("1111----" + o);
-                r = orderService.save(o);
-                if (r == 1) {
-                    log.info("保存命令成功");
-                }
-            });
-            t.start();
-//            if ("03060024000109E3".equals(getN2DevR("1"))) {
-//                t.interrupt();
-//            }
-//            if ("030600240000C823".equals(getN2DevR("1"))) {
-//                return new JsonResult<>(success, "下发成功");
-//            }
-        }
+        downOrderUtils.N2DevControler(controller, n2, userId);
         return new JsonResult<>(success, "下发成功");
     }
 
@@ -214,37 +95,13 @@ public class AppDateController extends BaseController {
      */
     @RequestMapping("/getN2DevStatus")
     @ResponseBody
-    public JsonResult<String> N2DevStatus(HttpSession h) {
+    public JsonResult<Integer> N2DevStatus(HttpSession h) {
         //从session获取userId
         int userId = getUserIdFromSession(h);
         //获取当前用户管理下的制氮机
         Device n2 = deviceService.getN2DevByUser(userId);
-        String pk = n2.getProductKey();
-        String devName = n2.getDeviceName();
-        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        //查询制氮机运行装填
-        String getStatus = N2DevCommondBuilder.getN2DevStatus();
-        JSONObject json = ioTService.pub(topicFullName, getStatus, pk, "1");
-        Order o = new Order(userId, 0, json.getString("MessageId"), 5, getStatus,
-                ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-        System.out.println("OOOO----" + o);
-        int r = orderService.save(o);
-        if (r == 1) {
-            log.info("保存命令成功");
-        }
-        try {
-            Thread.sleep(1200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        String repeat = getN2DevR("2");
-        if ("0303020008C042".equals(repeat)) {
-            return new JsonResult<>(success, "设备正在运行！");
-        } else if ("0303020009C042".equals(repeat)) {
-            return new JsonResult<>(success, "设备已关机！");
-        }
-
-        return new JsonResult<>(success, "···");
+        JsonResult<Integer> jr = downOrderUtils.getN2DevStatus(n2, userId);
+        return jr;
     }
 
     /**
@@ -261,55 +118,8 @@ public class AppDateController extends BaseController {
         int userId = getUserIdFromSession(h);
         //获取当前用户管理下的制氮机
         Device n2 = deviceService.getN2DevByUser(userId);
-
-        String pk = n2.getProductKey();
-        String devName = n2.getDeviceName();
-        //拼装下发命令所需参数
-        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        String msg = new String();
-        String msgFix = new String();
-        switch (choose) {
-            case 1:
-                msg = N2DevCommondBuilder.getN2Purity();
-                msgFix = "%";
-                break;
-            case 2:
-                msg = N2DevCommondBuilder.getN2Flow();
-                msgFix = "m³/h";
-                break;
-            case 3:
-                msg = N2DevCommondBuilder.getN2Pressure();
-                msgFix = "bar";
-                break;
-            case 4:
-                msg = N2DevCommondBuilder.getN2Temp();
-                msgFix = "摄氏度";
-                break;
-        }
-
-        JSONObject json = ioTService.pub(topicFullName, msg, pk, "1");
-        Order o = new Order(userId, 0, json.getString("MessageId"), 5, msg,
-                ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-        System.out.println("OOOO----" + o);
-        int r = orderService.save(o);
-        if (r == 1) {
-            log.info("保存命令成功");
-        }
-        //获取最新存入数据库的制氮机返回 休眠0.5s
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        String repeat = getN2DevR("2");
-        if (repeat.startsWith("030304")) {
-            JSONObject jsonObject = new JSONObject();
-            Float rs = BytesUtil.Hex2Float(repeat);
-            jsonObject.put(String.valueOf(choose), rs + msgFix);
-
-            return new JsonResult<>(success, jsonObject);
-        }
-        return new JsonResult<>(success, "");
+        JsonResult<JSONObject> jr = downOrderUtils.getN2DevInfo(n2, userId, choose);
+        return jr;
     }
 
 
@@ -328,9 +138,9 @@ public class AppDateController extends BaseController {
         int companyId = user.getCompanyId();
         //获取仓库列表
         JSONArray jsonArray = new JSONArray();
-        List<Depot> depots = depotService.getDepotList();
-
-        depots = depotService.getDepotListOnCompanyId(companyId);
+        List<Depot> depots = depotService.getDepotListOnCompanyId(companyId);
+        Company c = companyService.getC(companyId);
+        String companyName = c.getName();
 
         for (Depot d : depots
         ) {
@@ -340,9 +150,29 @@ public class AppDateController extends BaseController {
             List<String> devNames = depotService.getDevNamesByDepotId(depotId);
             js.put("depot", d);
             js.put("devInfo", devNames);
+            js.put("companyName",companyName);
             jsonArray.add(js);
         }
         return new JsonResult<>(success, jsonArray);
+    }
+
+
+    /**
+     * 根据depot 下发查询粮情命令
+     *
+     * @param depotId
+     * @param session
+     * @return
+     */
+    @RequestMapping("/getNewGrain.do")
+    @ResponseBody
+    public JsonResult<String> sendNewGrainInfo(int depotId, HttpSession session) {
+        log.info("下发查询Grain命令");
+        String devName = depotService.getDevNameByDepotIdAndType(depotId, 3);
+        Device rs = deviceService.getDevByDevName(devName);
+        JsonResult<String> jr =
+                downOrderUtils.deployGrainOrder(getUserIdFromSession(session), rs);
+        return jr;
     }
 
 
@@ -376,34 +206,14 @@ public class AppDateController extends BaseController {
         }
 
         //解析气调信息后，获取新的粮情信息
+        log.info("下发查询粮情命令···");
         Device rs = deviceService.getDevByDevName(devName);
         log.info("IndexController=" + rs);
         if (rs.getDtuId() == null) {
             return new JsonResult<>(success, js, "grainInfo");
         }
-        String devBH = rs.getDevBH();
-        String devZH = rs.getDevZH();
-
-        GrainInfoCommondBuilder grainInfoCommondBuilder = GrainInfoCommondBuilder.getGrainInfoCommondBuilder();
-        grainInfoCommondBuilder.setDevBH(devBH);
-        grainInfoCommondBuilder.setDevZH(devZH);
-        BuildMessage grainMsg = grainInfoCommondBuilder.build();
-
-
-        String pk = rs.getProductKey();
-        devName = rs.getDeviceName();
-        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        log.info(grainMsg.toString() + "-----" + topicFullName);
-        JSONObject json = ioTService.pub(topicFullName, grainMsg.toString(), pk, "1");
-        log.info(json.toJSONString());
-        Order o = new Order(getUserIdFromSession(session), 0, json.getString("MessageId"), 3, grainMsg.toString(),
-                ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
-        System.out.println("OOOO----" + o);
-        int r = orderService.save(o);
-        if (r == 1) {
-            log.info("保存命令成功");
-        }
-        log.info("APPController = " + js);
+        downOrderUtils.deployGrainOrder(getUserIdFromSession(session), rs);
+        log.info("下发查询粮情成功···");
         return new JsonResult<>(success, js, "grainInfo");
     }
 
@@ -417,7 +227,6 @@ public class AppDateController extends BaseController {
     @ResponseBody
     @RequestMapping("/{depotId}/N2")
     public JsonResult<JSONObject> getGasInfo(@PathVariable int depotId, HttpSession session) {
-        JSONObject js = new JSONObject();
         //通过depotId获取仓库信息
         Depot depot = depotService.getDepotByDepotId(depotId);
         //通过depotId获取对应的气调设备信息devName
@@ -427,84 +236,35 @@ public class AppDateController extends BaseController {
         String content = n2.getContent();
         Dg4AnalysisN2 dg4AnalysisN2 = Dg4AnalysisN2.newInstance();
         //将气调信息解析
-        js = dg4AnalysisN2.analysisN2Info(n2, devName, depot);
-
-        log.info("下发查询N2命令");
+        JSONObject js = dg4AnalysisN2.analysisN2Info(n2, devName, depot);
+        //下发查询N2命令
+        log.info("下发查询N2命令···");
         Device rs = deviceService.getDevByDevName(devName);
         if (rs.getDtuId() == null) {
             return new JsonResult<>(success, js, "N2Info");
         }
-        log.info("IndexController=" + rs);
-        GasInfoCommondBuilder gasInfoCommondBuilder = GasInfoCommondBuilder.getInstance();
-        String devBH = rs.getDevBH();
-        String devZH = rs.getDevZH();
-        gasInfoCommondBuilder.setDevBH(devBH);
-        gasInfoCommondBuilder.setDevZH(devZH);
-        BuildMessage gasMsg = gasInfoCommondBuilder.build();
-        String pk = rs.getProductKey();
-        devName = rs.getDeviceName();
-        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        log.info(gasMsg.toString() + "-----" + topicFullName);
-        JSONObject json = ioTService.pub(topicFullName, gasMsg.toString(), pk, "1");
-        log.info(json.toJSONString());
-        Order o = new Order(getUserIdFromSession(session), 0, json.getString("MessageId"), 2, gasMsg.toString(),
-                ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
-        System.out.println("OOOO----" + o);
-        int r = orderService.save(o);
-        if (r == 1) {
-            log.info("保存命令成功");
-        }
-
+        JsonResult<String> jr = downOrderUtils.deployN2Order(getUserIdFromSession(session), rs);
+        log.info("下发查询N2成功···");
         return new JsonResult<>(success, js, "N2Info");
     }
 
     /**
-     * 根据devName 下发查询粮情命令
+     * 通过depotId exp:  下发查询气调状态命令
      *
      * @param depotId
      * @param session
      * @return
      */
-    @RequestMapping("/getNewGrain.do")
+    @RequestMapping("/getNewN2Info.do")
     @ResponseBody
-    public JsonResult<String> sendNewGrainInfo(int depotId, HttpSession session) {
-        log.info("下发查询Grain命令");
-        String devName = depotService.getDevNameByDepotIdAndType(depotId, 3);
+    public JsonResult<String> sendNewN2Info(int depotId, HttpSession session) {
+        log.info("下发查询N2命令");
+        String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
         Device rs = deviceService.getDevByDevName(devName);
-        //根据编号站号选择设备
-        //根据设备编号，站号，和设备类型选择
-//        rs = deviceService.getDevByBHAndZH(devBH, devZH, 3);
-
-        log.info("IndexController=" + rs);
-        String devBH = rs.getDevBH();
-        String devZH = rs.getDevZH();
-
-        GrainInfoCommondBuilder grainInfoCommondBuilder = GrainInfoCommondBuilder.getGrainInfoCommondBuilder();
-        grainInfoCommondBuilder.setDevBH(devBH);
-        grainInfoCommondBuilder.setDevZH(devZH);
-        BuildMessage grainMsg = grainInfoCommondBuilder.build();
-
-
-        String pk = rs.getProductKey();
-        devName = rs.getDeviceName();
-        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        log.info(grainMsg.toString() + "-----" + topicFullName);
-        JSONObject json = ioTService.pub(topicFullName, grainMsg.toString(), pk, "1");
-        log.info(json.toJSONString());
-        Order o = new Order(getUserIdFromSession(session), 0, json.getString("MessageId"), 3, grainMsg.toString(),
-                ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
-        System.out.println("OOOO----" + o);
-        int r = orderService.save(o);
-        if (r == 1) {
-            log.info("保存命令成功");
-        }
-        if (json.getString("Success").equals("true")) {
-            return new JsonResult<>(success, "sendMsg = " + json.getString("Success"));
-        }
-
-
-        return new JsonResult<>(success, "");
+        JsonResult<String> jr = downOrderUtils.deployN2Order(getUserIdFromSession(session), rs);
+        return jr;
     }
+
 
     private final static String[] hexArray = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 
@@ -532,7 +292,6 @@ public class AppDateController extends BaseController {
     public JsonResult<String> sendTestOrder(int depotId, String devAddress, int devNum, String action, HttpSession session) {
         log.info("下发测控命令");
         action += action;
-
         String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
         Device rs = deviceService.getDevByDevName(devName);
         //根据编号站号选择设备
@@ -567,56 +326,9 @@ public class AppDateController extends BaseController {
             log.info("保存命令成功");
         }
 
-
         return new JsonResult<>(success, "");
     }
 
-
-    /**
-     * 通过depotId exp:  下发查询气调状态命令
-     *
-     * @param depotId
-     * @param session
-     * @return
-     */
-    @RequestMapping("/getNewN2Info.do")
-    @ResponseBody
-    public JsonResult<String> sendNewN2Info(int depotId, HttpSession session) {
-        log.info("下发查询N2命令");
-        String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
-        Device rs = deviceService.getDevByDevName(devName);
-
-        //根据编号站号选择设备
-        //根据设备编号，站号，和设备类型选择
-//        rs = deviceService.getDevByBHAndZH(devBH, devZH, 2);
-
-        log.info("IndexController=" + rs);
-        GasInfoCommondBuilder gasInfoCommondBuilder = GasInfoCommondBuilder.getInstance();
-        String devBH = rs.getDevBH();
-        String devZH = rs.getDevZH();
-        gasInfoCommondBuilder.setDevBH(devBH);
-        gasInfoCommondBuilder.setDevZH(devZH);
-        BuildMessage gasMsg = gasInfoCommondBuilder.build();
-        String pk = rs.getProductKey();
-        devName = rs.getDeviceName();
-        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        log.info(gasMsg.toString() + "-----" + topicFullName);
-        JSONObject json = ioTService.pub(topicFullName, gasMsg.toString(), pk, "1");
-        log.info(json.toJSONString());
-        Order o = new Order(getUserIdFromSession(session), 0, json.getString("MessageId"), 2, gasMsg.toString(),
-                ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
-        System.out.println("OOOO----" + o);
-        int r = orderService.save(o);
-        if (r == 1) {
-            log.info("保存命令成功");
-        }
-        if (json.getString("Success").equals("true")) {
-            return new JsonResult<>(success, "sendMsg = " + json.getString("Success"));
-        }
-
-
-        return new JsonResult<>(success, "");
-    }
 
     /**
      * 下发气调模式
@@ -681,31 +393,7 @@ public class AppDateController extends BaseController {
     @RequestMapping("/JsonTime.do")
     @ResponseBody
     public JsonResult<String> setTime(int depotId, HttpSession h) {
-        ConfCommondBuilder confCommondBuilder = ConfCommondBuilder.getInstance();
-        String commond;
-        String devId;
-        String pk;
-        String topicFullName;
-        List<Device> allDev = deviceService.getAllDev();
-        String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
-        for (Device d : allDev
-        ) {
-            devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
-            devId = d.getDevId();
-            commond = confCommondBuilder.setTimes(devId);
-            pk = d.getProductKey();
-            topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-            log.info(commond + "-----" + topicFullName);
-            JSONObject json = ioTService.pub(topicFullName, commond, pk, null);
-            log.info(json.toJSONString());
-            Order o = new Order(getUserIdFromSession(h), 0, json.getString("MessageId"), 2, commond,
-                    ContextUtil.getTimeYMDHMM(null), d.getDeviceName(), json.getString("Success"));
-            int r = orderService.save(o);
-            if (r == 1) {
-                log.info("保存命令成功");
-                r = 0;
-            }
-        }
+        downOrderUtils.JsonTime(depotId, getUserIdFromSession(h));
         return new JsonResult<>(success, "同步时间成功");
     }
 
@@ -816,15 +504,13 @@ public class AppDateController extends BaseController {
     @RequestMapping("/JsonGetConfMsg.do")
     @ResponseBody
     public JsonResult<JSONObject> jsonM(int depotId, HttpSession h) {
-        //
         String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
         Device rs = deviceService.getDevByDevName(devName);
         QTConfigure QTConfigure = QTConfService.getPZByDevName(devName);
         Gson g = new Gson();
         String json = g.toJson(QTConfigure);
         JSONObject jo = JSONObject.parseObject(json);
-
-
+        downOrderUtils.CXPZ(depotId, getUserIdFromSession(h));
         return new JsonResult<>(success, jo);
     }
 

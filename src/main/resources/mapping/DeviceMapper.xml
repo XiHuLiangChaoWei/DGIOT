@@ -25,6 +25,15 @@
 
     </resultMap>
 
+    <select id="selectAllQT" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            type = 2
+    </select>
+
     <select id="selectAll" resultMap="DeviceResultMap">
         SELECT
             *
@@ -77,6 +86,17 @@
         FROM
             iot_device_list
     </select>
+
+    <update id="updataDevVersion">
+        UPDATE
+            iot_device_list
+        SET
+            dev_ver = #{devVersion}
+        WHERE
+            devNote=#{devNote} AND
+            devBH=#{devBH} AND devZH=#{devZH} AND
+            bus_type=#{busType} AND type =#{type}
+    </update>
 
     <update id="resetDevInfoByDtuId">
         UPDATE

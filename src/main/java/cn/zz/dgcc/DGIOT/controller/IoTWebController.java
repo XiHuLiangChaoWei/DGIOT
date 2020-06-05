@@ -7,6 +7,7 @@ import cn.zz.dgcc.DGIOT.service.DeviceService;
 import cn.zz.dgcc.DGIOT.service.Exception.IFileException;
 import cn.zz.dgcc.DGIOT.service.FirewareService;
 import cn.zz.dgcc.DGIOT.service.IoTService;
+import cn.zz.dgcc.DGIOT.utils.ContextUtil;
 import cn.zz.dgcc.DGIOT.utils.FileUtils;
 import cn.zz.dgcc.DGIOT.utils.JsonResult;
 import com.alibaba.fastjson.JSON;
@@ -60,6 +61,7 @@ public class IoTWebController extends BaseController {
 
     /**
      * 固件文件上传
+     *
      * @param file
      * @param session
      * @return
@@ -98,6 +100,7 @@ public class IoTWebController extends BaseController {
         if (beginIndex > 0) {
             suffix = orginalFilename.substring(beginIndex);
         }
+        orginalFilename = orginalFilename.substring(0, beginIndex);
         //为文件生成唯一文件名
         String child = UUID.randomUUID().toString() + suffix;
         //生成服务器上文件存储全路径  该路径只用来在后台查看路径
@@ -113,7 +116,7 @@ public class IoTWebController extends BaseController {
         }
         //
         System.err.println(avatarpath);
-        Fireware fireware = new Fireware(orginalFilename, avatarpath);
+        Fireware fireware = new Fireware(orginalFilename.trim(), avatarpath);
         int rs = firewareService.saveFirewareVersion(fireware);
         return new JsonResult<Void>(success, avatarpath);
     }
@@ -155,7 +158,9 @@ public class IoTWebController extends BaseController {
         //总包数
         int totalPackge = ja.size();
         //校验和
-        String wholeCheckSum = Integer.toHexString(total);
+        String wholeCheckSum = Integer.toHexString(total).toUpperCase();
+        wholeCheckSum = ContextUtil.FormatHEXString(wholeCheckSum, 8);
+
         Device device = deviceService.getDevByDevName(devName);
         //当前版本
         String ver = device.getDevVersion();
@@ -166,7 +171,7 @@ public class IoTWebController extends BaseController {
         JSONObject jo = new JSONObject();
         jo.put("Now_Ver", ver);
         jo.put("Upgrade_Ver", version);
-        jo.put("Total_ Packge", totalPackge);
+        jo.put("Total_Packge", totalPackge);
         jo.put("Whole_CheckSum", wholeCheckSum);
         JSONObject rs = ioTService.pub(fullTopic, jo.toJSONString(), pk, null);
 

@@ -16,4 +16,5 @@ public class DgiotApplication {
 		SpringApplication.run(DgiotApplication.class, args);
 	}
 
+
 }

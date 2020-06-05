@@ -63,4 +63,8 @@ public interface DeviceMapper {
     Device selectN2DevByUserId(int userId);
 
     List<Device> selectAll();
+
+    List<Device> selectAllQT();
+
+    void updataDevVersion(Device logDevice);
 }

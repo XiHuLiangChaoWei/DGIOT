@@ -27,11 +27,12 @@
     </resultMap>
 
     <insert id="insertNewConf" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO dev_conf (dev_name,dev_id,commond_type,dev_bh,dev_zh,
+        INSERT INTO dev_conf
+                (dev_name,dev_id,commond_type,dev_bh,dev_zh,
                             i_type,but_type,dieF_FK,zlfj_Fk,dieF_time,nongdu_upper,
                             nongdu_lower,fuya_upper,fuya_lower,chongqi_time,time_inerval,
-                            cycle_measure,air_tightness,start_ch,end_ch,chouqi_time) VALUES (
-                            #{devName},#{devId},#{commondType},#{devBH},#{devZH},#{type},#{busType},#{dieFFK},#{zlfjFk},#{dieFTime},#{n2NDUpper},
+                            cycle_measure,air_tightness,start_ch,end_ch,chouqi_time)
+        VALUES (#{devName},#{devId},#{commondType},#{devBH},#{devZH},#{type},#{busType},#{dieFFK},#{zlfjFk},#{dieFTime},#{n2NDUpper},
                             #{n2NDLower},#{n2FYUpper},#{n2FYLower},#{n2CQTime},#{timeInterval},#{cycleMeasure},#{airTightness},
                             #{startCH},#{endCH},#{cqTime}
                             )

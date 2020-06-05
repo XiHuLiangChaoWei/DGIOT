@@ -112,9 +112,10 @@ public class ContextUtil {
     }
 
 
-//	public static void main(String[] args) {
-//		log.info(getTimeYMDHMM(null));
-//	}
+//    public static void main(String[] args) {
+//        String a = FormatHEXString("0a7b00", 4);
+//        System.err.println(a);
+//    }
 
     public static String FormatNum6(int a) {
         DecimalFormat df = new DecimalFormat("000000");
@@ -122,6 +123,19 @@ public class ContextUtil {
         return rs;
     }
 
+    public static String FormatHEXString(String a, int len) {
+        if (a.length() > len) {
+            int b = a.length() - len;
+            return a.substring(b);
+        }
+        StringBuffer sb = new StringBuffer();
+        int l = a.length();
+        for (int i = 0; i < len - l; i++) {
+            sb.append("0");
+        }
+        sb = sb.append(a);
+        return sb.toString();
+    }
 
     /**
      * 格式化数字长度
