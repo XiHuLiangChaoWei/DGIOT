@@ -32,9 +32,9 @@ public class QTJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         log.info("定时查询气调任务开始··············");
         String devName = jobExecutionContext.getJobDetail().getJobDataMap().getString("device");
-        int userId = jobExecutionContext.getJobDetail().getJobDataMap().getInt("userId");
+        String userId = jobExecutionContext.getJobDetail().getJobDataMap().getString("userId");
         Device device = deviceService.getDevByDevName(devName);
-        downOrderUtils.deployN2Order(userId, device);
+        downOrderUtils.deployN2Order(Integer.parseInt(userId), device);
         log.info("定时查询气调任务结束··············");
     }
 }

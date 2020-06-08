@@ -67,4 +67,6 @@ public interface DeviceMapper {
     List<Device> selectAllQT();
 
     void updataDevVersion(Device logDevice);
+
+    void updataDtuVersion(Device logDevice);
 }

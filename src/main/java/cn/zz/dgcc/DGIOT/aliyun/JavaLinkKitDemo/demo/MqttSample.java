@@ -13,6 +13,9 @@ import com.aliyun.alink.linksdk.cmp.core.listener.*;
 import com.aliyun.alink.linksdk.tools.AError;
 import com.aliyun.alink.linksdk.tools.ALog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MqttSample extends BaseSample {
     final static String TAG = "MqttSample";
 
@@ -67,23 +70,33 @@ public class MqttSample extends BaseSample {
     public void subscribe() {
         MqttSubscribeRequest request = new MqttSubscribeRequest();
         // topic 用户根据实际场景填写
-        request.topic = "/" + productKey + "/" + deviceName + "/user/#";
-        request.isSubscribe = true;
-        LinkKit.getInstance().subscribe(request, new IConnectSubscribeListener() {
-            @Override
-            public void onSuccess() {
-                // 订阅成功
-                ALog.d(TAG, "onSuccess ");
-                System.err.println("订阅/"+productKey+"/"+deviceName+"/user/#:成功");
-            }
+        List<String> subList = new ArrayList<>();
+        subList.add("/user/user/dev/register/response");
+        subList.add("/user/sev/downdate");
+        subList.add("user/dev/version/upgrade");
+        subList.add("user/dev/version/upgrade/response");
+        for (String sub : subList
+        ) {
+            request.topic = "/" + productKey + "/" + deviceName + sub;
+            request.isSubscribe = true;
+            LinkKit.getInstance().subscribe(request, new IConnectSubscribeListener() {
+                @Override
+                public void onSuccess() {
+                    // 订阅成功
+                    ALog.d(TAG, "onSuccess ");
+                    System.err.println("订阅/" + productKey + "/" + deviceName + sub + ":成功");
+                }
 
-            @Override
-            public void onFailure(AError aError) {
-                // 订阅失败
-                ALog.d(TAG, "onFailure " + getError(aError));
-                System.err.println("订阅/"+productKey+"/"+deviceName+"/user/#:失败");
-            }
-        });
+                @Override
+                public void onFailure(AError aError) {
+                    // 订阅失败
+                    ALog.d(TAG, "onFailure " + getError(aError));
+                    System.err.println("订阅/" + productKey + "/" + deviceName + sub + ":失败");
+                }
+            });
+        }
+
+
     }
 
     /**
@@ -143,9 +156,9 @@ public class MqttSample extends BaseSample {
                 // 如果不一定是json格式，可以参考如下方式回复
                 MqttPublishRequest rrpcResponse = new MqttPublishRequest();
                 rrpcResponse.topic = resourceRequest.topic;
-                rrpcResponse.payloadObj ="xxx";
+                rrpcResponse.payloadObj = "xxx";
 
-                LinkKit.getInstance().publish(rrpcResponse,null);
+                LinkKit.getInstance().publish(rrpcResponse, null);
             }
 
             @Override

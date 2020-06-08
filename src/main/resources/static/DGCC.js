@@ -7,7 +7,7 @@ $(document).ready(function () {
 
 //页面一打开就执行弹层
 layer.ready(function () {
-    layer.msg('很高兴一开场就见到你');
+    // layer.msg('很高兴一开场就见到你');
 });
 
 
@@ -33,7 +33,7 @@ function WebSocketTest() {
 
         ws.onclose = function () {
             // 关闭 websocket
-            alert("连接已关闭...");
+            // alert("连接已关闭...");
         };
     } else {
         // 浏览器不支持 WebSocket

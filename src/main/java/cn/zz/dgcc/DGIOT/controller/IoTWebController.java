@@ -123,14 +123,14 @@ public class IoTWebController extends BaseController {
 
 
     /**
-     * 固件升级的下发
      *
      * @param devName
      * @param version
+     * @param type 1=dev other = dtu
      */
     @ResponseBody
     @RequestMapping("Sev_fireware")
-    public void down(String devName, String version) {
+    public void down(String devName, String version, int type) {
         //根据版本获取 固件升级对象
         Fireware fireware = firewareService.getFirewareByVersion(version);
         //获取固件升级包所在位置
@@ -163,7 +163,7 @@ public class IoTWebController extends BaseController {
 
         Device device = deviceService.getDevByDevName(devName);
         //当前版本
-        String ver = device.getDevVersion();
+        String ver = type == 1 ? device.getDevVersion() : device.getDtuVersion();
 
         String pk = device.getProductKey();
         String fullTopic = "/" + pk + "/" + devName + "/user/dev/version/upgrade";

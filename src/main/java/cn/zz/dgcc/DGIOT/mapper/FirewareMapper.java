@@ -14,4 +14,5 @@ public interface FirewareMapper {
     Fireware selectFirewareVersion(String version);
 
     int addNewVersion(Fireware fireware);
+
 }

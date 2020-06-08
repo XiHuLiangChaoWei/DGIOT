@@ -32,14 +32,10 @@ public class HelloWorld {
 
 
     public static void main(String[] args) {
-//        ALog.d(TAG, "Hello world!");
         ALog.setLevel(ALog.LEVEL_DEBUG);
         HelloWorld manager = new HelloWorld();
         ALog.d(TAG, "args=" + Arrays.toString(args));
         System.out.println(System.getProperty("user.dir"));
-//        String diPath = System.getProperty("user.dir") + "/device_id.json";
-        //从文件读取配置
-//        String deviceInfo = FileUtils.readFile(diPath);
         String deviceInfo = args[0];
         if (deviceInfo == null) {
             ALog.e(TAG, "main - need device info path.");
@@ -129,9 +125,7 @@ public class HelloWorld {
      * @param deviceInfoData
      */
     public void executeScheduler(DeviceInfoData deviceInfoData) {
-        //从配置文件读取定时上报的数据
-//        thingTestManager.readData(System.getProperty("user.dir") + "/test_case.json");
-//        thingTestManager.setServiceHandler();
+
         testMqtt();
 //        testLabel();
         // testCota();

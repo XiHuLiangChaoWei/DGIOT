@@ -42,6 +42,10 @@ public interface DeviceService {
 
     Device getN2DevByUser(int userId);
 
+    /**
+     * 获取设备库中所有设备列表
+     * @return List<Device>
+     */
     List<Device> getAllDev();
 
     List<Device> getAllQTDev();

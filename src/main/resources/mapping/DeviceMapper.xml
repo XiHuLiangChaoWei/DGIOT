@@ -87,6 +87,17 @@
             iot_device_list
     </select>
 
+    <update id="updataDtuVersion">
+         UPDATE
+            iot_device_list
+        SET
+            dtu_ver = #{dtuVersion}
+        WHERE
+            devNote=#{devNote} AND
+            devBH=#{devBH} AND devZH=#{devZH} AND
+            bus_type=#{busType} AND type =#{type}
+    </update>
+
     <update id="updataDevVersion">
         UPDATE
             iot_device_list

@@ -273,6 +273,9 @@ public class DownOrderUtils {
         GasInfoCommondBuilder gasInfoCommondBuilder = GasInfoCommondBuilder.getInstance();
         String devBH = rs.getDevBH();
         String devZH = rs.getDevZH();
+        if(devBH==null|devZH==null){
+            throw new RuntimeException("设备配置未完成");
+        }
         gasInfoCommondBuilder.setDevBH(devBH);
         gasInfoCommondBuilder.setDevZH(devZH);
         BuildMessage gasMsg = gasInfoCommondBuilder.build();
@@ -305,6 +308,9 @@ public class DownOrderUtils {
         log.info("IndexController=" + rs);
         String devBH = rs.getDevBH();
         String devZH = rs.getDevZH();
+        if(devBH==null|devZH==null){
+            throw new RuntimeException("设备配置未完成");
+        }
         if (devBH == null) {
             devBH = "01";
         }

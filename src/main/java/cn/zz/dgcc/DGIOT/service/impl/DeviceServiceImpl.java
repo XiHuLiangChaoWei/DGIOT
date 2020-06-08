@@ -246,6 +246,7 @@ public class DeviceServiceImpl implements DeviceService {
         }
         log.info("信息匹配成功");
         deviceMapper.updataDevVersion(logDevice);
+        deviceMapper.updataDtuVersion(logDevice);
         return true;
     }
 

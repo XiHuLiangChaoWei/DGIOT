@@ -14,6 +14,7 @@ import java.util.logging.Logger;
  */
 public class DeviceUtil {
     private final static Logger log = Logger.getLogger(DeviceUtil.class.getSimpleName());
+
     public static Device parseDev(AMQPMessage amqpMessage) {
 //        log.info("amqpMsg="+amqpMessage);
 //        log.info("device:log="+amqpMessage.getContent());
@@ -31,7 +32,7 @@ public class DeviceUtil {
         String busType = content.getString("busType");
         String ccId = content.getString("CCID");
         String devVersion = content.getString("DevVer");
-        String dtuVersion = content.getString("Dtuver");
+        String dtuVersion = content.getString("DtuVer");
         if (devNote.equals(null)) {
             devNote = "";
         }
@@ -58,6 +59,7 @@ public class DeviceUtil {
         device.setBusType(busType);
         device.setCcId(ccId);
         device.setDevVersion(devVersion);
+        device.setDtuVersion(dtuVersion);
 //        System.out.println("解析本地设备信息：" + device.toString());
 
         //解析Topic 获取pk和deviceName
