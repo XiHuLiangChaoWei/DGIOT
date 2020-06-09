@@ -65,7 +65,6 @@ public class AppDateController extends BaseController {
     }
 
 
-
     @RequestMapping("/t")
     public String t(Model model) {
         return "html/sql";
@@ -150,7 +149,7 @@ public class AppDateController extends BaseController {
             List<String> devNames = depotService.getDevNamesByDepotId(depotId);
             js.put("depot", d);
             js.put("devInfo", devNames);
-            js.put("companyName",companyName);
+            js.put("companyName", companyName);
             jsonArray.add(js);
         }
         return new JsonResult<>(success, jsonArray);
@@ -392,8 +391,8 @@ public class AppDateController extends BaseController {
      */
     @RequestMapping("/JsonTime.do")
     @ResponseBody
-    public JsonResult<String> setTime(int depotId, HttpSession h) {
-        downOrderUtils.JsonTime(depotId, getUserIdFromSession(h));
+    public JsonResult<String> setTime(int depotId, int type, HttpSession h) {
+        downOrderUtils.JsonTime(depotId, getUserIdFromSession(h), type);
         return new JsonResult<>(success, "同步时间成功");
     }
 

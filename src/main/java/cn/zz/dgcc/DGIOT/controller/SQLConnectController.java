@@ -45,12 +45,8 @@ public class SQLConnectController extends BaseController {
     @ResponseBody
     @RequestMapping("/1")
     public ModelAndView test1() {
-        ModelAndView mav = new ModelAndView("sql");
+        ModelAndView mav = new ModelAndView("html/sql");
         List<User> list = userService.findAll();
-//        for (User e :list
-//             ) {
-//            System.out.println("controller"+e);
-//        }
         mav.addObject("list", list);
         return mav;
     }
@@ -70,9 +66,9 @@ public class SQLConnectController extends BaseController {
 //        }
 //        return new JsonResult<>(success, list);
 //    }
+    
 
-
-    //    @ResponseBody
+//    @ResponseBody
 //    @RequestMapping("/getGrainInfo")
 //    public JsonResult<Map> showGrain() {
 //        Map list = grainService.findAll();
@@ -90,13 +86,12 @@ public class SQLConnectController extends BaseController {
 //    }
 
 
-
     @ResponseBody
     @RequestMapping("grain/choose")
-    public JsonResult<JSONObject> showChooseGrain(String batchId,String devBH,String devZH, HttpSession session) {
+    public JsonResult<JSONObject> showChooseGrain(String batchId, String devBH, String devZH, HttpSession session) {
 //        int userId = getUserIdFromSession(session);
         log.info("----------------------------------------");
-        log.info("batchId="+batchId+";devBH="+devBH+";devZH="+devZH);
+        log.info("batchId=" + batchId + ";devBH=" + devBH + ";devZH=" + devZH);
         JSONObject js = new JSONObject();
         //通过设备信息获取devName
 //        String devName = depotService.getDevNameByDepotIdAndType(depotId, 3);
@@ -104,8 +99,7 @@ public class SQLConnectController extends BaseController {
         String devName = device.getDeviceName();
         Depot depot = depotService.getDepotByDevName(devName);
         //获取指定设备最新消息
-        Grain grainInfo = grainService.getNewGrainInfoByDevName(devName);
-            grainInfo = grainService.getChooseGrainInfo(batchId);
+        Grain grainInfo = grainService.getChooseGrainInfo(batchId);
         String content = grainInfo.getContent();
         //解析粮情信息
         Dg3AnalysisGrain dg3AnalysisGrain = Dg3AnalysisGrain.newInstance();
@@ -119,9 +113,7 @@ public class SQLConnectController extends BaseController {
     }
 
 
-
     /**
-     *
      * @param batchId
      * @param devBH
      * @param devZH
@@ -130,10 +122,10 @@ public class SQLConnectController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("grain")
-    public JsonResult<JSONObject> showDevList(String batchId,String devBH,String devZH, HttpSession session) {
+    public JsonResult<JSONObject> showDevList(String batchId, String devBH, String devZH, HttpSession session) {
 //        int userId = getUserIdFromSession(session);
         log.info("----------------------------------------");
-        log.info("batchId="+batchId+";devBH="+devBH+";devZH="+devZH);
+        log.info("batchId=" + batchId + ";devBH=" + devBH + ";devZH=" + devZH);
         JSONObject js = new JSONObject();
         //通过设备信息获取devName
 //        String devName = depotService.getDevNameByDepotIdAndType(depotId, 3);

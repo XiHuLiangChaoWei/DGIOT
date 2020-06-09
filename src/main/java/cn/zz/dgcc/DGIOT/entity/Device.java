@@ -1,5 +1,6 @@
 package cn.zz.dgcc.DGIOT.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Objects;
  * ClassExplain :
  * ->
  */
-public class Device {
+public class Device implements Serializable {
     String productName;
     String productKey;
     String deviceName;

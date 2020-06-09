@@ -2,11 +2,15 @@ package cn.zz.dgcc.DGIOT.IQuartzJOB;
 
 import cn.zz.dgcc.DGIOT.entity.Device;
 import cn.zz.dgcc.DGIOT.service.DeviceService;
+import cn.zz.dgcc.DGIOT.utils.DownOrderUtils;
 import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +26,8 @@ public class IQuartzStart {
     Scheduler scheduler;
     @Autowired
     DeviceService deviceService;
+    @Autowired
+    DownOrderUtils downOrderUtils;
 
     /**
      * 1.获取设备列表
@@ -52,48 +58,76 @@ public class IQuartzStart {
     }
 
 
+    public void quartzJobForDevice() throws SchedulerException {
+
+//        SchedulerFactory sf = new StdSchedulerFactory();
+//        Scheduler scheduler = sf.getScheduler();
+
+        scheduler.clear();
+        scheduler.start();
+        JobDetail jobDetail = JobBuilder.newJob(IJOB.class).withIdentity("local", "Defalt")
+                .storeDurably().build();
+        CronTrigger trigger = TriggerBuilder.newTrigger().forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule("0 0/3 * * * ? "))
+                .withIdentity("local", "Defalt").build();
+        scheduler.scheduleJob(jobDetail, trigger);
+
+
+        JobDetail timer = JobBuilder.newJob(new Job() {
+
+            @Override
+            public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+                downOrderUtils.JsonTime(0);
+            }
+        }.getClass()).withIdentity("timer", "Defalt")
+                .storeDurably().build();
+        CronTrigger trigger2 = TriggerBuilder.newTrigger().forJob(timer).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ? "))
+                .withIdentity("timer", "Defalt").build();
+        scheduler.scheduleJob(timer, trigger2);
+    }
+
+
     /**
      * 3.为每个设备绑定定时任务,将任务注册到scheduler上执行
      */
-    public void bindDevWithJob() throws SchedulerException {
-        scheduler.clear();
-        List<Device> deviceList = getDeviceList();
-        //创建job实例
-        //创建触发器
-        //注册
-        JobDataMap jobDataMap = new JobDataMap();
-        for (Device device : deviceList
-        ) {
-            CronTrigger trigger;
-            jobDataMap.clear();
-            if (device.getType() == 0) {
-                continue;
-            }
-            if (device.getType() == 2) {
-                jobDataMap.put("userId", device.getUserId());
-                jobDataMap.put("device", device.getDeviceName());
-
-                JobDetail jobDetail = JobBuilder.newJob(QTJob.class).usingJobData(jobDataMap)
-                        .withIdentity(device.getDeviceName(), device.getDevNote()).storeDurably().build();
-                trigger = TriggerBuilder.newTrigger().forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule("0 0/3 * * * ? "))
-                        .withIdentity(device.getDeviceName(), device.getDevNote()).build();
-                scheduler.scheduleJob(jobDetail, trigger);
-            } else if (device.getType() == 3) {
-                JobDetail jobDetail = JobBuilder.newJob(GrainJob.class).usingJobData(jobDataMap)
-                        .withIdentity(device.getDeviceName(), device.getDevNote()).storeDurably().build();
-                trigger = TriggerBuilder.newTrigger().forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule("0 0/3 * * * ? "))
-                        .withIdentity(device.getDeviceName(), device.getDevNote()).build();
-                scheduler.scheduleJob(jobDetail, trigger);
-            } else if (device.getType() == 5) {
-                JobDetail jobDetail = JobBuilder.newJob(ZDJob.class).usingJobData(jobDataMap)
-                        .withIdentity(device.getDeviceName(), device.getDevNote()).storeDurably().build();
-                trigger = TriggerBuilder.newTrigger().forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule("0 0/3 * * * ? "))
-                        .withIdentity(device.getDeviceName(), device.getDevNote()).build();
-                scheduler.scheduleJob(jobDetail, trigger);
-            }
-        }
-        scheduler.start();
-    }
+//    public void bindDevWithJob() throws SchedulerException {
+//        scheduler.clear();
+//        List<Device> deviceList = getDeviceList();
+//        //创建job实例
+//        //创建触发器
+//        //注册
+//        JobDataMap jobDataMap = new JobDataMap();
+//        for (Device device : deviceList
+//        ) {
+//            CronTrigger trigger;
+//            jobDataMap.clear();
+//            if (device.getType() == 0) {
+//                continue;
+//            }
+//            if (device.getType() == 2) {
+//                jobDataMap.put("userId", device.getUserId());
+//                jobDataMap.put("device", device.getDeviceName());
+//
+//                JobDetail jobDetail = JobBuilder.newJob(QTJob.class).usingJobData(jobDataMap)
+//                        .withIdentity(device.getDeviceName(), device.getDevNote()).storeDurably().build();
+//                trigger = TriggerBuilder.newTrigger().forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule("0 0/3 * * * ? "))
+//                        .withIdentity(device.getDeviceName(), device.getDevNote()).build();
+//                scheduler.scheduleJob(jobDetail, trigger);
+//            } else if (device.getType() == 3) {
+//                JobDetail jobDetail = JobBuilder.newJob(GrainJob.class).usingJobData(jobDataMap)
+//                        .withIdentity(device.getDeviceName(), device.getDevNote()).storeDurably().build();
+//                trigger = TriggerBuilder.newTrigger().forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule("0 0/3 * * * ? "))
+//                        .withIdentity(device.getDeviceName(), device.getDevNote()).build();
+//                scheduler.scheduleJob(jobDetail, trigger);
+//            } else if (device.getType() == 5) {
+//                JobDetail jobDetail = JobBuilder.newJob(ZDJob.class).usingJobData(jobDataMap)
+//                        .withIdentity(device.getDeviceName(), device.getDevNote()).storeDurably().build();
+//                trigger = TriggerBuilder.newTrigger().forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule("0 0/3 * * * ? "))
+//                        .withIdentity(device.getDeviceName(), device.getDevNote()).build();
+//                scheduler.scheduleJob(jobDetail, trigger);
+//            }
+//        }
+//        scheduler.start();
+//    }
 
 
 //    @Bean

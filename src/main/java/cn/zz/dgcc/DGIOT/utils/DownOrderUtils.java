@@ -44,10 +44,11 @@ public class DownOrderUtils {
 
     /**
      * json查询配置
+     *
      * @param depotId
      * @param userId
      */
-    public void CXPZ(int depotId,int userId) {
+    public void CXPZ(int depotId, int userId) {
         String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
         Device rs = deviceService.getDevByDevName(devName);
         ConfCommondBuilder ccb = ConfCommondBuilder.getInstance();
@@ -62,26 +63,25 @@ public class DownOrderUtils {
         int r = orderService.save(o);
         if (r == 1) {
             log.info("保存命令成功");
-            r = 0;
         }
     }
 
     /**
      * 同步时间
-     * @param depotId
+     *
      * @param userId
      */
-    public void JsonTime(int depotId, int userId) {
+    public void JsonTime(int depotId, int userId,int type) {
         ConfCommondBuilder confCommondBuilder = ConfCommondBuilder.getInstance();
         String commond;
         String devId;
         String pk;
         String topicFullName;
         List<Device> allDev = deviceService.getAllDev();
-        String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
+        String devName;
         for (Device d : allDev
         ) {
-            devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
+            devName = depotService.getDevNameByDepotIdAndType(depotId, type);
             devId = d.getDevId();
             commond = confCommondBuilder.setTimes(devId);
             pk = d.getProductKey();
@@ -94,13 +94,45 @@ public class DownOrderUtils {
             int r = orderService.save(o);
             if (r == 1) {
                 log.info("保存命令成功");
-                r = 0;
+            }
+        }
+    }
+
+    /**
+     * 同步时间
+     *
+     * @param userId
+     */
+    public void JsonTime(int userId) {
+        ConfCommondBuilder confCommondBuilder = ConfCommondBuilder.getInstance();
+        String commond;
+        String devId;
+        String pk;
+        String topicFullName;
+        List<Device> allDev = deviceService.getAllDev();
+        String devName;
+        for (Device d : allDev
+        ) {
+            devName = d.getDeviceName();
+            devId = d.getDevId();
+            commond = confCommondBuilder.setTimes(devId);
+            pk = d.getProductKey();
+            topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
+            log.info(commond + "-----" + topicFullName);
+            JSONObject json = ioTService.pub(topicFullName, commond, pk, null);
+            log.info(json.toJSONString());
+            Order o = new Order(userId, 0, json.getString("MessageId"), 2, commond,
+                    ContextUtil.getTimeYMDHMM(null), d.getDeviceName(), json.getString("Success"));
+            int r = orderService.save(o);
+            if (r == 1) {
+                log.info("保存命令成功");
             }
         }
     }
 
     /**
      * 获取制氮机信息
+     *
      * @param n2
      * @param userId
      * @param choose
@@ -159,6 +191,7 @@ public class DownOrderUtils {
 
     /**
      * 获取制氮机状态
+     *
      * @param n2
      * @param userId
      * @return
@@ -196,6 +229,7 @@ public class DownOrderUtils {
 
     /**
      * 制氮机开关
+     *
      * @param controller
      * @param n2
      * @param userId
@@ -273,7 +307,7 @@ public class DownOrderUtils {
         GasInfoCommondBuilder gasInfoCommondBuilder = GasInfoCommondBuilder.getInstance();
         String devBH = rs.getDevBH();
         String devZH = rs.getDevZH();
-        if(devBH==null|devZH==null){
+        if (devBH == null | devZH == null) {
             throw new RuntimeException("设备配置未完成");
         }
         gasInfoCommondBuilder.setDevBH(devBH);
@@ -300,6 +334,7 @@ public class DownOrderUtils {
 
     /**
      * 下发查询grain
+     *
      * @param userId
      * @param rs
      * @return
@@ -308,7 +343,7 @@ public class DownOrderUtils {
         log.info("IndexController=" + rs);
         String devBH = rs.getDevBH();
         String devZH = rs.getDevZH();
-        if(devBH==null|devZH==null){
+        if (devBH == null | devZH == null) {
             throw new RuntimeException("设备配置未完成");
         }
         if (devBH == null) {

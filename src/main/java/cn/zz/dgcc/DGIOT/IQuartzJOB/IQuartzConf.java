@@ -19,11 +19,13 @@ public class IQuartzConf implements ApplicationRunner {
 
     @Autowired
     IQuartzStart iQuartzStart;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        System.err.println("开始启动默认定时任务");
-        iQuartzStart.bindDevWithJob();
-        System.err.println("默认定时任务启动完成");
+        System.err.println("start defalt quartz jobs ， please waiting ......");
+//        iQuartzStart.bindDevWithJob();
+        iQuartzStart.quartzJobForDevice();
+        System.err.println("start defalt quartz jobs complete !");
     }
 }
 

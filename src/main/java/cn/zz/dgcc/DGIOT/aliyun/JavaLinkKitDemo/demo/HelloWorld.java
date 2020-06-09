@@ -33,9 +33,11 @@ public class HelloWorld {
 
     public static void main(String[] args) {
         ALog.setLevel(ALog.LEVEL_DEBUG);
+        //创建helloworld实例
         HelloWorld manager = new HelloWorld();
         ALog.d(TAG, "args=" + Arrays.toString(args));
-        System.out.println(System.getProperty("user.dir"));
+//        System.out.println(System.getProperty("user.dir"));
+        //从args中取得数据
         String deviceInfo = args[0];
         if (deviceInfo == null) {
             ALog.e(TAG, "main - need device info path.");
@@ -102,7 +104,8 @@ public class HelloWorld {
         params.propertyValues = propertyValues;
         params.fmVersion = "1.0.2";
 
-        thingTestManager = new ThingSample(pk, dn);
+//        thingTestManager = new ThingSample(pk, dn);
+
         //配置监听器
         LinkKit.getInstance().init(params, new ILinkKitConnectListener() {
             public void onError(AError aError) {
@@ -192,10 +195,8 @@ public class HelloWorld {
         IoTMqttClientConfig config = new IoTMqttClientConfig();
         config.productKey = deviceInfo.productKey;
         config.deviceName = deviceInfo.deviceName;
-
         params.mqttClientConfig = config;
         params.connectConfig = new IoTApiClientConfig();
-
         params.deviceInfo = deviceInfo;
 
         final CommonRequest request = new CommonRequest();
@@ -246,9 +247,6 @@ public class HelloWorld {
         MqttSample sample = new MqttSample(pk, dn);
 //        sample.publish();
         sample.subscribe();
-//        sample.unSubscribe();
-//        sample.registerResource();
-        sample.publish();
         deinit();
     }
 

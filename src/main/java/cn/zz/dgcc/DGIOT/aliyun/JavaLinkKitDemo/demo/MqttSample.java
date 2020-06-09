@@ -27,6 +27,7 @@ public class MqttSample extends BaseSample {
      * 发布接口示例
      */
     public void publish() {
+        //新建mqtt推送请求
         MqttPublishRequest request = new MqttPublishRequest();
         // topic 用户根据实际场景填写
         request.topic = "/" + productKey + "/" + deviceName + "/user/register";
@@ -47,7 +48,8 @@ public class MqttSample extends BaseSample {
         request.qos = 0;
         // 更新标签 仅做测试
 //        request.payloadObj = "{\"id\":2, \"params\":{\"version\":\"1.0.0\"}}";
-        request.payloadObj = "大帅比";
+        request.payloadObj = "设备初次匹配,云端激活";
+
         LinkKit.getInstance().publish(request, new IConnectSendListener() {
             @Override
             public void onResponse(ARequest aRequest, AResponse aResponse) {
@@ -68,13 +70,14 @@ public class MqttSample extends BaseSample {
      * 订阅接口示例
      */
     public void subscribe() {
+        //新建mqtt订阅请求
         MqttSubscribeRequest request = new MqttSubscribeRequest();
         // topic 用户根据实际场景填写
         List<String> subList = new ArrayList<>();
-        subList.add("/user/user/dev/register/response");
+        subList.add("/user/dev/register/response");
         subList.add("/user/sev/downdate");
-        subList.add("user/dev/version/upgrade");
-        subList.add("user/dev/version/upgrade/response");
+        subList.add("/user/dev/version/upgrade");
+        subList.add("/user/dev/version/upgrade/response");
         for (String sub : subList
         ) {
             request.topic = "/" + productKey + "/" + deviceName + sub;
