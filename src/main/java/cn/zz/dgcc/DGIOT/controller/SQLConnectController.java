@@ -43,6 +43,32 @@ public class SQLConnectController extends BaseController {
     DepotService depotService;
 
     @ResponseBody
+    @RequestMapping("/{depotId}/grain")
+    public JsonResult<JSONObject> showDevList(@PathVariable int depotId, HttpSession session) {
+//        int userId = getUserIdFromSession(session);
+        //通过id获取仓库信息
+        JSONObject js = new JSONObject();
+        Depot depot = depotService.getDepotByDepotId(depotId);
+        //通过仓库获取devName
+        String devName = depotService.getDevNameByDepotIdAndType(depotId, 3);
+        //获取指定设备最新消息
+        Grain grainInfo = grainService.getNewGrainInfoByDevName(devName);
+        if (grainInfo == null) {
+            return new JsonResult<>(servWrong, "没有获取到历史粮情");
+        }
+        String content = grainInfo.getContent();
+        //解析粮情信息
+        Dg3AnalysisGrain dg3AnalysisGrain = Dg3AnalysisGrain.newInstance();
+        try {
+            js = dg3AnalysisGrain.analysis(grainInfo, depot);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new JsonResult<>(success,js);
+    }
+
+
+    @ResponseBody
     @RequestMapping("/1")
     public ModelAndView test1() {
         ModelAndView mav = new ModelAndView("html/sql");
@@ -66,7 +92,7 @@ public class SQLConnectController extends BaseController {
 //        }
 //        return new JsonResult<>(success, list);
 //    }
-    
+
 
 //    @ResponseBody
 //    @RequestMapping("/getGrainInfo")

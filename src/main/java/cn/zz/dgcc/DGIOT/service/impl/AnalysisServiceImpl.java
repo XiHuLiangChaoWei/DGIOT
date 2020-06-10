@@ -144,7 +144,7 @@ public class AnalysisServiceImpl implements AnalysisService {
             int rs = oilService.saveOil(oil);
             if (rs == 1) {
                 Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
-                dg4AnalysisOil.analysisN2Info(msg);
+                JSONObject jo = dg4AnalysisOil.analysisN2Info(msg);
             }
         }
         if (msg.startsWith("AA55E1")) {

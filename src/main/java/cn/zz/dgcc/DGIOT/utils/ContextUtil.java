@@ -301,6 +301,12 @@ public class ContextUtil {
         return new SimpleDateFormat(Constant.DATE_FORMAT_YMDH).format(date) + "-" + (minute / 15 + 1);
     }
 
+
+    /**
+     * 获取当前时间
+     * @param date
+     * @return
+     */
     public static String getTimeYMDHMM(Date date) {
         if (null == date) {
             date = new Date();

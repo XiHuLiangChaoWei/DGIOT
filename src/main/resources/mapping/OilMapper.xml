@@ -17,6 +17,14 @@
             (#{devName},#{receivedTime},#{content},#{batch})
     </insert>
 
+    <select id="selectOilInfoByName" resultMap="OilResultMap">
+        SELECT
+            *
+        FROM
+            oil
+        WHERE
+            dev_name = #{devName}
+    </select>
 
     <select id="getAll" resultMap="OilResultMap">
         SELECT

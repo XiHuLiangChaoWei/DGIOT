@@ -55,7 +55,6 @@ public abstract class  CommondBuild {
     public void buildMessageCheckSum(BuildMessage message) {
         String c = CRC16.makeChecksum(message.getStart() + message.getBodyContent());
         message.setBodyContent(message.getBodyContent() + c);
-
     }
 
     public void buildMessageId(BuildMessage message) {

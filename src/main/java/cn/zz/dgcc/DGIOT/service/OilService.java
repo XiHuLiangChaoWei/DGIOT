@@ -10,4 +10,6 @@ import cn.zz.dgcc.DGIOT.entity.Oil;
  */
 public interface OilService {
     int saveOil(Oil oil);
+
+    Oil getOilInfoByDevName(String devName);
 }

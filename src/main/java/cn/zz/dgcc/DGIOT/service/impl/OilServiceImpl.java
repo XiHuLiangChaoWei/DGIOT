@@ -22,4 +22,9 @@ public class OilServiceImpl implements OilService {
     public int saveOil(Oil oil) {
         return oilMapper.insert(oil);
     }
+
+    @Override
+    public Oil getOilInfoByDevName(String devName) {
+        return oilMapper.selectOilInfoByName(devName);
+    }
 }

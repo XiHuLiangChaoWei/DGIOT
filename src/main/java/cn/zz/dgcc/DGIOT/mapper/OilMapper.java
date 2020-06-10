@@ -10,4 +10,6 @@ import cn.zz.dgcc.DGIOT.entity.Oil;
  */
 public interface OilMapper {
     int insert(Oil oil);
+
+    Oil selectOilInfoByName(String devName);
 }

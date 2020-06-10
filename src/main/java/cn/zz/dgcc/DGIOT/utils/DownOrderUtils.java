@@ -42,6 +42,53 @@ public class DownOrderUtils {
     @Autowired
     AppVersionService appVersionService;
 
+
+
+    /**
+     *
+     * @param userId
+     * @param device
+     * @param msg
+     * @param msgType   设备类型
+     * @param sendType  消息发送类型 json格式为null/0   HEX格式为1
+     * @return
+     */
+    public JsonResult<String> deployAndSaveOrder(int userId, Device device, BuildMessage msg, int msgType,int sendType) {
+        String pk = device.getProductKey();
+        String devName = device.getDeviceName();
+        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
+        log.info(msg.toString() + "-----" + topicFullName);
+        JSONObject json = ioTService.pub(topicFullName, msg.toString(), pk, "1");
+        log.info(json.toJSONString());
+        Order o = new Order(userId, 0, json.getString("MessageId"), msgType, msg.toString(),
+                ContextUtil.getTimeYMDHMM(null), device.getDeviceName(), json.getString("Success"));
+        System.out.println("OOOO----" + o);
+        int r = orderService.save(o);
+        if (r == 1) {
+            log.info("保存命令成功");
+        }
+        if (json.getString("Success").equals("true")) {
+            return new JsonResult<>(success, "sendMsg = " + json.getString("Success"));
+        }
+        return new JsonResult<>(success, "");
+    }
+
+    /**
+     * 下发查询油情
+     */
+    public JsonResult<String> deployOilOrder(int userId, Device rs) {
+        log.info("IndexController=" + rs);
+        OilCommondBuilder oilCommondBuilder = OilCommondBuilder.getInstance();
+        String devBH = rs.getDevBH();
+        String devZH = rs.getDevZH();
+        if (devBH == null | devZH == null) {
+            throw new RuntimeException("设备配置未完成");
+        }
+        BuildMessage gasMsg = oilCommondBuilder.build();
+        return deployAndSaveOrder(userId, rs, gasMsg, 6,1);
+    }
+
+
     /**
      * json查询配置
      *
@@ -71,7 +118,7 @@ public class DownOrderUtils {
      *
      * @param userId
      */
-    public void JsonTime(int depotId, int userId,int type) {
+    public void JsonTime(int depotId, int userId, int type) {
         ConfCommondBuilder confCommondBuilder = ConfCommondBuilder.getInstance();
         String commond;
         String devId;
@@ -313,23 +360,24 @@ public class DownOrderUtils {
         gasInfoCommondBuilder.setDevBH(devBH);
         gasInfoCommondBuilder.setDevZH(devZH);
         BuildMessage gasMsg = gasInfoCommondBuilder.build();
-        String pk = rs.getProductKey();
-        String devName = rs.getDeviceName();
-        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        log.info(gasMsg.toString() + "-----" + topicFullName);
-        JSONObject json = ioTService.pub(topicFullName, gasMsg.toString(), pk, "1");
-        log.info(json.toJSONString());
-        Order o = new Order(userId, 0, json.getString("MessageId"), 2, gasMsg.toString(),
-                ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
-        System.out.println("OOOO----" + o);
-        int r = orderService.save(o);
-        if (r == 1) {
-            log.info("保存命令成功");
-        }
-        if (json.getString("Success").equals("true")) {
-            return new JsonResult<>(success, "sendMsg = " + json.getString("Success"));
-        }
-        return new JsonResult<>(success, "");
+        return deployAndSaveOrder(userId,rs,gasMsg,2,1);
+//        String pk = rs.getProductKey();
+//        String devName = rs.getDeviceName();
+//        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
+//        log.info(gasMsg.toString() + "-----" + topicFullName);
+//        JSONObject json = ioTService.pub(topicFullName, gasMsg.toString(), pk, "1");
+//        log.info(json.toJSONString());
+//        Order o = new Order(userId, 0, json.getString("MessageId"), 2, gasMsg.toString(),
+//                ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
+//        System.out.println("OOOO----" + o);
+//        int r = orderService.save(o);
+//        if (r == 1) {
+//            log.info("保存命令成功");
+//        }
+//        if (json.getString("Success").equals("true")) {
+//            return new JsonResult<>(success, "sendMsg = " + json.getString("Success"));
+//        }
+//        return new JsonResult<>(success, "");
     }
 
     /**
@@ -356,23 +404,24 @@ public class DownOrderUtils {
         grainInfoCommondBuilder.setDevBH(devBH);
         grainInfoCommondBuilder.setDevZH(devZH);
         BuildMessage grainMsg = grainInfoCommondBuilder.build();
-        String pk = rs.getProductKey();
-        String devName = rs.getDeviceName();
-        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        log.info(grainMsg.toString() + "-----" + topicFullName);
-        JSONObject json = ioTService.pub(topicFullName, grainMsg.toString(), pk, "1");
-        log.info(json.toJSONString());
-        Order o = new Order(userId, 0, json.getString("MessageId"), 3, grainMsg.toString(),
-                ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
-        System.out.println("OOOO----" + o);
-        int r = orderService.save(o);
-        if (r == 1) {
-            log.info("保存命令成功");
-        }
-        if (json.getString("Success").equals("true")) {
-            return new JsonResult<>(success, "sendMsg = " + json.getString("Success"));
-        }
-        return new JsonResult<>(success, "");
+        return deployAndSaveOrder(userId,rs,grainMsg,3,1);
+//        String pk = rs.getProductKey();
+//        String devName = rs.getDeviceName();
+//        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
+//        log.info(grainMsg.toString() + "-----" + topicFullName);
+//        JSONObject json = ioTService.pub(topicFullName, grainMsg.toString(), pk, "1");
+//        log.info(json.toJSONString());
+//        Order o = new Order(userId, 0, json.getString("MessageId"), 3, grainMsg.toString(),
+//                ContextUtil.getTimeYMDHMM(null), rs.getDeviceName(), json.getString("Success"));
+//        System.out.println("OOOO----" + o);
+//        int r = orderService.save(o);
+//        if (r == 1) {
+//            log.info("保存命令成功");
+//        }
+//        if (json.getString("Success").equals("true")) {
+//            return new JsonResult<>(success, "sendMsg = " + json.getString("Success"));
+//        }
+//        return new JsonResult<>(success, "");
     }
 
     /**

@@ -8,6 +8,7 @@ import cn.zz.dgcc.DGIOT.utils.DownOrderUtils;
 import cn.zz.dgcc.DGIOT.utils.JsonResult;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg3AnalysisGrain;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisN2;
+import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisOil;
 import cn.zz.dgcc.DGIOT.utils.MsgBuilder.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -56,6 +57,8 @@ public class AppDateController extends BaseController {
     QTConfService QTConfService;
     @Autowired
     AppVersionService appVersionService;
+    @Autowired
+    OilService oilService;
 
     @RequestMapping("getAppVersion")
     @ResponseBody
@@ -174,6 +177,24 @@ public class AppDateController extends BaseController {
         return jr;
     }
 
+
+    @ResponseBody
+    @RequestMapping("/oil")
+    public JsonResult<JSONObject> showOil(HttpSession session, Integer depotId) {
+        Depot depot = depotService.getDepotByDepotId(depotId);
+        String devName = depotService.getDevNameByDepotIdAndType(depotId, 6);
+        if (devName == null | devName.length() == 0) {
+            return new JsonResult<>(servWrong, "该仓库中不存在油情设备");
+        }
+        Oil oil = oilService.getOilInfoByDevName(devName);
+        if (oil == null) {
+            return new JsonResult<>(servWrong, "没有获取到历史油情");
+        }
+        String content = oil.getContent();
+        Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
+        JSONObject jo = dg4AnalysisOil.analysisN2Info(content);
+        return new JsonResult<>(success, jo);
+    }
 
     /**
      * 通过depotId 获取仓库信息，并查询最新的粮情信息

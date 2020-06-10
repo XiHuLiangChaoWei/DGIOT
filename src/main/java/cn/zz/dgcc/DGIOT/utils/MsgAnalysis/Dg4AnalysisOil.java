@@ -50,7 +50,7 @@ public class Dg4AnalysisOil {
         second = Integer.valueOf(second, 16).toString();
 
         String time = year + month + day + hour + minute + second;
-
+        //提取分机地址
         String devAddress = msg.substring(18, 20);
         //提取油温数据
         String tempDate = msg.substring(20, 532);
