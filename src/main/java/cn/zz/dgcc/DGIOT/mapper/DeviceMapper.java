@@ -69,4 +69,6 @@ public interface DeviceMapper {
     void updataDevVersion(Device logDevice);
 
     void updataDtuVersion(Device logDevice);
+
+    List<Device> selectNoUsedDevByTypeAndProject(@Param("type") int type,@Param("userId") int company);
 }

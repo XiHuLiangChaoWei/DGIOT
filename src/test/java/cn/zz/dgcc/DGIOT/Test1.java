@@ -1,6 +1,7 @@
 package cn.zz.dgcc.DGIOT;
 
 import cn.zz.dgcc.DGIOT.entity.*;
+import cn.zz.dgcc.DGIOT.mapper.OilMapper;
 import cn.zz.dgcc.DGIOT.service.*;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg3AnalysisGrain;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisN2;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,10 +43,12 @@ public class Test1 {
     OrderService orderService;
     @Autowired
     UserService userService;
+    @Autowired
+    OilService oilService;
 
     @Test
     public void login() {
-       User u = userService.Login("6000","admin");
+        User u = userService.Login("6000", "admin");
         System.err.println(u);
     }
 
@@ -54,6 +58,15 @@ public class Test1 {
         List<Device> devices = ioTService.getDeviceList(products);
         deviceService.saveDeviceList(devices);
     }
+
+
+    @Test
+    public void saveOil() {
+        Oil o = new Oil("testDev", new Date(), "AASSFFGG");
+        int rs = oilService.saveOil(o);
+        System.out.println(rs);
+    }
+
 
     @Test
     public void grain() {
@@ -115,7 +128,7 @@ public class Test1 {
         N2 n2 = n2Service.getNewInfoByDevName(devName);
         String content = n2.getContent();
         Dg4AnalysisN2 dg4AnalysisN2 = Dg4AnalysisN2.newInstance();
-        dg4AnalysisN2.analysisN2Info(n2, devName,depot);
+        dg4AnalysisN2.analysisN2Info(n2, devName, depot);
     }
 
     @Test

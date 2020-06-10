@@ -9,4 +9,12 @@
             WHERE
                 id = #{companyId}
     </select>
+    <select id="selectIdByName" resultType="java.lang.Integer">
+            SELECT
+                id
+            FROM
+                company
+            WHERE
+                name = #{xiangMu}
+    </select>
 </mapper>

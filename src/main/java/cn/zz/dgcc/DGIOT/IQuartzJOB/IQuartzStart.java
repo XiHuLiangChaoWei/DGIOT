@@ -65,24 +65,33 @@ public class IQuartzStart {
 
         scheduler.clear();
         scheduler.start();
-        JobDetail jobDetail = JobBuilder.newJob(IJOB.class).withIdentity("local", "Defalt")
+        JobDetail qt = JobBuilder.newJob(QTJob.class).withIdentity("localQt", "Defalt")
                 .storeDurably().build();
-        CronTrigger trigger = TriggerBuilder.newTrigger().forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule("0 0/3 * * * ? "))
-                .withIdentity("local", "Defalt").build();
-        scheduler.scheduleJob(jobDetail, trigger);
+        CronTrigger trigger = TriggerBuilder.newTrigger().forJob(qt).withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ? "))
+                .withIdentity("localQt", "Defalt").build();
+        scheduler.scheduleJob(qt, trigger);
 
 
-        JobDetail timer = JobBuilder.newJob(new Job() {
-
-            @Override
-            public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-                downOrderUtils.JsonTime(0);
-            }
-        }.getClass()).withIdentity("timer", "Defalt")
+        JobDetail timer = JobBuilder.newJob(((Job) jobExecutionContext -> {
+            downOrderUtils.JsonTime(0);
+        }).getClass()).withIdentity("timer", "Defalt")
                 .storeDurably().build();
         CronTrigger trigger2 = TriggerBuilder.newTrigger().forJob(timer).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ? "))
                 .withIdentity("timer", "Defalt").build();
+
+
+        JobDetail grain = JobBuilder.newJob(QTJob.class).withIdentity("localGrain", "Defalt")
+                .storeDurably().build();
+        CronTrigger trigger3 = TriggerBuilder.newTrigger().forJob(grain).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ? "))
+                .withIdentity("localGrain", "Defalt").build();
+
+
+//        JobDetail test = JobBuilder.newJob(IJOB.class).build();
+//        Trigger testT = TriggerBuilder.newTrigger().forJob(test).startNow().build();
+//        scheduler.scheduleJob(test,testT);
+
         scheduler.scheduleJob(timer, trigger2);
+        scheduler.scheduleJob(grain, trigger3);
     }
 
 

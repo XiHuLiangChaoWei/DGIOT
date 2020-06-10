@@ -10,4 +10,6 @@ import cn.zz.dgcc.DGIOT.entity.Company;
  */
 public interface CompanyMapper {
     Company getComName(int companyId);
+
+    int selectIdByName(String xiangMu);
 }

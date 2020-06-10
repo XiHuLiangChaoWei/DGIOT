@@ -4,7 +4,7 @@
     <resultMap id="N2ResultMap" type="cn.zz.dgcc.DGIOT.entity.N2">
         <result column="id" property="id"/>
         <result column="dev_name" property="devName"/>
-        <result column="rec_time" property="recivedTime"/>
+        <result column="rec_time" property="receivedTime"/>
         <result column="content" property="content"/>
         <result column="msg_id" property="msgId"/>
         <result column="n2dev_action" property="n2devAction"/>
@@ -62,7 +62,7 @@
             n2
             (dev_name,rec_time,content,msg_id,batch_id,n2dev_action)
         VALUES
-            (#{devName},#{recivedTime},#{content},#{msgId},#{batchId},#{n2devAction})
+            (#{devName},#{receivedTime},#{content},#{msgId},#{batchId},#{n2devAction})
     </insert>
 
 

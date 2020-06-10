@@ -10,4 +10,6 @@ import cn.zz.dgcc.DGIOT.entity.Company;
  */
 public interface CompanyService {
     Company getC(int companyId);
+
+    int getCIDByName(String xiangMu);
 }

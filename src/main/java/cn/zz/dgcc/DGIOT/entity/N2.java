@@ -14,7 +14,7 @@ import java.util.Objects;
 public class N2 {
     int id;
     String devName;
-    Date recivedTime;
+    Date receivedTime;
     String content;
     String msgId;
     String batchId;
@@ -24,20 +24,20 @@ public class N2 {
 
     }
 
-    public N2(String devName, Date recivedTime, String content, String msgId) {
+    public N2(String devName, Date receivedTime, String content, String msgId) {
         this.devName = devName;
-        this.recivedTime = recivedTime;
+        this.receivedTime = receivedTime;
         this.content = content;
         this.msgId = msgId;
-        this.batchId = ContextUtil.getTimeYMDHMM(recivedTime);
+        this.batchId = ContextUtil.getTimeYMDHMM(receivedTime);
     }
 
     public N2(String devName, Date date, String msg, String msgId, String s) {
         this.devName = devName;
-        this.recivedTime = date;
+        this.receivedTime = date;
         this.content = msg;
         this.msgId = msgId;
-        this.batchId = ContextUtil.getTimeYMDHMM(recivedTime);
+        this.batchId = ContextUtil.getTimeYMDHMM(receivedTime);
         this.n2devAction = s;
     }
 
@@ -46,7 +46,7 @@ public class N2 {
         return "N2{" +
                 "id=" + id +
                 ", devName='" + devName + '\'' +
-                ", recivedTime=" + recivedTime +
+                ", receivedTime=" + receivedTime +
                 ", content='" + content + '\'' +
                 ", msgId='" + msgId + '\'' +
                 ", batchId='" + batchId + '\'' +
@@ -77,12 +77,12 @@ public class N2 {
         this.devName = devName;
     }
 
-    public Date getRecivedTime() {
-        return recivedTime;
+    public Date getreceivedTime() {
+        return receivedTime;
     }
 
-    public void setRecivedTime(Date recivedTime) {
-        this.recivedTime = recivedTime;
+    public void setreceivedTime(Date receivedTime) {
+        this.receivedTime = receivedTime;
     }
 
     public String getContent() {

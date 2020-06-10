@@ -2,6 +2,12 @@ package cn.zz.dgcc.DGIOT.utils;
 
 import cn.zz.dgcc.DGIOT.entity.User;
 import cn.zz.dgcc.DGIOT.utils.Cache.CacheManagerImpl;
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,6 +35,60 @@ import java.util.UUID;
 public class ContextUtil {
 
     private static SimpleDateFormat sdf = null;
+
+
+//    public static void main(String[] args) {
+//        chinese2PinYin2("河池-金城江-东江-气调柜");
+//    }
+
+    public static void chinese2PinYin2(String s){
+        HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
+        format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+        format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+        format.setVCharType(HanyuPinyinVCharType.WITH_V);
+        try{
+            StringBuffer sb = new StringBuffer();
+            for(int i = 0;i<s.length();i++){
+                String[] strs = PinyinHelper.toHanyuPinyinStringArray(s.charAt(i),format);
+                if(strs==null|strs.length==0){
+                    continue;
+                }
+                String index = strs[0];
+                char c = index.charAt(0);
+                String pinyin = String.valueOf(c).toUpperCase();
+                sb.append(pinyin);
+            }
+            System.err.println(sb.toString());
+        }catch (BadHanyuPinyinOutputFormatCombination e){}
+
+    }
+
+    /**
+     * 汉字转拼音
+     * @param s
+     */
+    public static void chinese2PinYin(String s){
+        HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
+        format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+        format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+        format.setVCharType(HanyuPinyinVCharType.WITH_V);
+        try{
+            StringBuffer sb = new StringBuffer();
+            for(int i = 0;i<s.length();i++){
+                String[] strs = PinyinHelper.toHanyuPinyinStringArray(s.charAt(i),format);
+                if(strs==null|strs.length==0){
+                    continue;
+                }
+                String index = strs[0];
+                char c = index.charAt(0);
+                String pinyin = String.valueOf(c).toUpperCase().concat(index.substring(1));
+                sb.append(pinyin);
+            }
+            System.err.println(sb.toString());
+        }catch (BadHanyuPinyinOutputFormatCombination e){}
+
+    }
+
 
 
     /**
@@ -112,10 +172,6 @@ public class ContextUtil {
     }
 
 
-//    public static void main(String[] args) {
-//        String a = FormatHEXString("0a7b00", 4);
-//        System.err.println(a);
-//    }
 
     public static String FormatNum6(int a) {
         DecimalFormat df = new DecimalFormat("000000");

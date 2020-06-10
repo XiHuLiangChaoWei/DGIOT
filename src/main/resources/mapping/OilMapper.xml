@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zz.dgcc.DGIOT.mapper.OilMapper">
+    <resultMap id="OilResultMap" type="cn.zz.dgcc.DGIOT.entity.Oil">
+        <result column="id" property="id"/>
+        <result column="dev_name" property="devName"/>
+        <result column="rec_time" property="receivedTime"/>
+        <result column="content" property="content"/>
+        <result column="batch" property="batch"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="cn.zz.dgcc.DGIOT.entity.Oil" useGeneratedKeys="true" keyProperty="id">
+        INSERT  INTO
+            oil
+            (dev_name,rec_time,content,batch)
+        VALUES
+            (#{devName},#{receivedTime},#{content},#{batch})
+    </insert>
+
+
+    <select id="getAll" resultMap="OilResultMap">
+        SELECT
+            *
+        FROM
+            oil
+    </select>
+
+
+</mapper>

@@ -229,6 +229,16 @@
             Dtu_id = #{dtuId} AND Dev_Id = #{devId}
     </select>
 
+    <select id="selectNoUsedDevByTypeAndProject" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            type = #{type} AND is_used = 0 AND user_id = #{userId}
+        ORDER BY
+            device_name
+    </select>
 
     <select id="selectNoUsedDevByType" resultMap="DeviceResultMap">
         SELECT

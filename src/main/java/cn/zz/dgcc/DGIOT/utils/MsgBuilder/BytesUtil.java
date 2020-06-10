@@ -12,14 +12,16 @@ public class BytesUtil {
 //        BytesUtil bytesUtil = new BytesUtil();
 //        Float a = Hex2Float("41 9D 9F B4");
 //    }
+
     /**
      * HEX转Float
+     *
      * @param string
      * @return
      */
-    public static Float Hex2Float(String string){
-        String msg = string.replace(" ","");
-        Float tar = Float.intBitsToFloat(Integer.valueOf(msg,16)) ;
+    public static Float Hex2Float(String string) {
+        String msg = string.replace(" ", "");
+        Float tar = Float.intBitsToFloat(Integer.valueOf(msg, 16));
         System.err.println(tar);
         return tar;
     }
@@ -245,6 +247,7 @@ public class BytesUtil {
         return bs;
     }
 
+
     /**
      * 十六进制串转字节数组
      *
@@ -277,6 +280,15 @@ public class BytesUtil {
         b2[1] = b[0];
         return b2;
     }
+
+    public static int oilTempTran(String strHex) {
+        String h = strHex.substring(0, 2);
+        String l = strHex.substring(2, 4);
+        int h1 = Integer.parseInt(h, 16) * 256;
+        int l1 = Integer.parseInt(l, 16);
+        return h1 + l1;
+    }
+
 
     /**
      * 16进制转换为10进制
@@ -324,20 +336,6 @@ public class BytesUtil {
         return nSum;
     }
 
-//    public static void main(String[] args) {
-//        int id = 0;
-//        System.out.println(BytesUtil.getOrderId(id));
-//        System.out.println(BytesUtil.getTargetId(id + "", true));
-//        System.out.println(hexToInt("FF6A"));
-//        System.out.println(intToHexStr(-150));
-//        //System.out.println(hexStrToBytes("0024"));
-//        String msg = "0000000000090010405D00050A0001012C012C00040006";
-//        byte[] order = hexStrToBytes(msg);
-//        byte[] temp = hexStrToBytes(intToHexStr(-150));
-//        order[order.length - 4] = temp[2];
-//        order[order.length - 3] = temp[3];
-//        System.out.println(bytesToString(order));
-//    }
 
     /**
      * 16进制字符串 高低换位

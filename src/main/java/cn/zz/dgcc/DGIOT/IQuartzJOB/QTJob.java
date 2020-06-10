@@ -28,13 +28,44 @@ public class QTJob implements Job {
     public QTJob() {
     }
 
+    public List<Device> getDeviceList() {
+        List<Device> deviceList = deviceService.getAllDev();
+        return deviceList;
+    }
+
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        log.info("定时查询气调任务开始··············");
-        String devName = jobExecutionContext.getJobDetail().getJobDataMap().getString("device");
-        String userId = jobExecutionContext.getJobDetail().getJobDataMap().getString("userId");
-        Device device = deviceService.getDevByDevName(devName);
-        downOrderUtils.deployN2Order(Integer.parseInt(userId), device);
-        log.info("定时查询气调任务结束··············");
+        System.out.println("开始执行计划任务");
+        //从jobDataMap中获取设备列表
+        List<Device> devices = getDeviceList();
+        try {
+            for (Device device : devices
+            ) {
+                if (device.getType() == 0) {
+                    continue;
+                }
+                if (device.getType() == 2) {
+                    new Thread(() -> {
+                        log.info("定时查询气调··············");
+                        downOrderUtils.deployN2Order(0, device);
+                    }).start();
+                } else if (device.getType() == 3) {
+                    continue;
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+//    @Override
+//    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+//        log.info("定时查询气调任务开始··············");
+//        String devName = jobExecutionContext.getJobDetail().getJobDataMap().getString("device");
+//        String userId = jobExecutionContext.getJobDetail().getJobDataMap().getString("userId");
+//        Device device = deviceService.getDevByDevName(devName);
+//        downOrderUtils.deployN2Order(Integer.parseInt(userId), device);
+//        log.info("定时查询气调任务结束··············");
+//    }
 }

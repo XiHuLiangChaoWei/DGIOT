@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit;
  * ->
  */
 public class AMQPServiceUtils {
+
+
     //静态初始化一个自身变量
     static AMQPServiceUtils amqpServiceUtils = new AMQPServiceUtils();
 
@@ -161,7 +163,7 @@ public class AMQPServiceUtils {
 //            if(message.getBody(byte[].class)==null){
 //                return;
 //            }
-            //将message主体转化成字符串类型数据
+//将message主体转化成字符串类型数据
             byte[] body = message.getBody(byte[].class);
 
             String content = new String(body,"GB2312").replace(" ", "");
@@ -173,10 +175,6 @@ public class AMQPServiceUtils {
                     + ", topic = " + topic
                     + ", messageId = " + messageId
                     + ", content = " + content);
-//            log.info("receive message"
-//                    + ", topic = " + topic
-//                    + ", messageId = " + messageId
-//                    + ", content = " + content);
             //拼装消息对象
             amqpMessage = new AMQPMessage(topic, messageId, content,body);
             //判断dtu接入topic
@@ -188,7 +186,7 @@ public class AMQPServiceUtils {
                 amqpServiceUtils.parseMsg(amqpMessage);
             }
             amqpServiceUtils.parseMsg(amqpMessage);
-            alertMsg(amqpMessage);
+//            alertMsg(amqpMessage);
 
         } catch (Exception e) {
             logger.error("processMessage occurs error ", e);

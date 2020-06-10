@@ -22,4 +22,9 @@ public class CompanyServiceImpl implements CompanyService {
     public Company getC(int companyId) {
         return companyMapper.getComName(companyId);
     }
+
+    @Override
+    public int getCIDByName(String xiangMu) {
+        return companyMapper.selectIdByName(xiangMu);
+    }
 }

@@ -7,6 +7,7 @@ import cn.zz.dgcc.DGIOT.service.Exception.ISqlException;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg3AnalysisGrain;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisN2;
+import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisOil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class AnalysisServiceImpl implements AnalysisService {
     OrderService orderService;
     @Autowired
     QTConfService QTConfService;
+    @Autowired
+    OilService oilService;
 
     private static String 开关动作 = "1";
     private static String 查询动作 = "2";
@@ -136,7 +139,14 @@ public class AnalysisServiceImpl implements AnalysisService {
                 throw new ISqlException("持久化制氮机信息到本地出错");
             }
         }
-
+        if (msg.startsWith("AA8A")) {
+            Oil oil = new Oil(devName, date, msg);
+            int rs = oilService.saveOil(oil);
+            if (rs == 1) {
+                Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
+                dg4AnalysisOil.analysisN2Info(msg);
+            }
+        }
         if (msg.startsWith("AA55E1")) {
             //代表控制类命令返回，无需解析
         }
@@ -156,7 +166,7 @@ public class AnalysisServiceImpl implements AnalysisService {
                 JSONObject jo = dg4AnalysisN2.analysisN2Info(n2, devName, depot);
                 N2VO n2VO = (N2VO) jo.get("气调信息");
                 int clStatus = n2VO.getCLStatus();
-                int r = depotService.updateQTStatusById(clStatus,depot.getId());
+                int r = depotService.updateQTStatusById(clStatus, depot.getId());
 
             }
         }

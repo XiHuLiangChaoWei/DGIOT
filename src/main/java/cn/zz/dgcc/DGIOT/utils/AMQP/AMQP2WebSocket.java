@@ -41,12 +41,11 @@ public class AMQP2WebSocket extends HttpServlet {
         this.msg = msg;
     }
 
-//    public void sendMsg(String message) {
+    //    public void sendMsg(String message) {
 ////        log.info("A2W=" + message);
 //        this.setMsg(message);
 //        client.send(msg);
 //    }
-
     @Override
     public void init() throws ServletException {
         super.init();
@@ -61,16 +60,13 @@ public class AMQP2WebSocket extends HttpServlet {
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
 //                    }
-
-                    if (msg != null) client.send(msg);
-                    if (msgC != null) client.send(msgC.toString());
-                    client.close();
                 }
 
                 @Override
                 public void onMessage(String s) {
                     logger.info("收到：" + s);
-
+                    if (msg != null) client.send(msg);
+                    if (msgC != null) client.send(msgC.toString());
                 }
 
                 @Override

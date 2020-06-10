@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Created by: YYL
  * Date: 2020/4/10 8:39
  * ClassExplain : 进行云端设备操作
@@ -61,6 +60,7 @@ public class IotServiceImpl implements IoTService {
     private final static int 粮情设备 = 3;
     private final static int 环流设备 = 4;
     private final static int 制氮设备 = 5;
+    private final static int 油情设备 = 6;
     private final static int 测试设备 = 0;
 
     /*
@@ -102,6 +102,9 @@ public class IotServiceImpl implements IoTService {
                         break;
                     case "a1J3Y773MWq":
                         a.setType(气调设备);
+                        break;
+                    case "g092bBa0bSV":
+                        a.setType(油情设备);
                         break;
                 }
                 devList.add(a);
@@ -412,7 +415,7 @@ public class IotServiceImpl implements IoTService {
      * @param topicFullName
      * @param messageContent
      * @param productKey
-     * @param qos   0-ASCII发送    1-HEX发送
+     * @param qos            0-ASCII发送    1-HEX发送
      * @return
      */
     @Override
@@ -421,7 +424,7 @@ public class IotServiceImpl implements IoTService {
             qos = "0";
         }
 
-        System.err.println("输入的初始数据messageC:" + messageContent+"||"+topicFullName);
+        System.err.println("输入的初始数据messageC:" + messageContent + "||" + topicFullName);
         String parseMsg = messageContent.replace(" ", "");
 //        parseMsg = parseMsg.toUpperCase();
 //        System.err.println("去除空格的中间数据parseMsg:" + parseMsg);

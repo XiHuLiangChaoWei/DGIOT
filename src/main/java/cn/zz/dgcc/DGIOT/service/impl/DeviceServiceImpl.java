@@ -1,11 +1,15 @@
 package cn.zz.dgcc.DGIOT.service.impl;
 
+import cn.zz.dgcc.DGIOT.entity.Company;
 import cn.zz.dgcc.DGIOT.entity.Device;
 import cn.zz.dgcc.DGIOT.mapper.DeviceMapper;
+import cn.zz.dgcc.DGIOT.service.CompanyService;
+import cn.zz.dgcc.DGIOT.service.DepotService;
 import cn.zz.dgcc.DGIOT.service.DeviceService;
 import cn.zz.dgcc.DGIOT.service.Exception.ISqlException;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
 import cn.zz.dgcc.DGIOT.utils.DeviceUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import sun.rmi.runtime.Log;
@@ -29,6 +33,8 @@ public class DeviceServiceImpl implements DeviceService {
     private final Logger log = Logger.getLogger(this.getClass().getSimpleName());
     @Resource
     DeviceMapper deviceMapper;
+    @Autowired
+    CompanyService companyService;
 
 
     @Override
@@ -47,6 +53,11 @@ public class DeviceServiceImpl implements DeviceService {
         return rs;
     }
 
+    /**
+     *
+     * @param amqpMessage
+     * @return
+     */
     @Override
     public int registerDevice(AMQPMessage amqpMessage) {
         /*
@@ -66,7 +77,7 @@ public class DeviceServiceImpl implements DeviceService {
 //        resetDeviceByDtuId(device.getDtuId());
 //        boolean result = reg(device);
         else if (isExistInYun(device) == 0) {
-            //需要进行设备注册，result时注册结果
+            //需要进行设备注册，result=注册结果
             boolean result = reg(device);
             if (!result) {
                 return 需要云端注册新设备;
@@ -136,9 +147,18 @@ public class DeviceServiceImpl implements DeviceService {
         deviceMapper.resetDevInfoByDevId(devId);
     }
 
+    /**
+     * 从设备上传信息中，解析拿到项目名，通过项目名拿到项目id，通过项目id在设备表中查找设备进行绑定
+     * @param device
+     * @return
+     */
     private boolean reg(Device device) {
-        //查询云设备列表中与注册设备type相同且没有被使用的设备列表
-        List<Device> ls = getNoUsedDeviceListByType(device.getType());
+        //查询云设备列表中与注册设备type相同且没有被使用的  同项目设备列表
+        String devNote = device.getDevNote();
+        String[] strs = devNote.split("-");
+        String xiangMu = strs[0];
+        int companyId = companyService.getCIDByName(xiangMu);
+        List<Device> ls = getNoUsedDeviceListByTypeAndProject(device.getType(),companyId);
         if (ls == null | ls.isEmpty()) {
             log.info("没有可分配的云端设备");
             return false;
@@ -154,7 +174,11 @@ public class DeviceServiceImpl implements DeviceService {
         return upRs == 1;
     }
 
-
+    /**
+     * 重置dtuid
+     * @param dtuId
+     * @return
+     */
     private int resetDtuIdByDtuId(String dtuId) {
         return deviceMapper.resetDtuId(dtuId);
     }
@@ -306,8 +330,8 @@ public class DeviceServiceImpl implements DeviceService {
         return deviceMapper.selectAllQT();
     }
 
-    public List<Device> getNoUsedDeviceListByType(int type) {
-        List<Device> rs = deviceMapper.selectNoUsedDevByType(type);
+    public List<Device> getNoUsedDeviceListByTypeAndProject(int type,int companyId) {
+        List<Device> rs = deviceMapper.selectNoUsedDevByTypeAndProject(type,companyId);
         return rs;
     }
 

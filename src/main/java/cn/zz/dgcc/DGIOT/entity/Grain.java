@@ -13,7 +13,7 @@ import java.util.Date;
 public class Grain {
     int id;
     String devName; //使用云端devName
-    Date recivedTime;
+    Date receivedTime;
     String content;
     String msgId;
     String batchId;
@@ -23,7 +23,7 @@ public class Grain {
 
     public Grain(String devName, Date date, String msg, String msgId) {
         this.devName = devName;
-        this.recivedTime = date;
+        this.receivedTime = date;
         this.content = msg;
         this.msgId = msgId;
         this.batchId = ContextUtil.getTimeYMDHMM(date);
@@ -34,7 +34,7 @@ public class Grain {
         return "Grain{" +
                 "id=" + id +
                 ", devName='" + devName + '\'' +
-                ", recivedTime=" + recivedTime +
+                ", receivedTime=" + receivedTime +
                 ", content='" + content + '\'' +
                 ", msgId='" + msgId + '\'' +
                 ", batchId='" + batchId + '\'' +
@@ -57,12 +57,12 @@ public class Grain {
         this.devName = devName;
     }
 
-    public Date getRecivedTime() {
-        return recivedTime;
+    public Date getreceivedTime() {
+        return receivedTime;
     }
 
-    public void setRecivedTime(Date recivedTime) {
-        this.recivedTime = recivedTime;
+    public void setreceivedTime(Date receivedTime) {
+        this.receivedTime = receivedTime;
     }
 
     public String getContent() {

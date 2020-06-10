@@ -141,7 +141,7 @@ public class Dg3AnalysisGrain {
 
 //        Date date = new Date();
         String batchId = grain.getBatchId();
-        Date date = grain.getRecivedTime();
+        Date date = grain.getreceivedTime();
         return this.addPoint(temps, date, depot, batchId, finalInnH, finalInnT);
     }
 
