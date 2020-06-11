@@ -178,23 +178,93 @@ public class AppDateController extends BaseController {
     }
 
 
+    /**
+     * @param session
+     * @param depotId
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/oil")
     public JsonResult<JSONObject> showOil(HttpSession session, Integer depotId) {
         Depot depot = depotService.getDepotByDepotId(depotId);
         String devName = depotService.getDevNameByDepotIdAndType(depotId, 6);
+        Device device = deviceService.getDevByDevName(devName);
         if (devName == null | devName.length() == 0) {
             return new JsonResult<>(servWrong, "该仓库中不存在油情设备");
         }
         Oil oil = oilService.getOilInfoByDevName(devName);
         if (oil == null) {
+            downOrderUtils.deployOilOrder(getUserIdFromSession(session), device);
             return new JsonResult<>(servWrong, "没有获取到历史油情");
         }
         String content = oil.getContent();
         Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
-        JSONObject jo = dg4AnalysisOil.analysisN2Info(content);
+        JSONObject jo = dg4AnalysisOil.analysisOilInfo(content);
+        downOrderUtils.deployOilOrder(getUserIdFromSession(session), device);
         return new JsonResult<>(success, jo);
     }
+
+    /**
+     * 查询校正配置
+     *
+     * @param session
+     * @param depotId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/oil/conf")
+    public JsonResult<JSONObject> showOilConf(HttpSession session, Integer depotId) {
+        Depot depot = depotService.getDepotByDepotId(depotId);
+        String devName = depotService.getDevNameByDepotIdAndType(depotId, 6);
+        Device device = deviceService.getDevByDevName(devName);
+        if (devName == null | devName.length() == 0) {
+            return new JsonResult<>(servWrong, "该仓库中不存在油情设备");
+        }
+        OilConf oilConf = oilService.getOilConfByDevName(devName);
+        if (oilConf == null) {
+            downOrderUtils.deployOilConfChaxun(getUserIdFromSession(session), device);
+            return new JsonResult<>(servWrong, "没有获取到历史油情校正信息");
+        }
+        String content = oilConf.getContent();
+        Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
+        JSONObject jo = dg4AnalysisOil.analysisOil2(content);
+        //下发查询配置
+        downOrderUtils.deployOilConfChaxun(getUserIdFromSession(session), device);
+        return new JsonResult<>(success, jo);
+    }
+
+
+    @ResponseBody
+    @RequestMapping("/oil/conf/set")
+    public JsonResult<String> setOilConf(HttpSession session, Integer depotId) {
+        Depot depot = depotService.getDepotByDepotId(depotId);
+        String devName = depotService.getDevNameByDepotIdAndType(depotId, 6);
+        Device device = deviceService.getDevByDevName(devName);
+        if (devName == null | devName.length() == 0) {
+            return new JsonResult<>(servWrong, "该仓库中不存在油情设备");
+        }
+//        OilConf oilConf = oilService.getOilConfByDevName(devName);
+//        if (oilConf == null) {
+//            downOrderUtils.deployOilConfChaxun(getUserIdFromSession(session), device);
+//            return new JsonResult<>(servWrong, "没有获取到历史油情校正信息");
+//        }
+//        String content = oilConf.getContent();
+//        Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
+//        JSONObject jo = dg4AnalysisOil.analysisOil2(content);
+        //下发查询配置
+        //温度校准值
+        StringBuffer sb = new StringBuffer();
+
+        for (int i = 0; i < 121; i++) {
+            sb.append("08");
+        }
+        //高度校准值
+        String heigh = "0000";
+
+        String set = "";
+        return downOrderUtils.deployOilConfSet(getUserIdFromSession(session), device, heigh + sb.toString());
+    }
+
 
     /**
      * 通过depotId 获取仓库信息，并查询最新的粮情信息

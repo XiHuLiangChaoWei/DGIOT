@@ -9,6 +9,22 @@
         <result column="batch" property="batch"/>
     </resultMap>
 
+    <resultMap id="OilConfResultMap" type="cn.zz.dgcc.DGIOT.entity.OilConf">
+        <result column="id" property="id"/>
+        <result column="dev_name" property="devName"/>
+        <result column="content" property="content"/>
+        <result column="rec_time" property="recTime"/>
+    </resultMap>
+
+    <insert id="insertConf" parameterType="cn.zz.dgcc.DGIOT.entity.OilConf" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+            oil_jiaozhun_conf
+            (dev_name,content,rec_time)
+        VALUES
+            (#{devName},#{content},#{recTime})
+    </insert>
+
+
     <insert id="insert" parameterType="cn.zz.dgcc.DGIOT.entity.Oil" useGeneratedKeys="true" keyProperty="id">
         INSERT  INTO
             oil
@@ -24,7 +40,23 @@
             oil
         WHERE
             dev_name = #{devName}
+        ORDER BY
+            id
+        DESC LIMIT 1
     </select>
+
+    <select id="selectOilConfByName" resultMap="OilConfResultMap">
+        SELECT
+            *
+        FROM
+           oil_jiaozhun_conf
+        WHERE
+            dev_name = #{devName}
+        ORDER BY
+            id
+        DESC LIMIT 1
+    </select>
+
 
     <select id="getAll" resultMap="OilResultMap">
         SELECT

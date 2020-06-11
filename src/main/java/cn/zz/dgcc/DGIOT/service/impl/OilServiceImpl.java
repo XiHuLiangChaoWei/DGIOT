@@ -1,6 +1,7 @@
 package cn.zz.dgcc.DGIOT.service.impl;
 
 import cn.zz.dgcc.DGIOT.entity.Oil;
+import cn.zz.dgcc.DGIOT.entity.OilConf;
 import cn.zz.dgcc.DGIOT.mapper.OilMapper;
 import cn.zz.dgcc.DGIOT.service.OilService;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,15 @@ public class OilServiceImpl implements OilService {
     @Override
     public Oil getOilInfoByDevName(String devName) {
         return oilMapper.selectOilInfoByName(devName);
+    }
+
+    @Override
+    public int saveConf(OilConf oilConf) {
+        return oilMapper.insertConf(oilConf);
+    }
+
+    @Override
+    public OilConf getOilConfByDevName(String devName) {
+        return oilMapper.selectOilConfByName(devName);
     }
 }

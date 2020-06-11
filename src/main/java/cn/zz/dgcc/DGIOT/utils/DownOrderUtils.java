@@ -58,7 +58,7 @@ public class DownOrderUtils {
         String devName = device.getDeviceName();
         String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
         log.info(msg.toString() + "-----" + topicFullName);
-        JSONObject json = ioTService.pub(topicFullName, msg.toString(), pk, "1");
+        JSONObject json = ioTService.pub(topicFullName, msg.toString(), pk, String.valueOf(sendType));
         log.info(json.toJSONString());
         Order o = new Order(userId, 0, json.getString("MessageId"), msgType, msg.toString(),
                 ContextUtil.getTimeYMDHMM(null), device.getDeviceName(), json.getString("Success"));
@@ -79,13 +79,33 @@ public class DownOrderUtils {
     public JsonResult<String> deployOilOrder(int userId, Device rs) {
         log.info("IndexController=" + rs);
         OilCommondBuilder oilCommondBuilder = OilCommondBuilder.getInstance();
-        String devBH = rs.getDevBH();
-        String devZH = rs.getDevZH();
-        if (devBH == null | devZH == null) {
-            throw new RuntimeException("设备配置未完成");
-        }
         BuildMessage gasMsg = oilCommondBuilder.build();
         return deployAndSaveOrder(userId, rs, gasMsg, 6,1);
+    }
+
+    /**
+     * 下发查询油情校验
+     * @param userId
+     * @param rs
+     * @return
+     */
+    public JsonResult<String> deployOilConfChaxun(int userId,Device rs){
+        Oil2CommondBuilder oil2CommondBuilder = Oil2CommondBuilder.getInstance();
+        BuildMessage confMsg = oil2CommondBuilder.build(2);
+        return deployAndSaveOrder(userId,rs,confMsg,6,1);
+    }
+
+    /**
+     * 下发油情设置
+     * @param userId
+     * @param rs
+     * @return
+     */
+    public JsonResult<String> deployOilConfSet(int userId,Device rs,String set){
+        Oil2CommondBuilder oil2CommondBuilder = Oil2CommondBuilder.getInstance();
+        oil2CommondBuilder.setOilConf(set);
+        BuildMessage confMsg = oil2CommondBuilder.build(1);
+        return deployAndSaveOrder(userId,rs,confMsg,6,1);
     }
 
 

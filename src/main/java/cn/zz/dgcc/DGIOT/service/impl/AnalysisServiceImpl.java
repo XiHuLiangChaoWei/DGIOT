@@ -140,13 +140,29 @@ public class AnalysisServiceImpl implements AnalysisService {
             }
         }
         if (msg.startsWith("AA8A")) {
+            //油情信息
             Oil oil = new Oil(devName, date, msg);
             int rs = oilService.saveOil(oil);
             if (rs == 1) {
                 Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
-                JSONObject jo = dg4AnalysisOil.analysisN2Info(msg);
+                JSONObject jo = dg4AnalysisOil.analysisOilInfo(msg);
             }
         }
+        if (msg.startsWith("AAAC")) {
+            //油情校正信息
+            Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
+            JSONObject jo = dg4AnalysisOil.analysisOil2(msg);
+            String height = jo.getString("height");
+            String temps = jo.getString("temps");
+            String recTime = jo.getString("time");
+            OilConf oilConf = new OilConf(devName,recTime,msg);
+            int rs = oilService.saveConf(oilConf);
+            if (rs == 1) {
+                log.info("保存" + devName + "配置信息");
+            }
+        }
+
+
         if (msg.startsWith("AA55E1")) {
             //代表控制类命令返回，无需解析
         }

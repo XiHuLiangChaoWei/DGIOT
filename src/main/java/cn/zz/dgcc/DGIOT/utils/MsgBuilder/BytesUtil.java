@@ -1,5 +1,7 @@
 package cn.zz.dgcc.DGIOT.utils.MsgBuilder;
 
+import java.util.Arrays;
+
 /**
  * Created by: YYL
  * Date: 2020/5/6 10:00
@@ -281,14 +283,39 @@ public class BytesUtil {
         return b2;
     }
 
-    public static int oilTempTran(String strHex) {
-        String h = strHex.substring(0, 2);
-        String l = strHex.substring(2, 4);
-        int h1 = Integer.parseInt(h, 16) * 256;
-        int l1 = Integer.parseInt(l, 16);
-        return h1 + l1;
+    public static int bytes2Int(byte[] bytes) {
+        //如果不与0xff进行按位与操作，转换结果将出错，有兴趣的同学可以试一下。
+        int int1 = bytes[0] & 0xff;
+        int int2 = (bytes[1] & 0xff) << 8;
+        int int3 = (bytes[2] & 0xff) << 16;
+        int int4 = (bytes[3] & 0xff) << 24;
+
+        return int1 | int2 | int3 | int4;
     }
 
+    /**
+     * 油温解析
+     *
+     * @param strHex
+     * @return
+     */
+    public static double oilTempTran(String strHex) {
+        String h = strHex.substring(0, 2);
+        String l = strHex.substring(2, 4);
+
+        int h1 = hexToInt(h) * 256;
+//        System.err.println(Arrays.toString(hexStrToBytes(h)));
+        int h2 = hexStrToBytes(h)[0] * 256;
+//        System.err.println(h2);
+        int l1 = hexToInt(l);
+        return h2 + l1;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(oilTempTran("FF67"));
+        System.err.println(oilTempTran(""));
+    }
 
     /**
      * 16进制转换为10进制

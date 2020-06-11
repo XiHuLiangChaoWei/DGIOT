@@ -59,7 +59,7 @@ public class OilCommondBuilder extends CommondBuild {
         //f分级地址
         sb.append(devAddress);
         //预留扩展
-        sb.append("FFFFFFFFFFFFFFFFFFFFFFFF");
+        sb.append("FFFFFFFFFFFFFFFFFFFFFFFFFF");
         buildMessage.setBodyContent(sb.toString());
     }
 }

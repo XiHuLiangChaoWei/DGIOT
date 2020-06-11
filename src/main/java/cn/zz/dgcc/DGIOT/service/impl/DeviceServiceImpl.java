@@ -54,7 +54,6 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     /**
-     *
      * @param amqpMessage
      * @return
      */
@@ -149,6 +148,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     /**
      * 从设备上传信息中，解析拿到项目名，通过项目名拿到项目id，通过项目id在设备表中查找设备进行绑定
+     *
      * @param device
      * @return
      */
@@ -158,7 +158,7 @@ public class DeviceServiceImpl implements DeviceService {
         String[] strs = devNote.split("-");
         String xiangMu = strs[0];
         int companyId = companyService.getCIDByName(xiangMu);
-        List<Device> ls = getNoUsedDeviceListByTypeAndProject(device.getType(),companyId);
+        List<Device> ls = getNoUsedDeviceListByTypeAndProject(device.getType(), companyId);
         if (ls == null | ls.isEmpty()) {
             log.info("没有可分配的云端设备");
             return false;
@@ -176,6 +176,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     /**
      * 重置dtuid
+     *
      * @param dtuId
      * @return
      */
@@ -184,17 +185,17 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     int isExistInYun(Device device) {
-        int rs =
-                //deviceMapper.selectCountDevByDevAndDtu(device.getDevId(), device.getDtuId());
-                //修改 通过分机5元作为身份验证
-                deviceMapper.selectCountDevByDevInfoWWithoutDevAndDtu(device);
+
+        //deviceMapper.selectCountDevByDevAndDtu(device.getDevId(), device.getDtuId());
+        //修改 通过分机5元作为身份验证
+        int rs = deviceMapper.selectCountDevByDevInfoWWithoutDevAndDtu(device);
         if (rs == 0) {
             log.info("云端不存在该设备");
             //TODO 注册设备
             return 0;
         } else if (rs == 1) {
             Device rs1 =
-                //deviceMapper.selectDevByDevAndDtu(device.getDevId(), device.getDtuId());
+                    //deviceMapper.selectDevByDevAndDtu(device.getDevId(), device.getDtuId());
                     deviceMapper.selectDevByDevInfo(device);
             //云端存在该设备，判断存储的dev和dtu信息是否相符
             log.info("查询云端设备信息：" + rs1);
@@ -330,8 +331,8 @@ public class DeviceServiceImpl implements DeviceService {
         return deviceMapper.selectAllQT();
     }
 
-    public List<Device> getNoUsedDeviceListByTypeAndProject(int type,int companyId) {
-        List<Device> rs = deviceMapper.selectNoUsedDevByTypeAndProject(type,companyId);
+    public List<Device> getNoUsedDeviceListByTypeAndProject(int type, int companyId) {
+        List<Device> rs = deviceMapper.selectNoUsedDevByTypeAndProject(type, companyId);
         return rs;
     }
 
