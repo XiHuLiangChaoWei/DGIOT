@@ -76,4 +76,5 @@ public class DepotServiceImpl implements DepotService {
     public int updateQTStatusById(int clStatus, int id) {
         return depotMapper.upQTStatusById(id,clStatus);
     }
+
 }

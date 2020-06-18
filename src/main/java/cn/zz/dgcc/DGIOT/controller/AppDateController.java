@@ -10,9 +10,11 @@ import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg3AnalysisGrain;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisN2;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisOil;
 import cn.zz.dgcc.DGIOT.utils.MsgBuilder.*;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,6 +62,23 @@ public class AppDateController extends BaseController {
     @Autowired
     OilService oilService;
 
+    @ResponseBody
+    @RequestMapping("onlineCount")
+    public JsonResult<JSONObject> onlineNum() {
+        int rs = deviceService.getOnlineCount();
+        int qtrs = deviceService.getOnlineCount(2);
+        int lqrs = deviceService.getOnlineCount(3);
+        JSONObject jo = new JSONObject();
+        jo.put("qtOnline", qtrs);
+        jo.put("lqOnline", lqrs);
+        return new JsonResult<>(success, jo);
+    }
+
+    /**
+     * 获取app版本
+     *
+     * @return
+     */
     @RequestMapping("getAppVersion")
     @ResponseBody
     public JsonResult<AppVersion> getVersion() {
@@ -85,7 +104,8 @@ public class AppDateController extends BaseController {
         //从session获取userId
         int userId = getUserIdFromSession(h);
         //获取当前用户管理下的制氮机
-        Device n2 = deviceService.getN2DevByUser(userId);
+        int companyId = userService.getCompanyIdByUserId(userId);
+        Device n2 = deviceService.getN2DevByUser(companyId);
         downOrderUtils.N2DevControler(controller, n2, userId);
         return new JsonResult<>(success, "下发成功");
     }
@@ -132,7 +152,7 @@ public class AppDateController extends BaseController {
      */
     @RequestMapping("/getDepotList")
     @ResponseBody
-    public JsonResult<JSONArray> showDevList(HttpSession session) {
+    public JsonResult<JSONObject> showDevList(HttpSession session) {
         //从session获取userId
         int userId = getUserIdFromSession(session);
         //获取userId对应的companyId
@@ -141,6 +161,7 @@ public class AppDateController extends BaseController {
         //获取仓库列表
         JSONArray jsonArray = new JSONArray();
         List<Depot> depots = depotService.getDepotListOnCompanyId(companyId);
+
         Company c = companyService.getC(companyId);
         String companyName = c.getName();
 
@@ -155,7 +176,15 @@ public class AppDateController extends BaseController {
             js.put("companyName", companyName);
             jsonArray.add(js);
         }
-        return new JsonResult<>(success, jsonArray);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("depotList", jsonArray);
+        jsonObject.put("productName", companyName);
+        int qtrs = deviceService.getOnlineCount(2);
+        int lqrs = deviceService.getOnlineCount(3);
+        jsonObject.put("qtOnline", qtrs);
+        jsonObject.put("lqOnline", lqrs);
+        return new JsonResult<>(success, jsonObject);
     }
 
 
@@ -177,6 +206,32 @@ public class AppDateController extends BaseController {
         return jr;
     }
 
+    /**
+     * TODO
+     *
+     * @param session
+     * @param depotId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/oil/list")
+    public JsonResult<JSONArray> getListByDepotId(HttpSession session, Integer depotId) {
+        String devName = depotService.getDevNameByDepotIdAndType(depotId, 6);
+        List<Oil> list = oilService.getOilInfoListByDevName(devName);
+        Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
+        JSONArray ja = new JSONArray();
+        String batch = "";
+        for (Oil o : list
+        ) {
+            if (o.getBatch().equals(batch)) {
+                continue;
+            }
+            batch = o.getBatch();
+            JSONObject jo = dg4AnalysisOil.analysisOilInfo(o.getContent(), o.getReceivedTime());
+            ja.add(jo);
+        }
+        return new JsonResult<>(success, ja);
+    }
 
     /**
      * @param session
@@ -199,7 +254,7 @@ public class AppDateController extends BaseController {
         }
         String content = oil.getContent();
         Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
-        JSONObject jo = dg4AnalysisOil.analysisOilInfo(content);
+        JSONObject jo = dg4AnalysisOil.analysisOilInfo(content, oil.getReceivedTime());
         downOrderUtils.deployOilOrder(getUserIdFromSession(session), device);
         return new JsonResult<>(success, jo);
     }

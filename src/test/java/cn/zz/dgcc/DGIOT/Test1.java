@@ -48,8 +48,18 @@ public class Test1 {
 
     @Test
     public void login() {
-        User u = userService.Login("6000", "admin");
+        User u = userService.Login("6004", "admin");
         System.err.println(u);
+    }
+
+    @Test
+    public void reg(){
+        User u  = new User();
+        u.setUserName("6004");
+        u.setPassword("admin");
+        u.setCompanyId(1);
+        u.setType("1");
+        userService.reg(u);
     }
 
     @Test

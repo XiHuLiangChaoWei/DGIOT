@@ -30,4 +30,6 @@ public interface UserMapper {
             @Param("password") String password);
 
     User selectByUserId(Integer userId);
+
+    int selectCompanyIdByUserId(int userId);
 }

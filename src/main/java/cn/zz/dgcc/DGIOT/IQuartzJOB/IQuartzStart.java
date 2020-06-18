@@ -1,17 +1,11 @@
 package cn.zz.dgcc.DGIOT.IQuartzJOB;
 
-import cn.zz.dgcc.DGIOT.entity.Device;
 import cn.zz.dgcc.DGIOT.service.DeviceService;
 import cn.zz.dgcc.DGIOT.utils.DownOrderUtils;
 import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by: YYL
@@ -29,71 +23,76 @@ public class IQuartzStart {
     @Autowired
     DownOrderUtils downOrderUtils;
 
-    /**
-     * 1.获取设备列表
-     */
-    public List<Device> getDeviceList() {
-        List<Device> deviceList = deviceService.getAllDev();
-        return deviceList;
-    }
-
-    /**
-     * 2.设备分类
-     */
-    public void splitByType() {
-        List<Device> deviceList = getDeviceList();
-        List<Device> qtDev = null;
-        List<Device> grainDev = null;
-        List<Device> zdDev = null;
-        for (Device device : deviceList
-        ) {
-            if (device.getType() == 2) {
-                qtDev.add(device);
-            } else if (device.getType() == 3) {
-                grainDev.add(device);
-            } else if (device.getType() == 5) {
-                zdDev.add(device);
-            }
-        }
-    }
-
-
     public void quartzJobForDevice() throws SchedulerException {
-
-//        SchedulerFactory sf = new StdSchedulerFactory();
-//        Scheduler scheduler = sf.getScheduler();
-
+        //清理scheduler
         scheduler.clear();
+        //初始化
         scheduler.start();
+        //配置气调定时信息
         JobDetail qt = JobBuilder.newJob(QTJob.class).withIdentity("localQt", "Defalt")
                 .storeDurably().build();
         CronTrigger trigger = TriggerBuilder.newTrigger().forJob(qt).withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ? "))
                 .withIdentity("localQt", "Defalt").build();
         scheduler.scheduleJob(qt, trigger);
-
-
+        //配置同步时钟任务
         JobDetail timer = JobBuilder.newJob(((Job) jobExecutionContext -> {
             downOrderUtils.JsonTime(0);
         }).getClass()).withIdentity("timer", "Defalt")
                 .storeDurably().build();
         CronTrigger trigger2 = TriggerBuilder.newTrigger().forJob(timer).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ? "))
                 .withIdentity("timer", "Defalt").build();
-
-
+        //配置查询粮情任务
         JobDetail grain = JobBuilder.newJob(QTJob.class).withIdentity("localGrain", "Defalt")
                 .storeDurably().build();
         CronTrigger trigger3 = TriggerBuilder.newTrigger().forJob(grain).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ? "))
                 .withIdentity("localGrain", "Defalt").build();
-
-
+        //配置定时刷新设备状态任务
+        JobDetail iotStatus = JobBuilder.newJob(IotStatusJob.class).withIdentity("localIot", "Defalt")
+                .storeDurably().build();
+        CronTrigger iotTrigger = TriggerBuilder.newTrigger().forJob(iotStatus).withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ? "))
+                .withIdentity("localIot", "Defalt").build();
 //        JobDetail test = JobBuilder.newJob(IJOB.class).build();
 //        Trigger testT = TriggerBuilder.newTrigger().forJob(test).startNow().build();
 //        scheduler.scheduleJob(test,testT);
 
+        JobDetail oil = JobBuilder.newJob(OilJob.class).withIdentity("localOil", "Defalt")
+                .storeDurably().build();
+        CronTrigger oilTrigger = TriggerBuilder.newTrigger().forJob(oil).withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ? "))
+                .withIdentity("localOil", "Defalt").build();
+
+        scheduler.scheduleJob(oil, oilTrigger);
         scheduler.scheduleJob(timer, trigger2);
         scheduler.scheduleJob(grain, trigger3);
+        scheduler.scheduleJob(iotStatus, iotTrigger);
     }
 
+    /**
+     * 1.获取设备列表
+     */
+//    public List<Device> getDeviceList() {
+//        List<Device> deviceList = deviceService.getAllDev();
+//        return deviceList;
+//    }
+
+    /**
+     * 2.设备分类
+     */
+//    public void splitByType() {
+//        List<Device> deviceList = getDeviceList();
+//        List<Device> qtDev = null;
+//        List<Device> grainDev = null;
+//        List<Device> zdDev = null;
+//        for (Device device : deviceList
+//        ) {
+//            if (device.getType() == 2) {
+//                qtDev.add(device);
+//            } else if (device.getType() == 3) {
+//                grainDev.add(device);
+//            } else if (device.getType() == 5) {
+//                zdDev.add(device);
+//            }
+//        }
+//    }
 
     /**
      * 3.为每个设备绑定定时任务,将任务注册到scheduler上执行

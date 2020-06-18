@@ -2,6 +2,7 @@ package cn.zz.dgcc.DGIOT.service;
 
 import cn.zz.dgcc.DGIOT.entity.Device;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * ClassExplain :
  * ->
  */
+@Service
 public interface DeviceService {
     void saveDeviceList(List<Device> devices);
 
@@ -49,4 +51,10 @@ public interface DeviceService {
     List<Device> getAllDev();
 
     List<Device> getAllQTDev();
+
+    void updateDevStatus(List<Device> devices);
+
+    int getOnlineCount();
+
+    int getOnlineCount(int i);
 }

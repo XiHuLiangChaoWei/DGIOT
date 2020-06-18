@@ -24,6 +24,15 @@
             #{companyId},#{type},#{salt},#{phone},#{name})
     </insert>
 
+    <select id="selectCompanyIdByUserId" resultType="java.lang.Integer">
+            SELECT
+                company_id
+            FROM
+                iuser
+            WHERE
+                id = #{userId}
+    </select>
+
     <select id="selectByUserId" resultMap="UserResultMap">
             SELECT
                 *

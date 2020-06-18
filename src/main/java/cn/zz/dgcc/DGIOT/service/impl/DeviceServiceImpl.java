@@ -272,6 +272,7 @@ public class DeviceServiceImpl implements DeviceService {
         log.info("信息匹配成功");
         deviceMapper.updataDevVersion(logDevice);
         deviceMapper.updataDtuVersion(logDevice);
+        deviceMapper.updateCC(logDevice);
         return true;
     }
 
@@ -329,6 +330,24 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public List<Device> getAllQTDev() {
         return deviceMapper.selectAllQT();
+    }
+
+    @Override
+    public void updateDevStatus(List<Device> devices) {
+        for (Device device : devices
+        ) {
+            deviceMapper.updateDevStatus(device);
+        }
+    }
+
+    @Override
+    public int getOnlineCount() {
+        return deviceMapper.selectCountByStatus();
+    }
+
+    @Override
+    public int getOnlineCount(int i) {
+        return deviceMapper.selectCountByStatusAndType(i);
     }
 
     public List<Device> getNoUsedDeviceListByTypeAndProject(int type, int companyId) {

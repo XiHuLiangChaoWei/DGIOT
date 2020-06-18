@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by: YYL
@@ -31,7 +32,7 @@ import java.util.List;
  */
 @Service
 public class IotServiceImpl implements IoTService {
-
+    private final static Logger log = Logger.getLogger(IotServiceImpl.class.getSimpleName());
     public List<Product> getProductList() {
         /*
         查询产品列表
@@ -40,7 +41,8 @@ public class IotServiceImpl implements IoTService {
         JSONArray pl = productList.getJSONArray("ProductInfo");
         List<Product> productKeys = new ArrayList<Product>();
 
-        System.err.println(pl);
+//        System.err.println(pl);
+        log.warning(pl.toJSONString());
         JSONObject row = null;
         for (int i = 0; i < pl.size(); i++) {
             row = pl.getJSONObject(i);
@@ -248,7 +250,7 @@ public class IotServiceImpl implements IoTService {
         cr.putQueryParameter("PageSize", "50");
         try {
             CommonResponse response = client.getCommonResponse(cr);
-            System.out.println(response.getData());
+//            System.out.println(response.getData());
             JSONObject json = (JSONObject) getJson(response.getData());
             JSONObject json1 = json.getJSONObject("Data");
 //            JSONObject j1 = json1.getJSONArray("DeviceInfo");
@@ -293,6 +295,24 @@ public class IotServiceImpl implements IoTService {
         }
         return null;
     }
+
+
+    /**
+     * 批量查询设备状态 TODO
+     *
+     * @param list
+     * @return
+     */
+    public JSONArray batchQueryDevDetail(List<String> list) {
+        CommonRequest cr = commonRequest();
+        IAcsClient client = commonClient();
+        cr.setAction("BatchQueryDeviceDetail");
+        cr.setMethod(MethodType.POST);
+
+
+        return null;
+    }
+
 
     /**
      * 查询产品Topic
@@ -415,7 +435,7 @@ public class IotServiceImpl implements IoTService {
      * @param topicFullName
      * @param messageContent
      * @param productKey
-     * @param qos              null/0 -ASCII发送    1 -HEX发送
+     * @param qos            null/0 -ASCII发送    1 -HEX发送
      * @return
      */
     @Override

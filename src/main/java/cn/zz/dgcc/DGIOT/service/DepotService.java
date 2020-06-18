@@ -26,4 +26,5 @@ public interface DepotService {
     int updateTempInfoById(double maxTemp, double minTemp, double avgTemp,double innH,double innT, int id);
 
     int updateQTStatusById(int clStatus, int id);
+
 }

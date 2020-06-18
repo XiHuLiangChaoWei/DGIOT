@@ -22,8 +22,25 @@
         <result column="cc_id" property="ccId"/>
         <result column="dev_ver" property="devVersion"/>
         <result column="dtu_ver" property="dtuVersion"/>
-
     </resultMap>
+
+    <select id="selectCountByStatusAndType" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            iot_device_list
+        WHERE
+            device_status = "ONLINE" AND type = #{type}
+    </select>
+
+    <select id="selectCountByStatus" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            iot_device_list
+        WHERE
+            device_status = "ONLINE"
+    </select>
 
     <select id="selectAllQT" resultMap="DeviceResultMap">
         SELECT
@@ -87,8 +104,19 @@
             iot_device_list
     </select>
 
-    <update id="updataDtuVersion">
+    <update id="updateCC">
          UPDATE
+            iot_device_list
+        SET
+            cc_id = #{ccId}
+        WHERE
+            devNote=#{devNote} AND
+            devBH=#{devBH} AND devZH=#{devZH} AND
+            bus_type=#{busType} AND type =#{type}
+    </update>
+
+    <update id="updataDtuVersion">
+        UPDATE
             iot_device_list
         SET
             dtu_ver = #{dtuVersion}
@@ -150,6 +178,15 @@
             Dtu_id=#{DtuId},devNote=#{devNote},
             devBH=#{devBH},devZH=#{devZH},
             bus_type=#{busType},cc_id=#{ccId},dev_ver=#{devVersion},dtu_ver =#{dtuVersion}
+        WHERE
+            device_secret = #{deviceSecret}
+    </update>
+
+    <update id="updateDevStatus" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+        UPDATE
+             iot_device_list
+        SET
+            device_status = #{deviceStatus}
         WHERE
             device_secret = #{deviceSecret}
     </update>

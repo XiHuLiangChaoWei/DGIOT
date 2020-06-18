@@ -7,6 +7,7 @@ import cn.zz.dgcc.DGIOT.service.OilService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by: YYL
@@ -37,5 +38,10 @@ public class OilServiceImpl implements OilService {
     @Override
     public OilConf getOilConfByDevName(String devName) {
         return oilMapper.selectOilConfByName(devName);
+    }
+
+    @Override
+    public List<Oil> getOilInfoListByDevName(String devName) {
+        return oilMapper.selectTenOilInfoByName(devName);
     }
 }

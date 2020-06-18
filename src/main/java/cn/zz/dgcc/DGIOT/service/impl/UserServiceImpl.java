@@ -22,12 +22,11 @@ import java.util.logging.Logger;
 @Service("userService")
 public class UserServiceImpl implements UserService {
     private final Logger log = Logger.getLogger(this.getClass().getSimpleName());
+
     public static void main(String[] args) {
         UserServiceImpl u = new UserServiceImpl();
-       String i = u.MD5Password("admin","37C146C743BF");
-       System.err.println(i);
-       //643dcd3d3d8bf3eaf393a1eec6d63ea6
-        //6c7e0ae260fc0f411e66ab78319f4996
+        String i = u.MD5Password("admin", "37C146C743BF");
+        System.err.println(i);
     }
 
     @Resource
@@ -45,6 +44,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 插入新用户
+     *
      * @param user
      * @return
      */
@@ -78,6 +78,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 获取用户列表
+     *
      * @return
      */
     @Override
@@ -88,6 +89,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 登陆
+     *
      * @param username
      * @param password
      * @return
@@ -102,7 +104,7 @@ public class UserServiceImpl implements UserService {
             throw new ISqlException("用户未找到");
         }
         String salt = result.getSalt();
-        if (MD5Password(password, salt).equals(result.getPassword())) {
+        if (!MD5Password(password, salt).equals(result.getPassword())) {
             throw new ISqlException("密码错误");
         }
         User user = new User(result.getCompanyId(), result.getType(), result.getUserId());
@@ -113,29 +115,30 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 修改密码
+     *
      * @param userId
      * @param password
      * @param expwd
      */
     @Override
-    public void changePwd(int userId, String password,String expwd) {
-        if(password.equals("")) {
+    public void changePwd(int userId, String password, String expwd) {
+        if (password.equals("")) {
             throw new ISqlException("新密码不能为空");
         }
         User result = userMapper.findById(userId);
-        if(result==null) {
+        if (result == null) {
             throw new ISqlException("用户不存在");
         }
-        if(result.getIsDelete()==1) {
+        if (result.getIsDelete() == 1) {
             throw new ISqlException("用户不存在");
         }
-        if(!MD5Password(expwd, result.getSalt()).equals(result.getPassword())) {
+        if (!MD5Password(expwd, result.getSalt()).equals(result.getPassword())) {
             throw new ISqlException("原密码错误");
         }
         String salt = result.getSalt();
         Integer rows = userMapper.updatePasswordByUid(
                 userId, MD5Password(password, salt));
-        if(!(rows==1)) {
+        if (!(rows == 1)) {
             throw new ISqlException("修改用户密码时，出现未知错误");
         }
     }
@@ -145,14 +148,14 @@ public class UserServiceImpl implements UserService {
         String username = user.getUserName();
         User result = userMapper.selectByUserName(username);
         log.info(user.getUserName());
-        if(user.getUserName().equals("")) {
+        if (user.getUserName().equals("")) {
             throw new ISqlException("用户名不能为空");
         }
-        if(user.getPassword().equals("")) {
+        if (user.getPassword().equals("")) {
             throw new ISqlException("密码不能为空");
         }
-        if(result !=  null) {
-            throw new ISqlException("用户名"+username+"已存在");
+        if (result != null) {
+            throw new ISqlException("用户名" + username + "已存在");
         }
 
         String salt = UUID.randomUUID().toString().toUpperCase();
@@ -161,15 +164,28 @@ public class UserServiceImpl implements UserService {
         user.setPassword(MD5Password(password, salt));
         user.setIsDelete(0);
         Integer rows = userMapper.insertUser(user);
-        if(rows != 1) {
+        if (rows != 1) {
             throw new ISqlException("插入不知道出了啥错");
         }
     }
+
+
+    public String generatePassword(String password) {
+        String salt = UUID.randomUUID().toString().toUpperCase();
+        String ps = MD5Password(password, salt);
+        return ps;
+    }
+
 
     @Override
     public User getByUid(Integer userId) {
         User rs = userMapper.selectByUserId(userId);
         return rs;
+    }
+
+    @Override
+    public int getCompanyIdByUserId(int userId) {
+        return userMapper.selectCompanyIdByUserId(userId);
     }
 
 }

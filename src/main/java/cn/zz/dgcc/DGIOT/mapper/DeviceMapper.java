@@ -56,7 +56,7 @@ public interface DeviceMapper {
 
     Device selectDevByUpInfo(Device logDevice);
 
-    Device selectDevByBHAndZH(String devBH, String devZH,int type);
+    Device selectDevByBHAndZH(String devBH, String devZH, int type);
 
     Device selectN2Dev();
 
@@ -70,5 +70,13 @@ public interface DeviceMapper {
 
     void updataDtuVersion(Device logDevice);
 
-    List<Device> selectNoUsedDevByTypeAndProject(@Param("type") int type,@Param("userId") int company);
+    List<Device> selectNoUsedDevByTypeAndProject(@Param("type") int type, @Param("userId") int company);
+
+    void updateDevStatus(Device device);
+
+    int selectCountByStatus();
+
+    int selectCountByStatusAndType(int type);
+
+    void updateCC(Device logDevice);
 }

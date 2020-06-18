@@ -142,10 +142,14 @@ public class AnalysisServiceImpl implements AnalysisService {
         if (msg.startsWith("AA8A")) {
             //油情信息
             Oil oil = new Oil(devName, date, msg);
+            Oil rs1= oilService.getOilInfoByDevName(devName);
+            if(rs1.getBatch().equals(oil.getBatch())){
+                //重复数据
+            }
             int rs = oilService.saveOil(oil);
             if (rs == 1) {
                 Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
-                JSONObject jo = dg4AnalysisOil.analysisOilInfo(msg);
+                JSONObject jo = dg4AnalysisOil.analysisOilInfo(msg,oil.getReceivedTime());
             }
         }
         if (msg.startsWith("AAAC")) {

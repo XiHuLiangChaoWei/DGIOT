@@ -23,4 +23,6 @@ public interface UserService {
     void reg(User user);
 
     User getByUid(Integer userId);
+
+    int getCompanyIdByUserId(int userId);
 }

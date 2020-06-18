@@ -3,6 +3,8 @@ package cn.zz.dgcc.DGIOT.service;
 import cn.zz.dgcc.DGIOT.entity.Oil;
 import cn.zz.dgcc.DGIOT.entity.OilConf;
 
+import java.util.List;
+
 /**
  * Created by: YYL
  * Date: 2020/6/10 9:41
@@ -17,4 +19,6 @@ public interface OilService {
     int saveConf(OilConf oilConf);
 
     OilConf getOilConfByDevName(String devName);
+
+    List<Oil> getOilInfoListByDevName(String devName);
 }

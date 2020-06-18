@@ -35,29 +35,26 @@ public class QTJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        System.out.println("开始执行计划任务");
+//        System.out.println("开始执行计划任务");
+        log.info("开始执行气调任务--------------------------------------------");
         //从jobDataMap中获取设备列表
         List<Device> devices = getDeviceList();
         try {
             for (Device device : devices
             ) {
-                if (device.getType() == 0) {
-                    continue;
-                }
                 if (device.getType() == 2) {
                     new Thread(() -> {
                         log.info("定时查询气调··············");
                         downOrderUtils.deployN2Order(0, device);
                     }).start();
-                } else if (device.getType() == 3) {
-                    continue;
-                }
 
+                }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        log.info("结束执行气调任务--------------------------------------------");
     }
 //    @Override
 //    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {

@@ -33,6 +33,18 @@
             (#{devName},#{receivedTime},#{content},#{batch})
     </insert>
 
+    <select id="selectTenOilInfoByName" resultMap="OilResultMap">
+        SELECT
+            *
+        FROM
+            oil
+        WHERE
+            dev_name = #{devName}
+        ORDER BY
+            id
+        DESC LIMIT 100
+    </select>
+
     <select id="selectOilInfoByName" resultMap="OilResultMap">
         SELECT
             *

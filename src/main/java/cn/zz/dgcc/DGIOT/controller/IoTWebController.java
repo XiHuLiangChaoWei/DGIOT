@@ -123,10 +123,9 @@ public class IoTWebController extends BaseController {
 
 
     /**
-     *
      * @param devName
      * @param version
-     * @param type 1=dev other = dtu
+     * @param type    1=dev other = dtu
      */
     @ResponseBody
     @RequestMapping("Sev_fireware")
@@ -147,9 +146,6 @@ public class IoTWebController extends BaseController {
                 int index = jo.getInteger("index");
                 int sum = jo.getInteger("sum");
                 byte[] bytes = jo.getBytes("fileData");
-//                System.out.println("index = " + index);
-//                System.out.println("sum = " + sum);
-//                System.out.println("bytes = " + bytes);
                 total += sum;
             }
         } catch (IOException e) {

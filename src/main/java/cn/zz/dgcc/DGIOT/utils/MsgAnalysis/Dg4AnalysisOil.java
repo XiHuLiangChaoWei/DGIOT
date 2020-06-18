@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -77,7 +78,7 @@ public class Dg4AnalysisOil {
     }
 
 
-    public JSONObject analysisOilInfo(String msg) {
+    public JSONObject analysisOilInfo(String msg, Date recTime) {
         String getTime = msg.substring(4, 16);
         String year = getTime.substring(0, 2);
         String month = getTime.substring(2, 4);
@@ -91,6 +92,7 @@ public class Dg4AnalysisOil {
         hour = Integer.valueOf(hour, 16).toString();
         minute = Integer.valueOf(minute, 16).toString();
         second = Integer.valueOf(second, 16).toString();
+
         String time = year + month + day + hour + minute + second;
         //提取分机地址
         String devAddress = msg.substring(18, 20);
@@ -114,7 +116,7 @@ public class Dg4AnalysisOil {
         String hightDate = msg.substring(538, 544);
         String M = hightDate.substring(0, 4);
         String mm = hightDate.substring(4, 6);
-        Float height = Float.valueOf(new DecimalFormat("0.00").format(BytesUtil.oilTempTran(tran_LH(M)) / 100));
+        Float height = Float.valueOf(new DecimalFormat("0.000").format(BytesUtil.oilTempTran(tran_LH(M)) / 100));
         double mmheight = BytesUtil.hexToInt(mm);
         //提取雷达温度
         String leidaTempFix = msg.substring(576, 580);
@@ -132,9 +134,11 @@ public class Dg4AnalysisOil {
 
         double finalHeight = Double.valueOf(new DecimalFormat("0.0000").format(height + mmheight / 1000));
 
+        String reTime = ContextUtil.getTimeYMDHMM(recTime);
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("devAddress", devAddress);
-        jsonObject.put("time", time);
+        jsonObject.put("time", reTime);
         jsonObject.put("temps", temps);
         jsonObject.put("height", height);
         jsonObject.put("heightMM", mmheight);
