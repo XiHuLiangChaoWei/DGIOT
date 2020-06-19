@@ -350,6 +350,19 @@ public class DeviceServiceImpl implements DeviceService {
         return deviceMapper.selectCountByStatusAndType(i);
     }
 
+    @Override
+    public List<Device> getDevByCompanyIdAndType(int companyId, int devType) {
+        return deviceMapper.selectDevByTypeAndProject(companyId,devType);
+    }
+
+    @Override
+    public void updateDevIotId(List<Device> devices) {
+        for (Device device : devices
+        ) {
+            deviceMapper.updateIotId(device);
+        }
+    }
+
     public List<Device> getNoUsedDeviceListByTypeAndProject(int type, int companyId) {
         List<Device> rs = deviceMapper.selectNoUsedDevByTypeAndProject(type, companyId);
         return rs;

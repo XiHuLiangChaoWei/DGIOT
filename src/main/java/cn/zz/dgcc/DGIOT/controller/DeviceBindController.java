@@ -55,7 +55,6 @@ public class DeviceBindController extends BaseController {
     }
 
 
-
     List<Device> getTotalList() {
         List<Product> products = ioTService.getProductList();
         List<Device> devices = ioTService.getDeviceList(products);

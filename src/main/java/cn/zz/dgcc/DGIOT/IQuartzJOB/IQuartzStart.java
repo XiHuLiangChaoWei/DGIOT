@@ -33,7 +33,7 @@ public class IQuartzStart {
                 .storeDurably().build();
         CronTrigger trigger = TriggerBuilder.newTrigger().forJob(qt).withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ? "))
                 .withIdentity("localQt", "Defalt").build();
-        scheduler.scheduleJob(qt, trigger);
+
         //配置同步时钟任务
         JobDetail timer = JobBuilder.newJob(((Job) jobExecutionContext -> {
             downOrderUtils.JsonTime(0);
@@ -60,6 +60,7 @@ public class IQuartzStart {
         CronTrigger oilTrigger = TriggerBuilder.newTrigger().forJob(oil).withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ? "))
                 .withIdentity("localOil", "Defalt").build();
 
+        scheduler.scheduleJob(qt, trigger);
         scheduler.scheduleJob(oil, oilTrigger);
         scheduler.scheduleJob(timer, trigger2);
         scheduler.scheduleJob(grain, trigger3);

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by: YYL
@@ -111,5 +112,10 @@ public class FirewareServiceImpl implements FirewareService {
     @Override
     public int saveFirewareVersion(Fireware fireware) {
         return firewareMapper.addNewVersion(fireware);
+    }
+
+    @Override
+    public List<Fireware> getAll() {
+        return firewareMapper.selectAll();
     }
 }

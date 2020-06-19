@@ -42,7 +42,7 @@
             dev_name = #{devName}
         ORDER BY
             id
-        DESC LIMIT 100
+        DESC LIMIT 500
     </select>
 
     <select id="selectOilInfoByName" resultMap="OilResultMap">

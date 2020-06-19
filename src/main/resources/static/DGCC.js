@@ -269,7 +269,7 @@ function showProductListInCenter(list) {
             '         <div><a  pk="#{productKey}" class="layui-card-header getClick">#{productName}</a></div>\n' +
             '         <div class="layui-card-body">\n' +
             '                #{productDesc}<br>\n' +
-            '                已上线设备数量:[#{count}]\n' +
+            '                已激活设备数量:[#{count}]\n' +
             '         </div>\n' +
             '      </div>';
         op = op.replace("#{productName}", list[i].ProductName);
@@ -290,6 +290,7 @@ function showDeviceListInCenter(str) {
         "dateType": "json",
         "success": function (json) {
             let list = json.data;
+            list = list.reverse();
             for (let i = 0; i < list.length; i++) {
                 // let op = '<div pk="#{productKey}" class="layui-card">\n' +
                 //     '         <div style="float:right" class="layui-btn-group">' +
@@ -333,7 +334,6 @@ function showDeviceListInCenter(str) {
 }
 
 function alertDeviceInfo(str) {
-
     $.ajax({
             "url": str + "/getDeviceDetail",
             "type": "post",
@@ -392,7 +392,6 @@ function alertDeviceInfo(str) {
             }
         }
     )
-
 
 }
 

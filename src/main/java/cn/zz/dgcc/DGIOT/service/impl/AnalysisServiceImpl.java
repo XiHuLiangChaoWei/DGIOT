@@ -145,6 +145,7 @@ public class AnalysisServiceImpl implements AnalysisService {
             Oil rs1= oilService.getOilInfoByDevName(devName);
             if(rs1.getBatch().equals(oil.getBatch())){
                 //重复数据
+                return;
             }
             int rs = oilService.saveOil(oil);
             if (rs == 1) {

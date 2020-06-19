@@ -79,4 +79,8 @@ public interface DeviceMapper {
     int selectCountByStatusAndType(int type);
 
     void updateCC(Device logDevice);
+
+    List<Device> selectDevByTypeAndProject(@Param("userId") int companyId, @Param("type") int devType);
+
+    void updateIotId(Device device);
 }

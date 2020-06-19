@@ -22,6 +22,7 @@
         <result column="cc_id" property="ccId"/>
         <result column="dev_ver" property="devVersion"/>
         <result column="dtu_ver" property="dtuVersion"/>
+        <result column="iot_id" property="iotId"/>
     </resultMap>
 
     <select id="selectCountByStatusAndType" resultType="java.lang.Integer">
@@ -182,6 +183,15 @@
             device_secret = #{deviceSecret}
     </update>
 
+    <update id="updateIotId" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+        UPDATE
+             iot_device_list
+        SET
+            iot_id = #{iotId}
+        WHERE
+            device_secret = #{deviceSecret}
+    </update>
+
     <update id="updateDevStatus" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
         UPDATE
              iot_device_list
@@ -264,6 +274,17 @@
             iot_device_list
         WHERE
             Dtu_id = #{dtuId} AND Dev_Id = #{devId}
+    </select>
+
+    <select id="selectDevByTypeAndProject" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE
+            type = #{type} AND is_used = 1 AND user_id = #{userId}
+        ORDER BY
+            device_name
     </select>
 
     <select id="selectNoUsedDevByTypeAndProject" resultMap="DeviceResultMap">
@@ -358,7 +379,7 @@
         product_key,
         device_name,device_status,
         device_secret,device_nick_name,
-        device_ipAddress,type)
+        device_ipAddress,type,iot_id)
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (
@@ -370,7 +391,8 @@
             #{item.deviceSecret},
             #{item.deviceNickName},
             #{item.deviceIpAddress},
-            #{item.type}
+            #{item.type},
+            #{item.iotId}
             )
         </foreach>
     </insert>

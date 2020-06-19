@@ -86,6 +86,7 @@ public class IotServiceImpl implements IoTService {
                 a.setProductName(p.getProductName());
                 a.setDeviceStatus(row.getString("DeviceStatus"));
                 a.setDeviceNickName("NickName");
+                a.setIotId(row.getString("IotId"));
                 switch (row.getString("ProductKey")) {
                     case "a1KhXudYrKw":
                         a.setType(测试设备);

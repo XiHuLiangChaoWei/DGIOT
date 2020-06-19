@@ -29,6 +29,7 @@ public class Device implements Serializable {
     String ccId;
     String devVersion;
     String dtuVersion;
+    String iotId;
 
     @Override
     public String toString() {
@@ -52,6 +53,7 @@ public class Device implements Serializable {
                 ", ccId='" + ccId + '\'' +
                 ", devVersion='" + devVersion + '\'' +
                 ", dtuVersion='" + dtuVersion + '\'' +
+                ", iotId='" + iotId + '\'' +
                 '}';
     }
 
@@ -78,12 +80,21 @@ public class Device implements Serializable {
                 Objects.equals(UserId, device.UserId) &&
                 Objects.equals(ccId, device.ccId) &&
                 Objects.equals(devVersion, device.devVersion) &&
-                Objects.equals(dtuVersion, device.dtuVersion);
+                Objects.equals(dtuVersion, device.dtuVersion) &&
+                Objects.equals(iotId, device.iotId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productName, productKey, deviceName, deviceStatus, deviceSecret, deviceNickName, deviceIpAddress, isUsed, DevId, DtuId, devNote, devBH, devZH, type, busType, UserId, ccId, devVersion, dtuVersion);
+        return Objects.hash(productName, productKey, deviceName, deviceStatus, deviceSecret, deviceNickName, deviceIpAddress, isUsed, DevId, DtuId, devNote, devBH, devZH, type, busType, UserId, ccId, devVersion, dtuVersion, iotId);
+    }
+
+    public String getIotId() {
+        return iotId;
+    }
+
+    public void setIotId(String iotId) {
+        this.iotId = iotId;
     }
 
     public String getProductName() {

@@ -63,6 +63,14 @@ public class AppDateController extends BaseController {
     OilService oilService;
 
     @ResponseBody
+    @RequestMapping("getDev")
+    public JsonResult<List<Device> > getDevList(int companyId,int devType){
+        List<Device> rs = deviceService.getDevByCompanyIdAndType(companyId,devType);
+        return new JsonResult<>(success,rs);
+    }
+
+
+    @ResponseBody
     @RequestMapping("onlineCount")
     public JsonResult<JSONObject> onlineNum() {
         int rs = deviceService.getOnlineCount();
@@ -152,7 +160,7 @@ public class AppDateController extends BaseController {
      */
     @RequestMapping("/getDepotList")
     @ResponseBody
-    public JsonResult<JSONObject> showDevList(HttpSession session) {
+    public JsonResult<JSONArray> showDevList(HttpSession session) {
         //从session获取userId
         int userId = getUserIdFromSession(session);
         //获取userId对应的companyId
@@ -184,7 +192,7 @@ public class AppDateController extends BaseController {
         int lqrs = deviceService.getOnlineCount(3);
         jsonObject.put("qtOnline", qtrs);
         jsonObject.put("lqOnline", lqrs);
-        return new JsonResult<>(success, jsonObject);
+        return new JsonResult<>(success, jsonArray);
     }
 
 
@@ -217,6 +225,26 @@ public class AppDateController extends BaseController {
     @RequestMapping("/oil/list")
     public JsonResult<JSONArray> getListByDepotId(HttpSession session, Integer depotId) {
         String devName = depotService.getDevNameByDepotIdAndType(depotId, 6);
+        List<Oil> list = oilService.getOilInfoListByDevName(devName);
+        Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
+        JSONArray ja = new JSONArray();
+        String batch = "";
+        for (Oil o : list
+        ) {
+            if (o.getBatch().equals(batch)) {
+                continue;
+            }
+            batch = o.getBatch();
+            JSONObject jo = dg4AnalysisOil.analysisOilInfo(o.getContent(), o.getReceivedTime());
+            ja.add(jo);
+        }
+        return new JsonResult<>(success, ja);
+    }
+
+
+    @ResponseBody
+    @RequestMapping("/oil/list2")
+    public JsonResult<JSONArray> getListByDevName(HttpSession session, String devName) {
         List<Oil> list = oilService.getOilInfoListByDevName(devName);
         Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
         JSONArray ja = new JSONArray();

@@ -38,6 +38,7 @@ public class IotStatusJob implements Job {
             log.info("查询到设备列表" + d);
         }
         deviceService.updateDevStatus(devices);
+//        deviceService.updateDevIotId(devices);
     }
 
     /**

@@ -10,6 +10,7 @@ import cn.zz.dgcc.DGIOT.service.IoTService;
 import cn.zz.dgcc.DGIOT.utils.ContextUtil;
 import cn.zz.dgcc.DGIOT.utils.FileUtils;
 import cn.zz.dgcc.DGIOT.utils.JsonResult;
+import cn.zz.dgcc.DGIOT.utils.JsonResult2;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -49,6 +51,7 @@ public class IoTWebController extends BaseController {
     @Autowired
     DepotService depotService;
 
+
     @RequestMapping("/test1")
     public String test1(Model model) {
         return "html/admin";
@@ -58,6 +61,22 @@ public class IoTWebController extends BaseController {
     public String test11() {
         return "html/up";
     }
+
+    @RequestMapping("/test3")
+    public String test12(){
+        return "html/area-stack";
+    }
+
+    @RequestMapping("/test4")
+    public String tets11(){return "html/firewareUpdate";}
+
+    @RequestMapping("fireware")
+    @ResponseBody
+    public JsonResult2<List<Fireware>> f(){
+        List<Fireware> list = firewareService.getAll();
+        return new JsonResult2<>(0,list);
+    }
+
 
     /**
      * 固件文件上传
@@ -174,6 +193,13 @@ public class IoTWebController extends BaseController {
     }
 
 
+    @RequestMapping("/devList")
+    @ResponseBody
+    public JsonResult2<List<Device>> test3(){
+        List<Device> list = deviceService.getAllDev();
+        return new JsonResult2<>(0,list);
+    }
+
     @ResponseBody
     @RequestMapping("/showProductList")
     public JsonResult<JSON> test2() {
@@ -246,7 +272,6 @@ public class IoTWebController extends BaseController {
     @ResponseBody
     @RequestMapping("{deviceIot}/getDeviceDetail")
     public JsonResult<JSON> test6(@PathVariable("deviceIot") String deviceIot) {
-
         JSONObject json0 = ioTService.queryDeviceDetail(deviceIot, null, null);
 //        log.info("ControllerLog:查询产品Topic信息" + json0);
         log.info("ControllerLog:查询设备信息" + json0);

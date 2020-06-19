@@ -57,4 +57,8 @@ public interface DeviceService {
     int getOnlineCount();
 
     int getOnlineCount(int i);
+
+    List<Device> getDevByCompanyIdAndType(int companyId, int devType);
+
+    void updateDevIotId(List<Device> devices);
 }

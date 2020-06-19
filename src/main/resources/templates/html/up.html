@@ -2,8 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Insert title here</title>
+    <meta charset="utf-8">
+    <title>===</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../layui/css/layui.css" media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
 <h1 th:inlines="text">文件上传</h1>
@@ -11,6 +16,209 @@
     <p>选择文件: <input type="file" name="fileName"/></p>
     <p><input type="submit" value="提交"/></p>
 </form>
+
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+    </div>
+</script>
+
+<script type="text/html" id="devStatus">
+    {{#  if(d.deviceStatus === 'ONLINE'){ }}
+    <a style="color: #04a504">{{d.deviceStatus}}</a>
+    {{#  } else if(d.deviceStatus === 'OFFLINE'){ }}
+    <a style="color:#ff3300"> {{d.deviceStatus}}</a>
+    {{#  } else { }}
+    <a style="color:#9F9F9F"> {{d.deviceStatus}}</a>
+    {{#  } }}
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="upgrade">升级</a>
+    <a class="layui-btn layui-btn-xs" lay-event="info">查看详情</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+
+<script src="../layui/layui.js" charset="utf-8"></script>
+<script src="../jquery-3.4.1.min.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+
+<link th:href="@{../css/layui.css}" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" th:src="@{../layui/layui.js}"></script>
+<script type="text/javascript" th:src="@{../jquery-3.4.1.min.js}"></script>
+
+<script type="text/javascript" th:inline="none">
+    layui.use('table', function () {
+        var table = layui.table;
+
+        table.render({
+            elem: '#test'
+            , initSort: {
+                field: 'deviceName' //排序字段，对应 cols 设定的各字段名
+                , type: 'asc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
+            }
+            , url: '/dgiot/devList'
+            , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                title: '提示'
+                , layEvent: 'LAYTABLE_TIPS'
+                , icon: 'layui-icon-tips'
+            }]
+            , title: '设备数据表'
+            , cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                , {field: 'deviceName', title: '设备名', width: 150, fixed: 'left', sort: true}
+                , {field: 'productKey', title: 'PK', width: 150}
+                , {field: 'iotId', title: 'IotId', width: 150}
+                , {field: 'productName', title: '产品名', width: 150, sort: true}
+                , {
+                    field: 'deviceStatus', title: '设备状态', width: 120, sort: true, templet: '#devStatus'
+                }
+                // , {field: 'type', title: '设备类型', width: 100}
+                , {field: 'userId', title: '项目ID', width: 100, sort: true}
+                , {field: 'devVersion', title: '设备版本号', width: 180, sort: true}
+                , {field: 'dtuVersion', title: 'DTU模块版本号', width: 120}
+                , {field: 'devNote', title: '设备备注', width: 200, sort: true},
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150}
+            ]]
+            , page: true
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：' + data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                    break;
+                //自定义头工具栏右侧图标 - 提示
+                case 'LAYTABLE_TIPS':
+                    layer.alert('这是工具栏右侧自定义的一个图标按钮');
+                    break;
+            }
+            ;
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;
+            console.log(obj)
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    // obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event == 'info') {
+                // console.log(obj.data.iotId)
+                alertDeviceInfo(obj.data.iotId);
+            } else if (obj.event === 'upgrade') {
+                layer.open({
+                    type:2,
+                    area: ['900px', '450px'],
+                    maxmin: true,
+                    title: false,
+                    closeBtn: 0,
+                    shadeClose: true,
+                    skin: 'yourclass',
+                    content: 'test4'
+                });
+                // layer.prompt({
+                //     formType: 2
+                //     , value: data.devNote
+                // }, function (value, index) {
+                //     obj.update({
+                //         devNote: value
+                //     });
+                //     layer.close(index);
+                // });
+            }
+        });
+    });
+
+
+
+
+
+
+    function alertDeviceInfo(str) {
+        $.ajax({
+                "url": str + "/getDeviceDetail",
+                "type": "post",
+                "dateType": "json",
+                "success": function (json) {
+                    let device = json.data;
+                    layer.open({
+                        type: 1,//Page层类型
+                        area: ['900px', '300px'],
+                        title: "详细信息",
+                        shade: 0.6, //遮罩透明度
+                        content: '<table class="layui-table">\n' +
+                            '  <colgroup>\n' +
+                            '    <col width="150">\n' +
+                            '    <col width="200">\n' +
+                            '    <col>\n' +
+                            '  </colgroup>\n' +
+                            '  <thead>\n' +
+                            '    <tr>\n' +
+                            '      <th>DeviceName</th>\n' +
+                            '      <th>Status</th>\n' +
+                            '      <th>ProductKey</th>\n' +
+                            '      <th>DeviceSecret</th>\n' +
+                            '      <th>IpAddress</th>\n' +
+                            '    </tr> \n' +
+                            '  </thead>\n' +
+                            '  <tbody>\n' +
+                            '    <tr>\n' +
+                            '      <td>' + device.DeviceName + '</td>\n' +
+                            '      <td>' + device.Status + '</td>\n' +
+                            '      <td>' + device.ProductKey + '</td>\n' +
+                            '      <td>' + device.DeviceSecret + '</td>\n' +
+                            '      <td>' + device.IpAddress + '</td>\n' +
+                            '    </tr>\n' +
+                            '  </tbody>\n' +
+                            '  <thead>\n' +
+                            '    <tr>\n' +
+                            '      <th>Nickname</th>\n' +
+                            '      <th>UtcCreate</th>\n' +
+                            '      <th>UtcOnline</th>\n' +
+                            '      <th>UtcActive</th>\n' +
+                            '      <th>Owner</th>\n' +
+                            '    </tr> \n' +
+                            '  </thead>\n' +
+                            '  <tbody>\n' +
+                            '    <tr>\n' +
+                            '      <td>' + device.Nickname + '</td>\n' +
+                            '      <td>' + device.UtcCreate + '</td>\n' +
+                            '      <td>' + device.UtcOnline + '</td>\n' +
+                            '      <td>' + device.UtcActive + '</td>\n' +
+                            '      <td>' + device.Owner + '</td>\n' +
+                            '    </tr>\n' +
+                            '  </tbody>\n' +
+                            '</table>'
+                    });
+                }
+            }
+        )
+
+
+    }
+</script>
+
+
 </body>
 </html>
 
