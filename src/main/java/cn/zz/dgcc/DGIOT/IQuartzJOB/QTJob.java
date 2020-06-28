@@ -9,6 +9,8 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 /**
@@ -33,6 +35,8 @@ public class QTJob implements Job {
         return deviceList;
     }
 
+    static ExecutorService executorService = Executors.newCachedThreadPool();
+
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 //        System.out.println("开始执行计划任务");
@@ -43,10 +47,14 @@ public class QTJob implements Job {
             for (Device device : devices
             ) {
                 if (device.getType() == 2) {
-                    new Thread(() -> {
-                        log.info("定时查询气调··············");
+                    executorService.execute(() -> {
+                        log.info("定时查询气调··············" + device.getDeviceName());
                         downOrderUtils.deployN2Order(0, device);
-                    }).start();
+                    });
+//                    new Thread(() -> {
+//                        log.info("定时查询气调··············"+device.getDeviceName());
+//                        downOrderUtils.deployN2Order(0, device);
+//                    }).start();
 
                 }
             }

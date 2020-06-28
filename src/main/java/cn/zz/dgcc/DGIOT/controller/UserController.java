@@ -71,6 +71,7 @@ public class UserController extends BaseController {
         session.setAttribute("userId", ok.getUserId());
         session.setAttribute("userType", ok.getType());
         session.setAttribute("company", ok.getCompanyId());
+        session.setMaxInactiveInterval(30*60);
         return new JsonResult<>(success, ok);
 
     }

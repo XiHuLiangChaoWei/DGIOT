@@ -193,8 +193,6 @@ public class AMQPServiceUtils {
         }
     }
 
-    private void firewareUpdate(AMQPMessage amqpMessage) { deviceBindController.firewareUpdate(amqpMessage); }
-
     private void deviceLogin(AMQPMessage amqpMessage) { deviceBindController.loginDevice(amqpMessage); }
 
     private void registerDevice(AMQPMessage amqpMessage) {

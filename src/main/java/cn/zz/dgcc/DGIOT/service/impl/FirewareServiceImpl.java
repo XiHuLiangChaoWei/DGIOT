@@ -118,4 +118,9 @@ public class FirewareServiceImpl implements FirewareService {
     public List<Fireware> getAll() {
         return firewareMapper.selectAll();
     }
+
+    @Override
+    public List<Fireware> getFirewareListByDevName(String deviceName) {
+        return firewareMapper.selectFirewareByDevName(deviceName);
+    }
 }

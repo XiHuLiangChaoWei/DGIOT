@@ -5,6 +5,8 @@ import cn.zz.dgcc.DGIOT.service.DeviceService;
 import cn.zz.dgcc.DGIOT.utils.DownOrderUtils;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import org.quartz.Job;
@@ -18,24 +20,33 @@ public class OilJob implements Job {
     @Autowired
     DownOrderUtils downOrderUtils;
 
-    private static final Logger log = Logger.getLogger(cn.zz.dgcc.DGIOT.IQuartzJOB.OilJob.class.getSimpleName());
+    private static final Logger log = Logger.getLogger(OilJob.class.getSimpleName());
 
     public List<Device> getDeviceList() {
         List<Device> deviceList = deviceService.getAllDev();
         return deviceList;
     }
 
-    public void execute(JobExecutionContext jobExecutionContext){
+    static ExecutorService executorService = Executors.newCachedThreadPool();
+
+    public void execute(JobExecutionContext jobExecutionContext) {
+
         List<Device> devices = getDeviceList();
         try {
             for (Device device : devices) {
                 if (device.getType() != 6)
                     continue;
                 if (device.getType() == 6)
-                    (new Thread(() -> {
-                        log.info("定时查询油情··············");
-                        this.downOrderUtils.deployOilOrder(0, device);
-                    })).start();
+                    executorService.execute(() -> {
+                        log.info("定时查询油情··············" + device.getDeviceName());
+                        downOrderUtils.deployOilOrder(0, device);
+                    });
+
+
+//                    (new Thread(() -> {
+//                        log.info("定时查询油情··············"+device.getDeviceName());
+//                        this.downOrderUtils.deployOilOrder(0, device);
+//                    })).start();
             }
         } catch (Exception e) {
             e.printStackTrace();

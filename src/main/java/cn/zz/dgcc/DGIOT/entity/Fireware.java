@@ -48,4 +48,13 @@ public class Fireware {
     public void setPath(String path) {
         this.path = path;
     }
+
+    @Override
+    public String toString() {
+        return "Fireware{" +
+                "id=" + id +
+                ", version='" + version + '\'' +
+                ", path='" + path + '\'' +
+                '}';
+    }
 }

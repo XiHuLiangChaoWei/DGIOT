@@ -8,6 +8,7 @@
         <result column="content" property="content"/>
         <result column="msg_id" property="msgId"/>
         <result column="batch_id" property="batchId"/>
+        <result column="depot_id" property="depotId"/>
     </resultMap>
     <select id="selectChooseGrainInfo" resultMap="GrainResultMap">
         SELECT

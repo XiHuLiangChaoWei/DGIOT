@@ -50,7 +50,7 @@
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 
 <link th:href="@{../css/layui.css}" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" th:src="@{../layui/layui.js}"></script>
+<script type="text/javascript" th:src="@{../layui/layui .js}"></script>
 <script type="text/javascript" th:src="@{../jquery-3.4.1.min.js}"></script>
 
 <script type="text/javascript" th:inline="none">
@@ -59,6 +59,7 @@
 
         table.render({
             elem: '#test'
+            , title: '设备列表'
             , initSort: {
                 field: 'deviceName' //排序字段，对应 cols 设定的各字段名
                 , type: 'asc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
@@ -126,32 +127,56 @@
                 // console.log(obj.data.iotId)
                 alertDeviceInfo(obj.data.iotId);
             } else if (obj.event === 'upgrade') {
+                //父页面操作子页面元素--渲染
+                let dev = obj.data.deviceName;
+                var data = null;
+                var inner = "<option value=\"\"></option>";
+                $.ajax({
+                    url: "getlist?devName=" + dev,
+                    type: "GET",
+                    async: false,
+                    dateType: "json",
+                    success: function (json) {
+                        data = json.message;
+                    }
+                })
+                // console.log(data);
+                let list = JSON.parse(data)
+                for (let i = 0; i < list.length; i++) {
+                    let inner2 = "<option value=#{value}>#{version}</option>";
+                    console.log(list[i].version)
+                    inner2 = inner2.replace("#{value}", list[i].version);
+                    inner2 = inner2.replace("#{version}", list[i].version);
+                    inner += inner2;
+                }
+                console.log("inn=" + inner);
+
                 layer.open({
-                    type:2,
-                    area: ['900px', '450px'],
+                    type: 2,
+                    area: ['900px', '400px'],
                     maxmin: true,
                     title: false,
                     closeBtn: 0,
                     shadeClose: true,
+                    iframeAuto:true,
                     skin: 'yourclass',
-                    content: 'test4'
+                    content: 'test5',
+                    success: function (layero, index) {
+                        let body = layer.getChildFrame('body', index);//获取子页面dom属性
+                        let iframeWin = window[layero.find('iframe')[0]['name']];//子页面
+                        // iframeWin.getParentValue(inner);
+                        body.contents().find("#devName").val(dev);//父页面向子页面传递参数
+                        let options = body.contents().find("#fireware");//获取子页面中select元素
+                        options.empty();
+                        // layer.msg(options)
+                        options.append(inner)
+                        iframeWin.layui.form.render('select');//调用子页面的重新渲染方法
+
+                    }
                 });
-                // layer.prompt({
-                //     formType: 2
-                //     , value: data.devNote
-                // }, function (value, index) {
-                //     obj.update({
-                //         devNote: value
-                //     });
-                //     layer.close(index);
-                // });
             }
         });
     });
-
-
-
-
 
 
     function alertDeviceInfo(str) {

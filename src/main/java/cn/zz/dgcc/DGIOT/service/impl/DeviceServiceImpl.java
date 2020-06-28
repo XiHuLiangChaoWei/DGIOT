@@ -155,9 +155,11 @@ public class DeviceServiceImpl implements DeviceService {
     private boolean reg(Device device) {
         //查询云设备列表中与注册设备type相同且没有被使用的  同项目设备列表
         String devNote = device.getDevNote();
+
         String[] strs = devNote.split("-");
         String xiangMu = strs[0];
         int companyId = companyService.getCIDByName(xiangMu);
+
         List<Device> ls = getNoUsedDeviceListByTypeAndProject(device.getType(), companyId);
         if (ls == null | ls.isEmpty()) {
             log.info("没有可分配的云端设备");

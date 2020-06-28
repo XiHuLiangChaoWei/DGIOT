@@ -18,4 +18,6 @@ public interface FirewareMapper {
     int addNewVersion(Fireware fireware);
 
     List<Fireware> selectAll();
+
+    List<Fireware> selectFirewareByDevName(String deviceName);
 }

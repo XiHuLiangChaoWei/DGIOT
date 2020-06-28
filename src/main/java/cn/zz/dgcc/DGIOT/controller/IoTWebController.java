@@ -1,5 +1,6 @@
 package cn.zz.dgcc.DGIOT.controller;
 
+import cn.zz.dgcc.DGIOT.entity.BuildMessage;
 import cn.zz.dgcc.DGIOT.entity.Device;
 import cn.zz.dgcc.DGIOT.entity.Fireware;
 import cn.zz.dgcc.DGIOT.service.DepotService;
@@ -11,9 +12,12 @@ import cn.zz.dgcc.DGIOT.utils.ContextUtil;
 import cn.zz.dgcc.DGIOT.utils.FileUtils;
 import cn.zz.dgcc.DGIOT.utils.JsonResult;
 import cn.zz.dgcc.DGIOT.utils.JsonResult2;
+import cn.zz.dgcc.DGIOT.utils.MsgBuilder.SumPowerCommondBuilder;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +29,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import javax.sound.midi.SysexMessage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -63,20 +69,71 @@ public class IoTWebController extends BaseController {
     }
 
     @RequestMapping("/test3")
-    public String test12(){
+    public String test12() {
         return "html/area-stack";
     }
 
     @RequestMapping("/test4")
-    public String tets11(){return "html/firewareUpdate";}
+    public String tets11() {
+        return "html/firewareUpdate";
+    }
+
+    @RequestMapping("/test5")
+    public String tets13() {
+        return "html/firewareUpdate2";
+    }
+
+    @ResponseBody
+    @RequestMapping("updata")
+    public void a(@RequestParam(name = "dev") String dev,
+                  @RequestParam(name = "version") String version) {
+        System.err.println("dev=" + dev);
+        System.err.println("version=" + version);
+
+    }
+
+    @RequestMapping("sun")
+    @ResponseBody
+    public void b(){
+        SumPowerCommondBuilder sumPowerCommondBuilder = SumPowerCommondBuilder.getInstance();
+        sumPowerCommondBuilder.setCeng("04");
+        sumPowerCommondBuilder.setHang("08");
+        sumPowerCommondBuilder.setLie("09");
+        sumPowerCommondBuilder.setThNum("01");
+        sumPowerCommondBuilder.setIfOut("00");
+        sumPowerCommondBuilder.setDevAddress("02");
+        BuildMessage msg = sumPowerCommondBuilder.build();
+        String fullTopic = "/g092mlxAtWS/ZZ-DG-CS-SUN001/user/sev/downdate";
+        String pk = "g092mlxAtWS";
+        ioTService.pub(fullTopic,msg.toString(),pk,"1");
+        System.err.println(msg.toString());
+    }
+
 
     @RequestMapping("fireware")
     @ResponseBody
-    public JsonResult2<List<Fireware>> f(){
+    public JsonResult2<List<Fireware>> f() {
         List<Fireware> list = firewareService.getAll();
-        return new JsonResult2<>(0,list);
+        return new JsonResult2<>(0, list);
     }
 
+    @RequestMapping("getlist")
+    @ResponseBody
+    public JsonResult<String> getFirewareByProject(String devName) {
+//        System.err.println(devName);
+        int index = devName.lastIndexOf("-");
+        String deviceName = devName.substring(0, index);
+//        System.err.println(deviceName);
+        List<Fireware> list = firewareService.getFirewareListByDevName(deviceName);
+//        for (Fireware f : list
+//        ) {
+//            System.err.println(f.toString());
+//        }
+        Gson g = new Gson();
+        String rs = g.toJson(list);
+        System.err.println(rs);
+        return new JsonResult<>(success, rs);
+    }
 
     /**
      * 固件文件上传
@@ -195,9 +252,9 @@ public class IoTWebController extends BaseController {
 
     @RequestMapping("/devList")
     @ResponseBody
-    public JsonResult2<List<Device>> test3(){
+    public JsonResult2<List<Device>> test3() {
         List<Device> list = deviceService.getAllDev();
-        return new JsonResult2<>(0,list);
+        return new JsonResult2<>(0, list);
     }
 
     @ResponseBody

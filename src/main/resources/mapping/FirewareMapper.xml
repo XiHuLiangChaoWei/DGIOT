@@ -7,6 +7,15 @@
         FROM
             fireware_ver
     </select>
+    <select id="selectFirewareByDevName" resultType="cn.zz.dgcc.DGIOT.entity.Fireware">
+        SELECT
+            *
+        FROM
+            fireware_ver
+        WHERE
+            version LIKE concat('%',#{deviceName},'%')
+    </select>
+
     <select id="selectFirewareVersion" resultType="cn.zz.dgcc.DGIOT.entity.Fireware">
             SELECT
                 *

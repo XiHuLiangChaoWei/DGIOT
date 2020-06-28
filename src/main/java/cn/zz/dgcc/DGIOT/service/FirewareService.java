@@ -19,4 +19,6 @@ public interface FirewareService {
     int saveFirewareVersion(Fireware fireware);
 
     List<Fireware> getAll();
+
+    List<Fireware> getFirewareListByDevName(String deviceName);
 }

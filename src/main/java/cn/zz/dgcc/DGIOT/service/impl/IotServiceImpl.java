@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 @Service
 public class IotServiceImpl implements IoTService {
     private final static Logger log = Logger.getLogger(IotServiceImpl.class.getSimpleName());
+
     public List<Product> getProductList() {
         /*
         查询产品列表
@@ -63,6 +64,7 @@ public class IotServiceImpl implements IoTService {
     private final static int 环流设备 = 4;
     private final static int 制氮设备 = 5;
     private final static int 油情设备 = 6;
+    private final static int 太阳能分机设备 = 7;
     private final static int 测试设备 = 0;
 
     /*
@@ -109,6 +111,9 @@ public class IotServiceImpl implements IoTService {
                     case "g092bBa0bSV":
                         a.setType(油情设备);
                         break;
+                    case "g092mlxAtWS":
+                        a.setType(太阳能分机设备);
+                        break;
                 }
                 devList.add(a);
             }
@@ -138,6 +143,7 @@ public class IotServiceImpl implements IoTService {
 //        is.updateProductTopic("升级试一试","all","UPdateTest","9218128");
 //        is.pub("/a1KhXudYrKw/DGCC_TEST1/user/UPdateTest", "大帅逼", "a1KhXudYrKw", "0");
 //        is.pubBoradcast("小帅逼","a1KhXudYrKw",null);
+
     }
 
 
@@ -429,6 +435,7 @@ public class IotServiceImpl implements IoTService {
         }
         return null;
     }
+
 
     /**
      * 向指定设备的指定topic发送消息

@@ -17,6 +17,15 @@ public class Grain {
     String content;
     String msgId;
     String batchId;
+    String depotId;
+
+    public String getDepotId() {
+        return depotId;
+    }
+
+    public void setDepotId(String depotId) {
+        this.depotId = depotId;
+    }
 
     public Grain() {
     }

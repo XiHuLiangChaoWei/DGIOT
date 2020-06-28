@@ -11,6 +11,8 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -39,10 +41,6 @@ public class DeviceBindController extends BaseController {
     FirewareService firewareService;
 
 
-    public void firewareUpdate(AMQPMessage amqpMessage) {
-
-    }
-
     /**
      * 解析消息
      */
@@ -54,7 +52,8 @@ public class DeviceBindController extends BaseController {
 
     }
 
-
+    @ResponseBody
+    @RequestMapping("devlist")
     List<Device> getTotalList() {
         List<Product> products = ioTService.getProductList();
         List<Device> devices = ioTService.getDeviceList(products);
@@ -135,6 +134,12 @@ public class DeviceBindController extends BaseController {
                     break;
                 case 5:
                     deviceNameSuf = "ZD";
+                    break;
+                case 6:
+                    deviceNameSuf = "YQ";
+                    break;
+                case 7:
+                    deviceNameSuf = "SUN";
                     break;
                 case 0:
                     deviceNameSuf = "CS";

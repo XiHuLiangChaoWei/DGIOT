@@ -5,6 +5,7 @@ import cn.zz.dgcc.DGIOT.entity.*;
 import cn.zz.dgcc.DGIOT.service.*;
 import cn.zz.dgcc.DGIOT.service.Exception.ISqlException;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
+import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.DG4AnalysisSunPower;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg3AnalysisGrain;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisN2;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg4AnalysisOil;
@@ -142,15 +143,15 @@ public class AnalysisServiceImpl implements AnalysisService {
         if (msg.startsWith("AA8A")) {
             //油情信息
             Oil oil = new Oil(devName, date, msg);
-            Oil rs1= oilService.getOilInfoByDevName(devName);
-            if(rs1.getBatch().equals(oil.getBatch())){
+            Oil rs1 = oilService.getOilInfoByDevName(devName);
+            if (rs1.getBatch().equals(oil.getBatch())) {
                 //重复数据
                 return;
             }
             int rs = oilService.saveOil(oil);
             if (rs == 1) {
                 Dg4AnalysisOil dg4AnalysisOil = Dg4AnalysisOil.newInstance();
-                JSONObject jo = dg4AnalysisOil.analysisOilInfo(msg,oil.getReceivedTime());
+                JSONObject jo = dg4AnalysisOil.analysisOilInfo(msg, oil.getReceivedTime());
             }
         }
         if (msg.startsWith("AAAC")) {
@@ -160,7 +161,7 @@ public class AnalysisServiceImpl implements AnalysisService {
             String height = jo.getString("height");
             String temps = jo.getString("temps");
             String recTime = jo.getString("time");
-            OilConf oilConf = new OilConf(devName,recTime,msg);
+            OilConf oilConf = new OilConf(devName, recTime, msg);
             int rs = oilService.saveConf(oilConf);
             if (rs == 1) {
                 log.info("保存" + devName + "配置信息");
@@ -199,6 +200,14 @@ public class AnalysisServiceImpl implements AnalysisService {
             if (rs != 1) {
                 throw new ISqlException("持久化粮情信息到本地出错");
             }
+            //先经过太阳能分机分类  TODO 如果是太阳能分机返回数据，需要判断数据匹配仓库 == 修改存储原始数据的表，使可以存放仓库信息
+            if (msg.startsWith("AAB07B")) {
+                System.err.println(grain.getContent());
+                DG4AnalysisSunPower dg4AnalysisSunPower = DG4AnalysisSunPower.newInstance();
+                dg4AnalysisSunPower.analysis(grain);
+            }
+
+
             //持久化成功 执行解析操作返回json对象
             Depot depot = depotService.getDepotByDevName(devName);
             int id = depot.getId();

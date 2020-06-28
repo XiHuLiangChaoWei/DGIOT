@@ -313,8 +313,7 @@ public class BytesUtil {
 
 
     public static void main(String[] args) {
-        System.out.println(oilTempTran("FF67"));
-        System.err.println(oilTempTran(""));
+        System.err.println(hexToInt("FFDE"));
     }
 
     /**
