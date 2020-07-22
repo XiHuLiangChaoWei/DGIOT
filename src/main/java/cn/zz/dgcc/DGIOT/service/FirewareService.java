@@ -6,7 +6,7 @@ import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
 import java.util.List;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/2 11:45
  * ClassExplain :
  * ->
@@ -20,5 +20,5 @@ public interface FirewareService {
 
     List<Fireware> getAll();
 
-    List<Fireware> getFirewareListByDevName(String deviceName);
+    List<Fireware> getFirewareListByDevVer(String deviceName);
 }

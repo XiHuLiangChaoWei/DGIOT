@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/23 10:07
  * ClassExplain :
  * ->
@@ -21,6 +21,7 @@ public class User{
     private String phone;
     private String name;
     private int isDeleted;
+    private int isOnline;
     public User() {
 
     }
@@ -29,6 +30,12 @@ public class User{
         this.companyId = companyId;
         this.type = type;
         this.userId = userId;
+    }
+
+    public User(String username, String password, int cid) {
+        this.userName = username;
+        this.password = password;
+        this.companyId = cid;
     }
 
     public int getUserId() {
@@ -101,6 +108,14 @@ public class User{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(int isOnline) {
+        this.isOnline = isOnline;
     }
 
     @Override

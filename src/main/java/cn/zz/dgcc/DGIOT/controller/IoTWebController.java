@@ -8,16 +8,13 @@ import cn.zz.dgcc.DGIOT.service.DeviceService;
 import cn.zz.dgcc.DGIOT.service.Exception.IFileException;
 import cn.zz.dgcc.DGIOT.service.FirewareService;
 import cn.zz.dgcc.DGIOT.service.IoTService;
-import cn.zz.dgcc.DGIOT.utils.ContextUtil;
-import cn.zz.dgcc.DGIOT.utils.FileUtils;
-import cn.zz.dgcc.DGIOT.utils.JsonResult;
-import cn.zz.dgcc.DGIOT.utils.JsonResult2;
-import cn.zz.dgcc.DGIOT.utils.MsgBuilder.SumPowerCommondBuilder;
+import cn.zz.dgcc.DGIOT.utils.*;
+import cn.zz.dgcc.DGIOT.utils.MsgBuilder.SunFengjiCommondBuilder;
+import cn.zz.dgcc.DGIOT.utils.MsgBuilder.SunPowerCommondBuilder;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,20 +23,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import javax.sound.midi.SysexMessage;
+import javax.websocket.server.PathParam;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/9 15:01
  * ClassExplain :前端页面控制器层
  * ->
@@ -56,56 +52,98 @@ public class IoTWebController extends BaseController {
     DeviceService deviceService;
     @Autowired
     DepotService depotService;
-
+    @Autowired
+    DownOrderUtils downOrderUtils;
 
     @RequestMapping("/test1")
     public String test1(Model model) {
         return "html/admin";
     }
 
-    @RequestMapping("/test2")
-    public String test11() {
+    @RequestMapping("/update_fileOrFireware")
+    public String update_fileOrFireware() {
         return "html/up";
     }
 
-    @RequestMapping("/test3")
+    @RequestMapping("/ShanXiJinZhong")
     public String test12() {
-        return "html/area-stack";
+        return "html/ShanXiJinZhong";
+    }
+
+    @RequestMapping("/AnShunXiXiu")
+    public String test16() {
+        return "html/AnShunXiXiu";
     }
 
     @RequestMapping("/test4")
-    public String tets11() {
+    public String firewareUpdate() {
         return "html/firewareUpdate";
     }
 
-    @RequestMapping("/test5")
-    public String tets13() {
+    @RequestMapping("/firewareUpdate2")
+    public String firewareUpdate2() {
         return "html/firewareUpdate2";
+    }
+
+    @RequestMapping("/sunfengji")
+    public String tets() {
+        return "html/sunFengji";
     }
 
     @ResponseBody
     @RequestMapping("updata")
-    public void a(@RequestParam(name = "dev") String dev,
+    public void a(@RequestParam(name = "devName") String dev,
                   @RequestParam(name = "version") String version) {
         System.err.println("dev=" + dev);
         System.err.println("version=" + version);
 
     }
 
+    /**
+     * 太阳能分机控制分机
+     *
+     * @param session
+     * @param address
+     * @param num
+     * @param action
+     * @return
+     */
+    @RequestMapping("sun/fengji")
+    @ResponseBody
+    public JsonResult<String> sun(HttpSession session, int address, int num, int action) {
+        int companyId = getCompanyIdFromSession(session);
+        int userId = getUserIdFromSession(session);
+        String devName = depotService.getDevNameByDepotIdAndType(1, 太阳能分机设备, companyId);
+        Device rs = deviceService.getDevByDevName(devName);
+        SunFengjiCommondBuilder sunFengjiCommondBuilder = SunFengjiCommondBuilder.getInstance();
+        String address1 = ContextUtil.toShortHex(address);
+        String num1 = ContextUtil.toShortHex(num);
+        String action1 = ContextUtil.toShortHex(action);
+        sunFengjiCommondBuilder.setAddress(address1);
+        sunFengjiCommondBuilder.setNum(num1);
+        sunFengjiCommondBuilder.setAction(action1);
+        BuildMessage sunfengjiMsg = sunFengjiCommondBuilder.build();
+        JsonResult<String> jr = downOrderUtils.deployAndSaveOrder(userId, rs, sunfengjiMsg, 太阳能分机设备, 1);
+        return jr;
+    }
+
+    /**
+     * 查询指令
+     */
     @RequestMapping("sun")
     @ResponseBody
-    public void b(){
-        SumPowerCommondBuilder sumPowerCommondBuilder = SumPowerCommondBuilder.getInstance();
-        sumPowerCommondBuilder.setCeng("04");
-        sumPowerCommondBuilder.setHang("08");
-        sumPowerCommondBuilder.setLie("09");
-        sumPowerCommondBuilder.setThNum("01");
-        sumPowerCommondBuilder.setIfOut("00");
-        sumPowerCommondBuilder.setDevAddress("02");
-        BuildMessage msg = sumPowerCommondBuilder.build();
+    public void b() {
+        SunPowerCommondBuilder sunPowerCommondBuilder = SunPowerCommondBuilder.getInstance();
+        sunPowerCommondBuilder.setCeng("04");
+        sunPowerCommondBuilder.setHang("08");
+        sunPowerCommondBuilder.setLie("09");
+        sunPowerCommondBuilder.setThNum("01");
+        sunPowerCommondBuilder.setIfOut("00");
+        sunPowerCommondBuilder.setDevAddress("02");
+        BuildMessage msg = sunPowerCommondBuilder.build();
         String fullTopic = "/g092mlxAtWS/ZZ-DG-CS-SUN001/user/sev/downdate";
         String pk = "g092mlxAtWS";
-        ioTService.pub(fullTopic,msg.toString(),pk,"1");
+        ioTService.pub(fullTopic, msg.toString(), pk, "1");
         System.err.println(msg.toString());
     }
 
@@ -117,18 +155,25 @@ public class IoTWebController extends BaseController {
         return new JsonResult2<>(0, list);
     }
 
+    /**
+     * 获取 固件版本 列表
+     * <p>
+     * 修改获取固件版本逻辑，从dev表中获取当前版本，根据当前版本获取对应固件版本
+     *
+     * @param devName
+     * @return
+     */
     @RequestMapping("getlist")
     @ResponseBody
     public JsonResult<String> getFirewareByProject(String devName) {
-//        System.err.println(devName);
-        int index = devName.lastIndexOf("-");
-        String deviceName = devName.substring(0, index);
-//        System.err.println(deviceName);
-        List<Fireware> list = firewareService.getFirewareListByDevName(deviceName);
-//        for (Fireware f : list
-//        ) {
-//            System.err.println(f.toString());
-//        }
+        //获取当前版本
+        String nowFirewareVer = deviceService.getFirewareVerByDevName(devName);
+        String middle = nowFirewareVer.substring(0, nowFirewareVer.length() - 3);
+        //从当前版本获取对应信息
+        int index = middle.lastIndexOf("-");
+        String deviceVer = middle.substring(0, index);
+        //获取列表
+        List<Fireware> list = firewareService.getFirewareListByDevVer(deviceVer);
         Gson g = new Gson();
         String rs = g.toJson(list);
         System.err.println(rs);
@@ -199,13 +244,16 @@ public class IoTWebController extends BaseController {
 
 
     /**
-     * @param devName
-     * @param version
+     * @param devName 设备名
+     * @param version 目标版本
      * @param type    1=dev other = dtu
      */
     @ResponseBody
     @RequestMapping("Sev_fireware")
-    public void down(String devName, String version, int type) {
+    public void down(String devName, String version, @RequestParam(required = false, defaultValue = "1") int type) {
+        System.err.println("开始固件升级······");
+        System.err.println("设备名：" + devName);
+        System.err.println("目标版本：" + version);
         //根据版本获取 固件升级对象
         Fireware fireware = firewareService.getFirewareByVersion(version);
         //获取固件升级包所在位置
@@ -250,11 +298,44 @@ public class IoTWebController extends BaseController {
     }
 
 
+    //判断字符串是否包含汉字
+    public static boolean isContainChinese(String str) {
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取设备列表
+     *
+     * @param str
+     * @return
+     */
     @RequestMapping("/devList")
     @ResponseBody
-    public JsonResult2<List<Device>> test3() {
-        List<Device> list = deviceService.getAllDev();
-        return new JsonResult2<>(0, list);
+    public JsonResult2<List<Device>> devList(@RequestParam(required = false, defaultValue = "null") String str,
+                                             @RequestParam(required = false, defaultValue = "1") int page,
+                                             @RequestParam(required = false, defaultValue = "30") int limit) {
+        System.err.println("page=" + page);
+        System.err.println("limit=" + limit);
+        if (isContainChinese(str)) {
+            str = ContextUtil.chinese2PinYin2(str);
+        }
+        str = str.toUpperCase();
+        List<Device> list;
+        if ("NULL".equals(str)) {
+            list = deviceService.getAllActiveDev();
+        } else {
+            list = deviceService.getDevListByDevNameInfo(str);
+        }
+//        for (Device d:list
+//             ) {
+//            System.err.println(d.toString());
+//        }
+        return new JsonResult2<>(0, list, list.size());
     }
 
     @ResponseBody
@@ -269,7 +350,7 @@ public class IoTWebController extends BaseController {
     @ResponseBody
     @RequestMapping("{productKey}/showDeviceListByProductKey")
     public JsonResult<JSON> test3(@PathVariable("productKey") String productKey) {
-        JSONObject json0 = ioTService.queryDevice(productKey);
+        JSONObject json0 = ioTService.queryDevice(productKey).getJSONObject("Data");
         JSONArray deviceInfo = json0.getJSONArray("DeviceInfo");
         log.info("ControllerLog:查询设备信息" + deviceInfo);
         return new JsonResult<>(success, deviceInfo);

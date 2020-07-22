@@ -1,7 +1,7 @@
 package cn.zz.dgcc.DGIOT.VO;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/27 8:34
  * ClassExplain :
  * ->

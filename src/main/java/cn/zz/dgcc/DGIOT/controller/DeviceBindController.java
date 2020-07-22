@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/7 16:01
  * ClassExplain :
  * ->
@@ -28,7 +28,6 @@ public class DeviceBindController extends BaseController {
     int deviceNameFix = 0;
     private final Logger log = Logger.getLogger(this.getClass().getSimpleName());
 
-    final static String dtu恢复出厂设置 = "{\"commamd\":\"Restore factory settings\"}";
     @Autowired
     IoTService ioTService;
     @Autowired
@@ -72,11 +71,14 @@ public class DeviceBindController extends BaseController {
     //设备登陆
     public void loginDevice(AMQPMessage amqpMessage) {
         //判断是否登陆成功
+        String devId = null;
         boolean logSuccess = deviceService.loginDevice(amqpMessage);
         if (!logSuccess) {
             Device logDevice = DeviceUtil.parseDev(amqpMessage);
             String pk = logDevice.getProductKey();
             String deviceName = logDevice.getDeviceName();
+            devId = logDevice.getDevId();
+            String dtu恢复出厂设置 = "{\"devId\":\"" + devId + "\",\"command type\":\"RESET DTU\"}";
             String fullTopic = "/" + pk + "/" + deviceName + "/user/dev/register/response";
             JSONObject jsonR = ioTService.pub(fullTopic, dtu恢复出厂设置, pk, null);
             log.info("恢复出厂设置的结果" + jsonR.toJSONString());
@@ -115,7 +117,7 @@ public class DeviceBindController extends BaseController {
                     break;
                 }
             }
-            //
+            //从几开始
             deviceNameFix = deviceService.getCountByType(pk);
 
             String deviceNameSuf = null;
@@ -148,7 +150,7 @@ public class DeviceBindController extends BaseController {
 
 
             log.info("批量添加云端设备获取pk=" + pk);
-            iotDeviceService.batchAddDevices(pk, deviceNameSuf, deviceNameFix);
+            iotDeviceService.batchAddDevices(pk, deviceNameSuf, deviceNameFix,13);
 //            Thread.sleep(50);
             log.info("调用刷新云端设备列表");
             savaDevList();
@@ -164,7 +166,7 @@ public class DeviceBindController extends BaseController {
             //在数据库查询记录 reged = deviceService.getDeviceInfoByDevAndDtu(devId, dtuId);
             Device
 //                    reged = deviceService.getDevInfoByDetail(devNote,type,devBH,devZH,busType);
-                    //通过5元素查询
+                    //通过6元素查询
                     reged = deviceService.getDevByRegDevInfo(regSuc);
             //获取新分配的三元组
             String pk = reged.getProductKey();

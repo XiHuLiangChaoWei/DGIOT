@@ -4,7 +4,7 @@ import cn.zz.dgcc.DGIOT.entity.QTConfigure;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/28 14:38
  * ClassExplain :
  * ->

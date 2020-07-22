@@ -3,7 +3,7 @@ package cn.zz.dgcc.DGIOT.service;
 import cn.zz.dgcc.DGIOT.entity.QTConfigure;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/28 14:33
  * ClassExplain :
  * ->

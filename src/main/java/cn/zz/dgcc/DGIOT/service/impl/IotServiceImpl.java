@@ -3,7 +3,6 @@ package cn.zz.dgcc.DGIOT.service.impl;
 import cn.zz.dgcc.DGIOT.entity.Device;
 import cn.zz.dgcc.DGIOT.entity.Product;
 import cn.zz.dgcc.DGIOT.service.IoTService;
-import cn.zz.dgcc.DGIOT.utils.AMQP.AMQP2WebSocket;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -25,9 +24,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/10 8:39
- * ClassExplain : 进行云端设备操作
+ * ClassExplain : 云端设备操作
  * ->
  */
 @Service
@@ -41,13 +40,10 @@ public class IotServiceImpl implements IoTService {
         JSONObject productList = queryProductList();
         JSONArray pl = productList.getJSONArray("ProductInfo");
         List<Product> productKeys = new ArrayList<Product>();
-
-//        System.err.println(pl);
         log.warning(pl.toJSONString());
         JSONObject row = null;
         for (int i = 0; i < pl.size(); i++) {
             row = pl.getJSONObject(i);
-//            System.err.println("row=" + row);
             Product product = new Product();
             product.setProductKey(row.getString("ProductKey"));
             product.setProductName(row.getString("ProductName"));
@@ -77,7 +73,7 @@ public class IotServiceImpl implements IoTService {
         ) {
             String pk = p.getProductKey();
 //            System.err.println("查询设备列表····pk="+pk);
-            JSONObject deviceR = queryDevice(pk);
+            JSONObject deviceR = queryDevice(pk).getJSONObject("Data");
             JSONArray deviceInfo = deviceR.getJSONArray("DeviceInfo");
             for (int i = 0; i < deviceInfo.size(); i++) {
                 row = deviceInfo.getJSONObject(i);
@@ -89,6 +85,11 @@ public class IotServiceImpl implements IoTService {
                 a.setDeviceStatus(row.getString("DeviceStatus"));
                 a.setDeviceNickName("NickName");
                 a.setIotId(row.getString("IotId"));
+                String devname = row.getString("DeviceName");
+                String[] strs = devname.split("-");
+                int devBh = Integer.parseInt(strs[strs.length - 1].substring(3));
+                a.setDevBH(String.valueOf(devBh));
+                a.setDevZH("1");
                 switch (row.getString("ProductKey")) {
                     case "a1KhXudYrKw":
                         a.setType(测试设备);
@@ -122,16 +123,12 @@ public class IotServiceImpl implements IoTService {
         return devList;
     }
 
-
-    //    static AMQP2WebSocket amqp2WebSocket = AMQP2WebSocket();
-    AMQP2WebSocket amqp2WebSocket = AMQP2WebSocket.getAMQP2WebSocket();
-
     /**
      * 测试用
      *
      * @param args
      */
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 //        IotServiceImpl is = new IotServiceImpl();
 //        is.queryProductList();
 //        is.queryProduct("a1KhXudYrKw");
@@ -143,8 +140,7 @@ public class IotServiceImpl implements IoTService {
 //        is.updateProductTopic("升级试一试","all","UPdateTest","9218128");
 //        is.pub("/a1KhXudYrKw/DGCC_TEST1/user/UPdateTest", "大帅逼", "a1KhXudYrKw", "0");
 //        is.pubBoradcast("小帅逼","a1KhXudYrKw",null);
-
-    }
+//    }
 
 
     /**
@@ -170,10 +166,11 @@ public class IotServiceImpl implements IoTService {
     }
 
     /**
-     * 创建请求，并填入固定的属性
+     * 创建请求，并填入所有请求的公共属性
      *
      * @return
      */
+
     static CommonRequest commonRequest() {
         CommonRequest request = new CommonRequest();
         request.setMethod(MethodType.POST);
@@ -183,7 +180,6 @@ public class IotServiceImpl implements IoTService {
         request.putQueryParameter("IotInstanceId", "iot-cn-v641mge9j01");
         return request;
     }
-
 
     /**
      * 查询产品列表
@@ -202,11 +198,8 @@ public class IotServiceImpl implements IoTService {
             System.out.println(response.getData());
             JSONObject jsonO = (JSONObject) getJson(response.getData());
             JSONObject j = jsonO.getJSONObject("Data").getJSONObject("List");
-//            JSONObject j1 = j.getJSONObject("ProductInfo");
-//            JSONArray j1 = j.getJSONArray("ProductInfo");
-            System.err.println("jsonO:" + jsonO);
-            System.err.println("j:" + j);
-//            System.err.println("j1:"+j1);
+//            System.err.println("jsonO:" + jsonO);
+//            System.err.println("j:" + j);
             return j;
         } catch (ServerException e) {
             e.printStackTrace();
@@ -243,7 +236,7 @@ public class IotServiceImpl implements IoTService {
     }
 
     /**
-     * 查询设备列表
+     * 查询设备列表,返回的是返回值中的data数据
      *
      * @param productKey
      * @return
@@ -254,16 +247,14 @@ public class IotServiceImpl implements IoTService {
         IAcsClient client = commonClient();
         cr.setAction("QueryDevice");
         cr.putQueryParameter("ProductKey", productKey);
-        cr.putQueryParameter("PageSize", "50");
+        cr.putQueryParameter("PageSize", "200");
         try {
             CommonResponse response = client.getCommonResponse(cr);
 //            System.out.println(response.getData());
             JSONObject json = (JSONObject) getJson(response.getData());
             JSONObject json1 = json.getJSONObject("Data");
 //            JSONObject j1 = json1.getJSONArray("DeviceInfo");
-//            System.err.println("IotLog:" + json);
-//            System.err.println("json1=+"+json1);
-            return json1;
+            return json;
         } catch (ServerException e) {
             e.printStackTrace();
         } catch (ClientException e) {
@@ -527,12 +518,12 @@ public class IotServiceImpl implements IoTService {
             String suc = json.getString("Success");
             System.err.println(messageId + "===" + suc);
             AMQPMessage amqpMessage = new AMQPMessage(topicFullName, messageId, suc);
-            amqp2WebSocket.setMsgC(amqpMessage);
-            try {
-                amqp2WebSocket.init();
-            } catch (ServletException e) {
-                e.printStackTrace();
-            }
+//            amqp2WebSocket.setMsgC(amqpMessage);
+//            try {
+//                amqp2WebSocket.init();
+//            } catch (ServletException e) {
+//                e.printStackTrace();
+//            }
             return json;
         } catch (ServerException e) {
             e.printStackTrace();
@@ -574,12 +565,12 @@ public class IotServiceImpl implements IoTService {
             String suc = json.getString("Success");
             System.err.println(messageId + "===" + suc);
             AMQPMessage amqpMessage = new AMQPMessage(topicFullName, messageId, suc);
-            amqp2WebSocket.setMsgC(amqpMessage);
-            try {
-                amqp2WebSocket.init();
-            } catch (ServletException e) {
-                e.printStackTrace();
-            }
+//            amqp2WebSocket.setMsgC(amqpMessage);
+//            try {
+//                amqp2WebSocket.init();
+//            } catch (ServletException e) {
+//                e.printStackTrace();
+//            }
             return json;
         } catch (ServerException e) {
             e.printStackTrace();

@@ -1,6 +1,5 @@
 package cn.zz.dgcc.DGIOT.service.impl;
 
-import cn.zz.dgcc.DGIOT.entity.Device;
 import cn.zz.dgcc.DGIOT.entity.Fireware;
 import cn.zz.dgcc.DGIOT.mapper.FirewareMapper;
 import cn.zz.dgcc.DGIOT.service.FirewareService;
@@ -20,7 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/2 11:45
  * ClassExplain :
  * ->
@@ -120,7 +119,7 @@ public class FirewareServiceImpl implements FirewareService {
     }
 
     @Override
-    public List<Fireware> getFirewareListByDevName(String deviceName) {
-        return firewareMapper.selectFirewareByDevName(deviceName);
+    public List<Fireware> getFirewareListByDevVer(String deviceVer) {
+        return firewareMapper.selectFirewareByDevVer(deviceVer);
     }
 }

@@ -16,7 +16,7 @@ import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/25 8:38
  * ClassExplain :
  * ->
@@ -67,11 +67,14 @@ public class UserController extends BaseController {
     public JsonResult<User> login(HttpServletRequest h, String username, String password, HttpSession session) {
         User ok = userService.Login(username, password);
         log.info("login name:" + ok.getUserName()+"==login id:" + ok.getUserId()+"==ip:"+getClientIp(h));
+
         session.setAttribute("username", ok.getUserName());
         session.setAttribute("userId", ok.getUserId());
         session.setAttribute("userType", ok.getType());
         session.setAttribute("company", ok.getCompanyId());
-        session.setMaxInactiveInterval(30*60);
+        session.setAttribute("user",ok);
+        session.setMaxInactiveInterval(60*60*12);
+
         return new JsonResult<>(success, ok);
 
     }
@@ -92,6 +95,7 @@ public class UserController extends BaseController {
         Integer userId = getUserIdFromSession(session);
         String modifiedUser = getUserNameFromSession(session);
         userService.changePwd(userId, password, exPwd);
+        userService.logout(getUserIdFromSession(session));
         return new JsonResult<Void>(success);
     }
 
@@ -106,6 +110,8 @@ public class UserController extends BaseController {
 
     @RequestMapping("logout")
     public JsonResult<Void> logout(HttpSession session) {
+        System.err.println(session.getAttribute("username"));
+        int rs = userService.logout(getUserIdFromSession(session));
         session.invalidate();
         return new JsonResult<>(success);
     }

@@ -9,8 +9,10 @@ import cn.zz.dgcc.DGIOT.utils.MsgBuilder.ControlOrderCommondBuilder;
 import cn.zz.dgcc.DGIOT.utils.MsgBuilder.GasInfoCommondBuilder;
 import cn.zz.dgcc.DGIOT.utils.MsgBuilder.GrainInfoCommondBuilder;
 import cn.zz.dgcc.DGIOT.utils.MsgBuilder.ModelCommondBuilder;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.runner.RunWith;
 import org.mockito.internal.matchers.Or;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/8 9:19
  * ClassExplain :
  * ->
@@ -45,6 +48,65 @@ public class Test1 {
     UserService userService;
     @Autowired
     OilService oilService;
+    @Autowired
+    GrainService grainService;
+    @Autowired
+    ISqlDeleteService iSqlDeleteService;
+    @Autowired
+    CompanyService companyService;
+
+    @Test
+    public void adf() {
+        int rs =companyService.addPj("1","1");
+        System.err.println(rs);
+    }
+
+    @Test
+    public void delete() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -15);
+        Date date = cal.getTime();
+        System.err.println(date);
+        int a = iSqlDeleteService.removeOilHis(date);
+        int b = iSqlDeleteService.removeN2His(date);
+        int c = iSqlDeleteService.removeGrainHis(date);
+
+        System.err.println(a);
+        System.err.println(b);
+        System.err.println(c);
+    }
+
+    @Test
+    public void his() {
+        String devName = "HC-JCJ-DJ-LQ005";
+        Date start = new Date(120, 06, 01);
+        Date end = new Date();
+        Depot depot = depotService.getDepotByDepotIdAndCompanyId(1, 1);
+        start = new Date("Fri Jul 10 08:31:15 CST 2020");
+        end = new Date("Fri Jul 17 08:31:15 CST 2020");
+        Dg3AnalysisGrain dg3AnalysisGrain = Dg3AnalysisGrain.newInstance();
+        List<Grain> list = grainService.getGrainList(devName, start, end);
+//        for (Grain g : list
+//        ) {
+//            System.out.println("LQ:" + g.toString());
+//        }
+        JSONArray js = new JSONArray();
+        for (Grain g : list
+        ) {
+//            System.out.println("LQ:" + g.toString());
+            JSONObject a = new JSONObject();
+            try {
+                String jo = dg3AnalysisGrain.analysis(g, depot).toJSONString();
+                a = JSONObject.parseObject(jo);
+                System.err.println(a.getDate("recTime"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            js.add(a);
+        }
+        System.err.println(js.toJSONString());
+
+    }
 
     @Test
     public void login() {
@@ -53,8 +115,8 @@ public class Test1 {
     }
 
     @Test
-    public void reg(){
-        User u  = new User();
+    public void reg() {
+        User u = new User();
         u.setUserName("6004");
         u.setPassword("admin");
         u.setCompanyId(1);

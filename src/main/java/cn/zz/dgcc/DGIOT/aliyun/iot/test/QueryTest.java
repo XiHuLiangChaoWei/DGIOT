@@ -8,7 +8,7 @@ import static cn.zz.dgcc.DGIOT.aliyun.iot.api.sdk.openapi.DeviceManager.*;
 import static cn.zz.dgcc.DGIOT.aliyun.iot.api.sdk.openapi.ProductManager.*;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/7 8:37
  * ClassExplain :
  * ->

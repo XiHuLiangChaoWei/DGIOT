@@ -25,7 +25,7 @@ import java.text.DecimalFormat;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/30 10:31
  * ClassExplain :
  * ->
@@ -53,7 +53,7 @@ public class IndexController extends BaseController {
     @RequestMapping("/index")
     public ModelAndView Index() {
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("html/hello1");
+        mav.setViewName("index.html");
         return mav;
     }
 

@@ -1,7 +1,7 @@
 package cn.zz.dgcc.DGIOT.aliyun.iot.test;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/8 11:09
  * ClassExplain :
  * ->

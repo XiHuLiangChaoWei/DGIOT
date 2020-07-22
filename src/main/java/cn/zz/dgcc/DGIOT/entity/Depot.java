@@ -1,9 +1,12 @@
 package cn.zz.dgcc.DGIOT.entity;
 
+import cn.zz.dgcc.DGIOT.utils.ContextUtil;
+
+import java.util.Date;
 import java.util.Objects;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/14 15:38
  * ClassExplain :
  * ->
@@ -31,6 +34,29 @@ public class Depot {
     String minTemp;
     String avgTemp;
     int QTStatus;
+    int model;
+    Date grainUpTime;
+    String depotType;
+
+
+    Date inTime;
+    String grainType;
+    String grainNum;
+    String inHumidity;
+    String nowHumidity;
+    String tester;
+
+    String grainUpTimeFormat;
+    String inTimeFormat;
+
+    public Depot(){
+
+    }
+
+    public Depot(int companyId,int depotId){
+        this.companyId = companyId;
+        this.depotId = depotId;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -49,6 +75,7 @@ public class Depot {
                 designMax == depot.designMax &&
                 designMin == depot.designMin &&
                 QTStatus == depot.QTStatus &&
+                model == depot.model &&
                 Objects.equals(devNote, depot.devNote) &&
                 Objects.equals(start, depot.start) &&
                 Objects.equals(end, depot.end) &&
@@ -58,12 +85,20 @@ public class Depot {
                 Objects.equals(address, depot.address) &&
                 Objects.equals(maxTemp, depot.maxTemp) &&
                 Objects.equals(minTemp, depot.minTemp) &&
-                Objects.equals(avgTemp, depot.avgTemp);
+                Objects.equals(avgTemp, depot.avgTemp) &&
+                Objects.equals(grainUpTime, depot.grainUpTime) &&
+                Objects.equals(depotType, depot.depotType) &&
+                Objects.equals(inTime, depot.inTime) &&
+                Objects.equals(grainType, depot.grainType) &&
+                Objects.equals(grainNum, depot.grainNum) &&
+                Objects.equals(inHumidity, depot.inHumidity) &&
+                Objects.equals(nowHumidity, depot.nowHumidity) &&
+                Objects.equals(tester, depot.tester);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, depotId, companyId, devNote, start, end, xx, yy, zz, innerTemp, innerH, outTemp, mqttInfo, designMax, designMin, keeper, phone, address, maxTemp, minTemp, avgTemp, QTStatus);
+        return Objects.hash(id, depotId, companyId, devNote, start, end, xx, yy, zz, innerTemp, innerH, outTemp, mqttInfo, designMax, designMin, keeper, phone, address, maxTemp, minTemp, avgTemp, QTStatus, model, grainUpTime, depotType, inTime, grainType, grainNum, inHumidity, nowHumidity, tester);
     }
 
     @Override
@@ -91,6 +126,15 @@ public class Depot {
                 ", minTemp='" + minTemp + '\'' +
                 ", avgTemp='" + avgTemp + '\'' +
                 ", QTStatus=" + QTStatus +
+                ", model=" + model +
+                ", grainUpTime=" + grainUpTime +
+                ", depotType='" + depotType + '\'' +
+                ", inTime=" + inTime +
+                ", grainType='" + grainType + '\'' +
+                ", grainNum='" + grainNum + '\'' +
+                ", inHumidity='" + inHumidity + '\'' +
+                ", nowHumudity='" + nowHumidity + '\'' +
+                ", tester='" + tester + '\'' +
                 '}';
     }
 
@@ -268,5 +312,95 @@ public class Depot {
 
     public void setQTStatus(int QTStatus) {
         this.QTStatus = QTStatus;
+    }
+
+    public int getModel() {
+        return model;
+    }
+
+    public void setModel(int model) {
+        this.model = model;
+    }
+
+    public Date getGrainUpTime() {
+        return grainUpTime;
+    }
+
+    public void setGrainUpTime(Date grainUpTime) {
+        this.grainUpTime = grainUpTime;
+        this.grainUpTimeFormat = ContextUtil.dateFormatMdhms(grainUpTime);
+    }
+
+    public String getDepotType() {
+        return depotType;
+    }
+
+    public void setDepotType(String depotType) {
+        this.depotType = depotType;
+    }
+
+    public Date getInTime() {
+        return inTime;
+    }
+
+    public void setInTime(Date inTime) {
+        this.inTime = inTime;
+        this.inTimeFormat = ContextUtil.dateFormatMdhms(inTime);
+    }
+
+    public String getGrainUpTimeFormat() {
+        return grainUpTimeFormat;
+    }
+
+    public void setGrainUpTimeFormat(String grainUpTimeFormat) {
+        this.grainUpTimeFormat = grainUpTimeFormat;
+    }
+
+    public String getInTimeFormat() {
+        return inTimeFormat;
+    }
+
+    public void setInTimeFormat(String inTimeFormat) {
+        this.inTimeFormat = inTimeFormat;
+    }
+
+    public String getGrainType() {
+        return grainType;
+    }
+
+    public void setGrainType(String grainType) {
+        this.grainType = grainType;
+    }
+
+    public String getGrainNum() {
+        return grainNum;
+    }
+
+    public void setGrainNum(String grainNum) {
+        this.grainNum = grainNum;
+    }
+
+    public String getInHumidity() {
+        return inHumidity;
+    }
+
+    public void setInHumidity(String inHumidity) {
+        this.inHumidity = inHumidity;
+    }
+
+    public String getNowHumidity() {
+        return nowHumidity;
+    }
+
+    public void setNowHumidity(String nowHumidity) {
+        this.nowHumidity = nowHumidity;
+    }
+
+    public String getTester() {
+        return tester;
+    }
+
+    public void setTester(String tester) {
+        this.tester = tester;
     }
 }

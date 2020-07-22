@@ -4,16 +4,13 @@ import cn.zz.dgcc.DGIOT.entity.*;
 import cn.zz.dgcc.DGIOT.service.*;
 import cn.zz.dgcc.DGIOT.utils.JsonResult;
 import cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg3AnalysisGrain;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.support.hsf.HSFJSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -21,7 +18,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/23 14:09
  * ClassExplain :
  * ->
@@ -45,12 +42,13 @@ public class SQLConnectController extends BaseController {
     @ResponseBody
     @RequestMapping("/{depotId}/grain")
     public JsonResult<JSONObject> showDevList(@PathVariable int depotId, HttpSession session) {
+        int companyId = getCompanyIdFromSession(session);
 //        int userId = getUserIdFromSession(session);
         //通过id获取仓库信息
         JSONObject js = new JSONObject();
-        Depot depot = depotService.getDepotByDepotId(depotId);
+        Depot depot = depotService.getDepotByDepotIdAndCompanyId(companyId, companyId);
         //通过仓库获取devName
-        String devName = depotService.getDevNameByDepotIdAndType(depotId, 3);
+        String devName = depotService.getDevNameByDepotIdAndType(depotId, 3, companyId);
         //获取指定设备最新消息
         Grain grainInfo = grainService.getNewGrainInfoByDevName(devName);
         if (grainInfo == null) {

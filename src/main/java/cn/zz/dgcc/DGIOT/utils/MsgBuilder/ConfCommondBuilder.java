@@ -13,7 +13,7 @@ import java.util.Date;
 import static cn.zz.dgcc.DGIOT.utils.Constant.DATE_FORMAT_YMDHMS;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/28 8:49
  * ClassExplain :
  * ->
@@ -71,6 +71,11 @@ public class ConfCommondBuilder extends CommondBuild {
     public String getPZCXInfo(String devId) {
         String rs = "{\"devId\":\"" + devId + "\",\"command type\":\"CXPZ\"}";
         return rs;
+    }
+
+    public static void main(String[] args) {
+      String s=  getInstance().downDate("1","RESET DTU");
+        System.err.println(s);
     }
 
     public String downDate(String devId, String action) {

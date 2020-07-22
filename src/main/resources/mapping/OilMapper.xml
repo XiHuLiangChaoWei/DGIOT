@@ -16,6 +16,14 @@
         <result column="rec_time" property="recTime"/>
     </resultMap>
 
+    <delete id="quartzDelete">
+         DELETE
+        FROM
+            oil
+        WHERE
+            rec_time &lt; #{date}
+    </delete>
+
     <insert id="insertConf" parameterType="cn.zz.dgcc.DGIOT.entity.OilConf" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO
             oil_jiaozhun_conf

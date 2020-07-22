@@ -9,7 +9,35 @@
         <result column="msg_id" property="msgId"/>
         <result column="batch_id" property="batchId"/>
         <result column="depot_id" property="depotId"/>
+        <result column="fj_address" property="fjAddress"/>
     </resultMap>
+    <update id="updateAdd">
+        UPDATE
+            grain
+        SET
+            fj_address = #{address}
+        WHERE
+            dev_name = #{devName} AND batch_id = #{batchId}
+    </update>
+
+    <delete id="quartzDelete">
+        DELETE
+        FROM
+            grain
+        WHERE
+            rec_time &lt; #{date}
+    </delete>
+
+    <select id="selectGrainInfoByDevNameLimitByDate" resultMap="GrainResultMap">
+        SELECT
+            *
+        FROM
+            grain
+        WHERE
+            rec_time BETWEEN #{start} AND #{end} AND dev_name =#{devName}
+        ORDER BY rec_time DESC
+    </select>
+
     <select id="selectChooseGrainInfo" resultMap="GrainResultMap">
         SELECT
             *
@@ -31,6 +59,21 @@
         DESC
     </select>
 
+
+    <select id="selectNewContentByDevNameAndDevAdd" resultMap="GrainResultMap">
+        SELECT
+            *
+        FROM
+            grain
+        WHERE
+            dev_name = #{devName} AND fj_address = #{devAdd}
+        ORDER BY
+            id
+        DESC
+        LIMIT 1
+    </select>
+
+
     <select id="selectNewContentByDevName" resultMap="GrainResultMap">
         SELECT
             *
@@ -42,6 +85,15 @@
             id
         DESC
         LIMIT 1
+    </select>
+
+    <select id="selectByMsgId" resultType="java.lang.Integer">
+        SELECT
+           count (*)
+        FROM
+            grain
+        WHERE
+            msg_id = #{msgId}
     </select>
 
     <insert id="insert" parameterType="cn.zz.dgcc.DGIOT.entity.Grain" useGeneratedKeys="true" keyProperty="id">

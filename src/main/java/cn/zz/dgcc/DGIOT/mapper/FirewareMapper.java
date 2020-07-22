@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/2 11:47
  * ClassExplain :
  * ->
@@ -19,5 +19,5 @@ public interface FirewareMapper {
 
     List<Fireware> selectAll();
 
-    List<Fireware> selectFirewareByDevName(String deviceName);
+    List<Fireware> selectFirewareByDevVer(String deviceVer);
 }

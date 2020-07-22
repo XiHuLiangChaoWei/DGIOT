@@ -3,7 +3,7 @@ package cn.zz.dgcc.DGIOT.entity;
 import com.sun.org.apache.xpath.internal.operations.Or;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/23 15:00
  * ClassExplain :
  * ->

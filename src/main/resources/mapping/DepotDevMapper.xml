@@ -1,13 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.zz.dgcc.DGIOT.mapper.DepotDevMapper">
+
+    <resultMap id="DepotDevResultMap" type="cn.zz.dgcc.DGIOT.entity.DepotDev">
+        <result column="id" property="id"/>
+        <result column="depot_id" property="depotId"/>
+        <result column="dev_name" property="devName"/>
+        <result column="dev_status" property="status"/>
+        <result column="dev_type" property="type"/>
+        <result column="company_id" property="companyId"/>
+    </resultMap>
+
+    <select id="selectInfoByDevName" resultMap="DepotDevResultMap">
+        SELECT
+            *
+        FROM
+            depot_dev
+        WHERE
+            dev_name = #{devName}
+    </select>
+
+    <select id="selectInfoByDepotId" resultMap="DepotDevResultMap">
+        SELECT
+           *
+        FROM
+            depot_dev
+        WHERE
+            depot_id = #{depotId} AND company_id = #{companyId}
+    </select>
+
     <select id="selectDevNameByDepotIdAndType" resultType="java.lang.String">
         SELECT
             dev_name
         FROM
             depot_dev
         WHERE
-            depot_id = #{depotId} and dev_type = #{type}
+            depot_id = #{depotId} and dev_type = #{type} AND company_id = #{companyId}
     </select>
 
     <select id="selectDepotIdByDevName" resultType="java.lang.Integer">
@@ -25,6 +53,13 @@
         FROM
             depot_dev
         WHERE
-            depot_id = #{depotId}
+            depot_id = #{depotId} AND company_id = #{companyId}
     </select>
+
+    <update id="updateDevStatus">
+        UPDATE
+            depot_dev
+        SET dev_status = #{status}
+        WHERE dev_name = #{devName}
+    </update>
 </mapper>

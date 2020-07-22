@@ -17,4 +17,19 @@
             WHERE
                 name = #{xiangMu}
     </select>
+    <select id="selectCountByName" resultType="java.lang.Integer">
+            SELECT
+                count(name)
+            FROM
+                company
+            WHERE
+                name = #{project}
+    </select>
+    <insert id="insertPj" parameterType="cn.zz.dgcc.DGIOT.entity.Company" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+            company
+            (name,info)
+        VALUES
+            (#{name},#{info})
+    </insert>
 </mapper>

@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/23 15:16
  * ClassExplain :
  * ->
  */
 @Service
 public interface DeviceService {
-    void saveDeviceList(List<Device> devices);
+    int saveDeviceList(List<Device> devices);
 
     Device getDeivceByDevS(String deviceSecret);
 
@@ -61,4 +61,14 @@ public interface DeviceService {
     List<Device> getDevByCompanyIdAndType(int companyId, int devType);
 
     void updateDevIotId(List<Device> devices);
+
+    String getFirewareVerByDevName(String devName);
+
+    List<Device> getDevListByDevNameInfo(String str);
+
+    List<Device> getAllActiveDev();
+
+    List<Device> getAllActiveDev(int page, int limit);
+
+    int updateDevUidByDevNameInfo(int cid, String deviceNameSuf);
 }

@@ -3,7 +3,7 @@ package cn.zz.dgcc.DGIOT.VO;
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/9 8:45
  * ClassExplain :注册成功后下发三元组
  * ->

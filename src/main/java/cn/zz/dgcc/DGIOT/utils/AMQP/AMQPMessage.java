@@ -3,7 +3,7 @@ package cn.zz.dgcc.DGIOT.utils.AMQP;
 import java.util.Objects;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/20 14:33
  * ClassExplain :
  * ->

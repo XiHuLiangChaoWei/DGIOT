@@ -1,7 +1,7 @@
 package cn.zz.dgcc.DGIOT.utils.MsgBuilder;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/6 10:03
  * ClassExplain :
  * ->

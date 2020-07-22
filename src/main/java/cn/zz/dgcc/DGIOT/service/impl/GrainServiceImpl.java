@@ -4,6 +4,7 @@ import cn.zz.dgcc.DGIOT.entity.Grain;
 import cn.zz.dgcc.DGIOT.entity.GrainInfo;
 import cn.zz.dgcc.DGIOT.entity.N2;
 import cn.zz.dgcc.DGIOT.mapper.GrainMapper;
+import cn.zz.dgcc.DGIOT.service.Exception.ISqlException;
 import cn.zz.dgcc.DGIOT.service.GrainService;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import javax.annotation.Resource;
 import java.util.*;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/23 15:27
  * ClassExplain :
  * ->
@@ -77,5 +78,21 @@ public class GrainServiceImpl implements GrainService {
     @Override
     public Grain getChooseGrainInfo(String batchId) {
         return grainMapper.selectChooseGrainInfo(batchId);
+    }
+
+    @Override
+    public List<Grain> getGrainList(String devName, Date start, Date end) {
+        return grainMapper.selectGrainInfoByDevNameLimitByDate(devName,start,end);
+
+    }
+
+    @Override
+    public int updateDev(String devName, Integer address,String batchId) {
+        return grainMapper.updateAdd(devName,address,batchId);
+    }
+
+    @Override
+    public Grain getNewGrainInfoByDevNameAndDevAdd(String devName, int devAdd) {
+        return grainMapper.selectNewContentByDevNameAndDevAdd(devName,devAdd);
     }
 }

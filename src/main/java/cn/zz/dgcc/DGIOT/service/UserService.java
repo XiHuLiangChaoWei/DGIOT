@@ -1,12 +1,11 @@
 package cn.zz.dgcc.DGIOT.service;
 
 import cn.zz.dgcc.DGIOT.entity.User;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/23 11:05
  * ClassExplain :
  * ->
@@ -20,9 +19,11 @@ public interface UserService {
 
     void changePwd(int userId,String password,String expwd);
 
-    void reg(User user);
+    int reg(User user);
 
     User getByUid(Integer userId);
 
     int getCompanyIdByUserId(int userId);
+
+    int logout(Integer userIdFromSession);
 }

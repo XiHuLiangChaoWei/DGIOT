@@ -1,7 +1,7 @@
 package cn.zz.dgcc.DGIOT.utils.Html;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2019/10/24 15:10
  * ClassExplain :
  * -> 项目中所用到的静态变量

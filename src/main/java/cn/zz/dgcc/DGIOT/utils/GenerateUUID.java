@@ -3,7 +3,7 @@ package cn.zz.dgcc.DGIOT.utils;
 import java.util.UUID;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2019/10/24 13:45
  * ClassExplain :
  * -> uuid生成器

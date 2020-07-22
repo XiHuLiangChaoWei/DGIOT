@@ -3,7 +3,7 @@ package cn.zz.dgcc.DGIOT.utils.MsgBuilder;
 import cn.zz.dgcc.DGIOT.entity.BuildMessage;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/23 9:46
  * ClassExplain :
  * ->
@@ -99,7 +99,7 @@ public class GrainInfoCommondBuilder extends CommondBuild {
         sb.append("00");
         sb.append(devBH);
         sb.append("A0");
-        sb.append(devZH);
+        sb.append(devBH);
         sb.append("FFFFFFFFFFFFFFFFFFFFFFFFFF");
         buildMessage.setBodyContent(sb.toString());
     }

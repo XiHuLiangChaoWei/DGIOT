@@ -3,23 +3,30 @@ package cn.zz.dgcc.DGIOT.utils.MsgAnalysis;
 import cn.zz.dgcc.DGIOT.VO.GrainVO;
 import cn.zz.dgcc.DGIOT.entity.Depot;
 import cn.zz.dgcc.DGIOT.entity.Grain;
+import cn.zz.dgcc.DGIOT.entity.GrainInfo;
+import cn.zz.dgcc.DGIOT.utils.ContextUtil;
 import cn.zz.dgcc.DGIOT.utils.MsgBuilder.BytesUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonObject;
 import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static cn.zz.dgcc.DGIOT.utils.MsgAnalysis.Dg3AnalysisGrain.ERROR_TEMP_TAG;
+
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/23 17:17
  * ClassExplain :
  * ->
  */
 public class DG4AnalysisSunPower {
+
     private DG4AnalysisSunPower() {
     }
 
@@ -31,7 +38,7 @@ public class DG4AnalysisSunPower {
 
     private final Logger log = Logger.getLogger(DG4AnalysisSunPower.class.getName());
 
-    public void analysis(Grain grain) {
+    public JSONObject analysis(Grain grain, Depot depot) {
         //获取消息正文
         String msg = grain.getContent();
         //获取层行列数
@@ -62,7 +69,7 @@ public class DG4AnalysisSunPower {
         //获取电压信息
         String voltage = msg.substring(2 * 10 + t * 4 + 4 + THNum * 6 + 4 + 6 + 4, 2 * 10 + t * 4 + 4 + THNum * 6 + 4 + 6 + 4 + 4);
         double V = parseV(voltage);
-
+        //
         double maxTemp = 0;
         double minTemp = 0;
         double avgTemp = 0;
@@ -85,24 +92,27 @@ public class DG4AnalysisSunPower {
             index += 1;
         }
         avgTemp = avgTemp / index;
-
         String batchId = grain.getBatchId();
+        Date date = grain.getreceivedTime();
+        List<GrainInfo> grainInfos = parseTemp2GrainInfo(templ,hangNum,lieNum,cengNum,date,depot);
+        JSONArray js = grainList2JsonArray(grainInfos);
 
         JSONObject rs = new JSONObject();
-//        rs.put("batchId", batchId);
-//        rs.put("depotId", grain.getDepotId());
-//        rs.put("devNote", depot.getDevNote());
-//        rs.put("x", hangNum);
-//        rs.put("y", lieNum);
-//        rs.put("z", cengNum);
-//        rs.put("designMax", depot.getDesignMax());
-//        rs.put("designMin", depot.getDesignMin());
-//        rs.put("maxTemp", maxTemp);
-//        rs.put("minTemp", minTemp);
-//        rs.put("avgTemp", avgTemp);
-//        rs.put("date", js);
-//        rs.put("innerH", finalInnH);
-//        rs.put("InnerTemp", finalInnT);
+        rs.put("batchId", batchId);
+        rs.put("depotId", grain.getDepotId());
+        rs.put("x", hangNum);
+        rs.put("y", lieNum);
+        rs.put("z", cengNum);
+        rs.put("maxTemp", maxTemp);
+        rs.put("minTemp", minTemp);
+        rs.put("avgTemp", avgTemp);
+        rs.put("outTH",outTH);
+        rs.put("address",devAdd);
+        rs.put("outTHs",outTHl);
+        rs.put("innerTHs",thl);
+        rs.put("V",V);
+        rs.put("date",js);
+        return rs;
     }
 
     //解析电压
@@ -139,12 +149,79 @@ public class DG4AnalysisSunPower {
             //高低转换
             index = BytesUtil.tran_LH(temps.substring(i, i + 4));
             int rs = BytesUtil.hexToInt(index);
+            if(rs==-1){
+                continue;
+            }
             list.add(rs * 0.0625);
         }
-        for (Double d : list
-        ) {
-            System.err.println(d);
-        }
+//        for (Double d : list
+//        ) {
+//            System.err.println("温度" + d);
+//        }
         return list;
+    }
+
+
+    private JSONArray grainList2JsonArray(List<GrainInfo> grains) {
+
+        JSONArray js = new JSONArray();
+        double maxTemp = 0;
+        double minTemp = 0;
+        double avgTemp = 0;
+        double index = 0;
+        for (GrainInfo g : grains
+        ) {
+            if (maxTemp == 0) {
+                maxTemp = g.getInnerTemp();
+            }
+            if (minTemp == 0) {
+                minTemp = g.getInnerTemp();
+            }
+            if (maxTemp < g.getInnerTemp()) {
+                maxTemp = g.getInnerTemp();
+            }
+            if (minTemp > g.getInnerTemp() && g.getInnerTemp() != ERROR_TEMP_TAG) {
+                minTemp = g.getInnerTemp();
+            }
+            if (g.getInnerTemp() != ERROR_TEMP_TAG) {
+                avgTemp += g.getInnerTemp();
+                index += 1;
+            }
+            GrainVO vo = new GrainVO();
+            vo.setX(g.getX());
+            vo.setY(g.getY());
+            vo.setZ(g.getZ());
+            vo.setTemp(g.getInnerTemp());
+            js.add(vo);
+        }
+       return js;
+    }
+
+                                                //x     y     z
+    List<GrainInfo> parseTemp2GrainInfo(List<Double> temps,int j,int k,int l,Date receiveDate,Depot depot){
+        List<GrainInfo> grains = new ArrayList();
+        GrainInfo info = null;
+        int x = 0, y = 0, z = 0, fz = 0;
+        for (int i = 0; i < temps.size(); ++i) {
+            z = i % l + 1;//z = 0,1,2,3,4
+            fz = z;
+            x = i / (l * k);
+            y = x * l * k;
+            y = (i - y) / l;
+            x = j - 1 - x;
+            if (temps.get(i) != ERROR_TEMP_TAG) {
+                //存放 接收时间 depotId temp x,y,z
+                info = new GrainInfo(ContextUtil.getTimeYMDHMM(receiveDate), depot.getId(), temps.get(i), x, y, z);
+            } else {
+                if (i > 0 && temps.get(i - 1) != ERROR_TEMP_TAG) {
+                    info = new GrainInfo(ContextUtil.getTimeYMDHMM(receiveDate), depot.getId(), temps.get(i - 1), x, y, z);
+                } else {
+                    info = new GrainInfo(ContextUtil.getTimeYMDHMM(receiveDate), depot.getId(), temps.get(i), x, y, z);
+                }
+//                log.warning("仓库" + depot.getId() + "粮情检测点出现故障，系统坐标X=" + x + ",Y=" + y + ",Z=" + z);
+            }
+            grains.add(info);
+        }
+        return grains;
     }
 }

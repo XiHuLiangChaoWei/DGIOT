@@ -10,7 +10,7 @@ import javax.swing.text.html.parser.Entity;
 import java.util.*;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/26 8:58
  * ClassExplain :
  * ->
@@ -75,7 +75,7 @@ public class N2ServiceImpl implements N2Service {
     @Override
     public N2 getInfo(String msgId) {
         N2 rs = n2Mapper.selectInfoByMsgId(msgId);
-        return  rs;
+        return rs;
     }
 
     @Override
@@ -90,6 +90,6 @@ public class N2ServiceImpl implements N2Service {
 
     @Override
     public N2 getNewInfoByDevName2(String devName, String type) {
-        return n2Mapper.selectNewInfoByDevName2(devName,type);
+        return n2Mapper.selectNewInfoByDevName2(devName, type);
     }
 }

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/20 13:34
  * ClassExplain :
  * ->
@@ -16,5 +16,4 @@ public interface AMQPService {
      */
     void initAMQP();
 
-    void initWebSocketServer();
 }

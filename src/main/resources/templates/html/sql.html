@@ -13,8 +13,24 @@
     <button id="b4">getNewGrain.do?devBH=1&devZH=1</button>
     <button id="b5">getDepotList</button>
     <button id="b6">sendTestOrder?devBH=1&devZH=1&devAddress=1&devNum=1&action=11</button>
+    <button id="b7">sendJSON</button>
     <div id="2"></div>
     <script type="text/javascript">
+
+        $("#b7").click(function () {
+            let str = '{"depotId":5,"depot_type":"0","in_time":"","grain_type":"","grain_num":"","in_humidity":"","now_humidity":"","tester":""}'
+            $.ajax({
+                "url":"depotInfo",
+                "type": "POST",
+                "dateType": "json",
+                data:{jsonStr:str},
+                "success": function (json) {
+                    let j = json.date;
+                    console.log(json)
+                }
+            })
+        })
+
         $("#b1").click(function () {
             $.ajax({
                 "url": 1 + "/grain",

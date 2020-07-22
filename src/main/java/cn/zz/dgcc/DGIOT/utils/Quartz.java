@@ -1,7 +1,7 @@
 package cn.zz.dgcc.DGIOT.utils;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2019/11/14 16:43
  * ClassExplain :
  * ->

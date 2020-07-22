@@ -213,6 +213,45 @@
             devNote=#{devNote} AND devBH=#{devBH} AND devZH=#{devZH} AND bus_type=#{busType} AND type = #{type}
     </update>
 
+    <update id="updateCidByDevInfo" parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+        UPDATE
+            iot_device_list
+        SET
+            user_id = #{cid}
+        WHERE device_name LIKE concat(#{deviceNameSuf},'%')
+    </update>
+
+    <select id="selectQTDevByBHAndZHAndCompany" resultType="java.lang.String">
+        SELECT
+            device_secret
+        FROM
+            iot_device_list
+        WHERE
+            devBH=#{devBH} AND devZH=#{devZH} AND type =#{type} AND user_id = #{companyId}
+    </select>
+
+    <select id="selectCountDevByDevInfoAndCCid" resultType="java.lang.Integer"
+            parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+        SELECT
+            count(*)
+        FROM
+            iot_device_list
+        WHERE
+            devNote=#{devNote} AND
+            devBH=#{devBH} AND devZH=#{devZH} AND
+            bus_type=#{busType} AND type =#{type} AND cc_id = #{ccId}
+    </select>
+
+    <select id="selectFirewareByDevName" resultType="java.lang.String"
+            parameterType="cn.zz.dgcc.DGIOT.entity.Device">
+        SELECT
+            dev_ver
+        FROM
+            iot_device_list
+        WHERE
+            device_name = #{devName}
+    </select>
+
     <select id="selectCountDevByDevInfoWWithoutDevAndDtu" resultType="java.lang.Integer"
             parameterType="cn.zz.dgcc.DGIOT.entity.Device">
         SELECT
@@ -244,7 +283,7 @@
         WHERE
             devNote=#{devNote} AND
             devBH=#{devBH} AND devZH=#{devZH} AND
-            bus_type=#{busType} AND type =#{type} AND Dtu_id=#{DtuId} AND Dev_Id =#{DevId}
+            bus_type=#{busType} AND type =#{type}
     </select>
 
     <select id="selectCountDevByDevAndDtu" resultType="java.lang.Integer">
@@ -398,12 +437,33 @@
     </insert>
 
 
-    <select id="getAll" resultMap="DeviceResultMap">
+    <select id="selectDevByDevNameInfo" resultMap="DeviceResultMap">
         SELECT
             *
         FROM
             iot_device_list
+        WHERE
+            device_name like concat('%',#{str},'%') AND device_status &lt;&gt; 'UNACTIVE'
+    </select>
 
+
+    <select id="selectAllActive" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE   device_status &lt;&gt; 'UNACTIVE'
+        ORDER BY device_name ASC
+    </select>
+
+    <select id="selectAllActiveWithLimit" resultMap="DeviceResultMap">
+        SELECT
+            *
+        FROM
+            iot_device_list
+        WHERE   device_status &lt;&gt; 'UNACTIVE'
+        LIMIT #{page},#{limit};
+        ORDER BY device_name
     </select>
 
 

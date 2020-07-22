@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/23 10:04
  * ClassExplain :
  * ->
@@ -32,4 +32,8 @@ public interface UserMapper {
     User selectByUserId(Integer userId);
 
     int selectCompanyIdByUserId(int userId);
+
+    int onlineStatus(int userId);
+
+    int offlineStatus(int userId);
 }

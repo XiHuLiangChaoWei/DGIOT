@@ -1,7 +1,7 @@
 package cn.zz.dgcc.DGIOT.entity;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/2 11:42
  * ClassExplain :
  * ->

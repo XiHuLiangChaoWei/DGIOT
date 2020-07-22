@@ -7,14 +7,14 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/5 8:34
  * ClassExplain :   查询QT信息
  * ->
@@ -35,10 +35,22 @@ public class QTJob implements Job {
         return deviceList;
     }
 
-    static ExecutorService executorService = Executors.newCachedThreadPool();
+    //    static ExecutorService executorService = Executors.newCachedThreadPool();
+    private final static ExecutorService executorService = new ThreadPoolExecutor(
+            Runtime.getRuntime().availableProcessors(),
+            Runtime.getRuntime().availableProcessors() * 2, 60, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(50000));
+//    ExecutorService executorService = Executors.newCachedThreadPool();
+    ThreadPoolExecutor pool = (ThreadPoolExecutor) executorService;
+
+//
+//    @Autowired
+//    ExecutorService pool;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+
+
 //        System.out.println("开始执行计划任务");
         log.info("开始执行气调任务--------------------------------------------");
         //从jobDataMap中获取设备列表
@@ -47,10 +59,15 @@ public class QTJob implements Job {
             for (Device device : devices
             ) {
                 if (device.getType() == 2) {
-                    executorService.execute(() -> {
+                    pool.submit(() -> {
                         log.info("定时查询气调··············" + device.getDeviceName());
                         downOrderUtils.deployN2Order(0, device);
+
                     });
+//                    executorService.execute(() -> {
+//                        log.info("定时查询气调··············" + device.getDeviceName());
+//                        downOrderUtils.deployN2Order(0, device);
+//                    });
 //                    new Thread(() -> {
 //                        log.info("定时查询气调··············"+device.getDeviceName());
 //                        downOrderUtils.deployN2Order(0, device);
@@ -61,8 +78,10 @@ public class QTJob implements Job {
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
         }
         log.info("结束执行气调任务--------------------------------------------");
+//        pool.shutdown();
     }
 //    @Override
 //    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {

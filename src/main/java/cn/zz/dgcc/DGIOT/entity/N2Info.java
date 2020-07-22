@@ -3,7 +3,7 @@ package cn.zz.dgcc.DGIOT.entity;
 import java.util.Objects;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/21 8:41
  * ClassExplain :
  * ->

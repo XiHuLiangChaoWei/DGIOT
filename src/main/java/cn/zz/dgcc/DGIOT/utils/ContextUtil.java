@@ -37,20 +37,35 @@ public class ContextUtil {
     private static SimpleDateFormat sdf = null;
 
 
-//    public static void main(String[] args) {
-//        chinese2PinYin2("河池-金城江-东江-气调柜");
-//    }
+    public static String toShortHex(int value) {
+        String tempHex = Integer.toHexString(value);
+        if (tempHex.length() < 2) {
+            tempHex = "0" + tempHex;
+        }
+        if (tempHex.length() < 4) {
+            tempHex = "0" + tempHex;
+        }
+        if (tempHex.length() < 4) {
+            tempHex = "0" + tempHex;
+        }
+        return tempHex.toUpperCase().substring(2, tempHex.length());
+    }
 
-    public static void chinese2PinYin2(String s){
+    /**
+     * 汉字转拼音首字母
+     *
+     * @param s
+     */
+    public static String chinese2PinYin2(String s) {
         HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
         format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
         format.setVCharType(HanyuPinyinVCharType.WITH_V);
-        try{
+        try {
             StringBuffer sb = new StringBuffer();
-            for(int i = 0;i<s.length();i++){
-                String[] strs = PinyinHelper.toHanyuPinyinStringArray(s.charAt(i),format);
-                if(strs==null|strs.length==0){
+            for (int i = 0; i < s.length(); i++) {
+                String[] strs = PinyinHelper.toHanyuPinyinStringArray(s.charAt(i), format);
+                if (strs == null | strs.length == 0) {
                     continue;
                 }
                 String index = strs[0];
@@ -58,25 +73,31 @@ public class ContextUtil {
                 String pinyin = String.valueOf(c).toUpperCase();
                 sb.append(pinyin);
             }
-            System.err.println(sb.toString());
-        }catch (BadHanyuPinyinOutputFormatCombination e){}
-
+//            System.err.println(sb.toString());
+            return sb.toString();
+        } catch (BadHanyuPinyinOutputFormatCombination e) {
+        }
+        return null;
     }
+//    public static void main(String[] args) {
+//      chinese2PinYin("中国");
+//    }
 
     /**
      * 汉字转拼音
+     *
      * @param s
      */
-    public static void chinese2PinYin(String s){
+    public static String chinese2PinYin(String s) {
         HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
         format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
         format.setVCharType(HanyuPinyinVCharType.WITH_V);
-        try{
+        try {
             StringBuffer sb = new StringBuffer();
-            for(int i = 0;i<s.length();i++){
-                String[] strs = PinyinHelper.toHanyuPinyinStringArray(s.charAt(i),format);
-                if(strs==null|strs.length==0){
+            for (int i = 0; i < s.length(); i++) {
+                String[] strs = PinyinHelper.toHanyuPinyinStringArray(s.charAt(i), format);
+                if (strs == null | strs.length == 0) {
                     continue;
                 }
                 String index = strs[0];
@@ -84,11 +105,12 @@ public class ContextUtil {
                 String pinyin = String.valueOf(c).toUpperCase().concat(index.substring(1));
                 sb.append(pinyin);
             }
-            System.err.println(sb.toString());
-        }catch (BadHanyuPinyinOutputFormatCombination e){}
-
+//            System.err.println(sb.toString());
+            return sb.toString();
+        } catch (BadHanyuPinyinOutputFormatCombination e) {
+        }
+        return null;
     }
-
 
 
     /**
@@ -172,7 +194,6 @@ public class ContextUtil {
     }
 
 
-
     public static String FormatNum6(int a) {
         DecimalFormat df = new DecimalFormat("000000");
         String rs = df.format(a);
@@ -211,6 +232,7 @@ public class ContextUtil {
         return rs;
     }
 
+
     /**
      * 根据时间返回MM-dd（02-14）这样的值
      *
@@ -228,6 +250,13 @@ public class ContextUtil {
         if (null == date)
             date = new Date();
         sdf = new SimpleDateFormat(Constant.DATE_FORMAT_MDHM);
+        return sdf.format(date);
+    }
+
+    public static String dateFormatMdhms(Date date) {
+        if (null == date)
+            date = new Date();
+        sdf = new SimpleDateFormat(Constant.DATE_FORMAT_YMDHMS);
         return sdf.format(date);
     }
 
@@ -304,6 +333,7 @@ public class ContextUtil {
 
     /**
      * 获取当前时间
+     *
      * @param date
      * @return
      */

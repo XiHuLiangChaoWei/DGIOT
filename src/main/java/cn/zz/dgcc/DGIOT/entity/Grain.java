@@ -5,7 +5,7 @@ import cn.zz.dgcc.DGIOT.utils.ContextUtil;
 import java.util.Date;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/21 8:39
  * ClassExplain :
  * ->
@@ -18,6 +18,7 @@ public class Grain {
     String msgId;
     String batchId;
     String depotId;
+    int fjAddress;
 
     public String getDepotId() {
         return depotId;
@@ -96,5 +97,13 @@ public class Grain {
 
     public void setBatchId(String batchId) {
         this.batchId = batchId;
+    }
+
+    public int getFjAddress() {
+        return fjAddress;
+    }
+
+    public void setFjAddress(int fjAddress) {
+        this.fjAddress = fjAddress;
     }
 }

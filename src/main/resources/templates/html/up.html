@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8">
-    <title>===</title>
+    <title>文件上传</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -17,6 +17,13 @@
     <p><input type="submit" value="提交"/></p>
 </form>
 
+<div class="demoTable">
+    搜索设备名：
+    <div class="layui-inline">
+        <input class="layui-input" name="id" id="demoReload" autocomplete="off" placeholder="请输入设备信息">
+    </div>
+    <button class="layui-btn" data-type="reload">搜索</button>
+</div>
 
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
@@ -50,14 +57,16 @@
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 
 <link th:href="@{../css/layui.css}" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" th:src="@{../layui/layui .js}"></script>
+<script type="text/javascript" th:src="@{../layui/layui.js}"></script>
 <script type="text/javascript" th:src="@{../jquery-3.4.1.min.js}"></script>
 
 <script type="text/javascript" th:inline="none">
+
     layui.use('table', function () {
         var table = layui.table;
 
         table.render({
+            id: "itable",
             elem: '#test'
             , title: '设备列表'
             , initSort: {
@@ -86,10 +95,70 @@
                 , {field: 'devVersion', title: '设备版本号', width: 180, sort: true}
                 , {field: 'dtuVersion', title: 'DTU模块版本号', width: 120}
                 , {field: 'devNote', title: '设备备注', width: 200, sort: true},
-                , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200}
             ]]
             , page: true
+            , limit: 30
+            , limits: [30, 60, 90]
+            , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                var result;
+                // console.log(this);
+                // console.log(JSON.stringify(res));
+                if (this.page.curr) {
+                    result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
+                } else {
+                    result = res.data.slice(0, this.limit);
+                }
+                console.log(res)
+                console.log(result)
+                console.log(res.code)
+                console.log(res.msg)
+                console.log(res.count)
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": result //解析数据列表
+                };
+            }
         });
+
+        var $ = layui.$, active = {
+            reload: function () {
+                var demoReload = $('#demoReload');
+                console.log("点击按钮")
+                //执行重载
+                table.reload('itable', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    , where: {
+                        str: demoReload.val()
+                    }
+                }, 'data');
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        // $('.demoTable .layui-btn').on('click', function(){
+        //     console.log("点击按钮")
+        //     var type = $(this).data('type');
+        //     var demoReload = $('#demoReload');
+        //     // active[type] ? active[type].call(this) : '';
+        //     table.reload('itable', {
+        //         where: { //设定异步数据接口的额外参数，任意设
+        //             str:demoReload.val()
+        //         }
+        //         ,page: {
+        //             curr: 1 //重新从第 1 页开始
+        //         }
+        //     }); //只重载数据
+        // });
+
 
         //头工具栏事件
         table.on('toolbar(test)', function (obj) {
@@ -158,9 +227,9 @@
                     title: false,
                     closeBtn: 0,
                     shadeClose: true,
-                    iframeAuto:true,
+                    iframeAuto: true,
                     skin: 'yourclass',
-                    content: 'test5',
+                    content: 'firewareUpdate2',
                     success: function (layero, index) {
                         let body = layer.getChildFrame('body', index);//获取子页面dom属性
                         let iframeWin = window[layero.find('iframe')[0]['name']];//子页面

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/23 15:16
  * ClassExplain :
  * ->
@@ -83,4 +83,24 @@ public interface DeviceMapper {
     List<Device> selectDevByTypeAndProject(@Param("userId") int companyId, @Param("type") int devType);
 
     void updateIotId(Device device);
+
+    String selectQTDevByBHAndZHAndCompany(@Param("devBH") String devBH, @Param("devZH") String devZH, @Param("type") int i,@Param("companyId") int companyId);
+
+    int selectCountDevByDevInfoAndCCid(Device device);
+
+    String selectFirewareByDevName(String devName);
+
+    List<Device> selectDevByDevNameInfo(String str);
+
+    List<Device> selectAllActive();
+
+    List<Device> selectAllActiveWithLimit(int page, int limit);
+
+    /**
+     * 通过模糊查询，找到设备名符合条件的 然后进行更新companyId
+     * @param cid
+     * @param deviceNameSuf
+     * @return
+     */
+    int updateCidByDevInfo(int cid, String deviceNameSuf);
 }

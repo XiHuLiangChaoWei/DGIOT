@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/4 16:49
  * ClassExplain :
  * ->
@@ -43,17 +43,17 @@ public class DownOrderUtils {
     AppVersionService appVersionService;
 
 
-
     /**
+     * TODO userID传入 有部分方法传入了companyid
      *
-     * @param userId
-     * @param device
-     * @param msg
-     * @param msgType   设备类型
-     * @param sendType  消息发送类型 json格式为null/0   HEX格式为1
+     * @param userId   用户id
+     * @param device   设备对象
+     * @param msg      消息本体
+     * @param msgType  设备类型
+     * @param sendType 消息发送类型 json格式为null/0   HEX格式为1
      * @return
      */
-    public JsonResult<String> deployAndSaveOrder(int userId, Device device, BuildMessage msg, int msgType,int sendType) {
+    public JsonResult<String> deployAndSaveOrder(int userId, Device device, BuildMessage msg, int msgType, int sendType) {
         String pk = device.getProductKey();
         String devName = device.getDeviceName();
         String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
@@ -77,35 +77,37 @@ public class DownOrderUtils {
      * 下发查询油情
      */
     public JsonResult<String> deployOilOrder(int userId, Device rs) {
-        log.info("IndexController=" + rs);
+//        log.info("IndexController=" + rs);
         OilCommondBuilder oilCommondBuilder = OilCommondBuilder.getInstance();
         BuildMessage gasMsg = oilCommondBuilder.build();
-        return deployAndSaveOrder(userId, rs, gasMsg, 6,1);
+        return deployAndSaveOrder(userId, rs, gasMsg, 6, 1);
     }
 
     /**
      * 下发查询油情校验
+     *
      * @param userId
      * @param rs
      * @return
      */
-    public JsonResult<String> deployOilConfChaxun(int userId,Device rs){
+    public JsonResult<String> deployOilConfChaxun(int userId, Device rs) {
         Oil2CommondBuilder oil2CommondBuilder = Oil2CommondBuilder.getInstance();
         BuildMessage confMsg = oil2CommondBuilder.build(2);
-        return deployAndSaveOrder(userId,rs,confMsg,6,1);
+        return deployAndSaveOrder(userId, rs, confMsg, 6, 1);
     }
 
     /**
      * 下发油情设置
+     *
      * @param userId
      * @param rs
      * @return
      */
-    public JsonResult<String> deployOilConfSet(int userId,Device rs,String set){
+    public JsonResult<String> deployOilConfSet(int userId, Device rs, String set) {
         Oil2CommondBuilder oil2CommondBuilder = Oil2CommondBuilder.getInstance();
         oil2CommondBuilder.setOilConf(set);
         BuildMessage confMsg = oil2CommondBuilder.build(1);
-        return deployAndSaveOrder(userId,rs,confMsg,6,1);
+        return deployAndSaveOrder(userId, rs, confMsg, 6, 1);
     }
 
 
@@ -115,8 +117,8 @@ public class DownOrderUtils {
      * @param depotId
      * @param userId
      */
-    public void CXPZ(int depotId, int userId) {
-        String devName = depotService.getDevNameByDepotIdAndType(depotId, 2);
+    public void CXPZ(int depotId, int userId, int companyId) {
+        String devName = depotService.getDevNameByDepotIdAndType(depotId, 2, companyId);
         Device rs = deviceService.getDevByDevName(devName);
         ConfCommondBuilder ccb = ConfCommondBuilder.getInstance();
         String commond = ccb.getPZCXInfo(rs.getDevId());
@@ -148,7 +150,8 @@ public class DownOrderUtils {
         String devName;
         for (Device d : allDev
         ) {
-            devName = depotService.getDevNameByDepotIdAndType(depotId, type);
+//            devName = depotService.getDevNameByDepotIdAndType(depotId, type);
+            devName = d.getDeviceName();
             devId = d.getDevId();
             commond = confCommondBuilder.setTimes(devId);
             pk = d.getProductKey();
@@ -284,15 +287,18 @@ public class DownOrderUtils {
         }
         String repeat = getN2DevR("2", n2);
         if ("0303020004C047".equals(repeat)) {
-            log.info("设备正在运行");
+            log.info("制氮机设备正在运行");
             return new JsonResult<>(success, 1);
         } else if ("0303020008C042".equals(repeat)) {
-            log.info("设备已停机");
+            log.info("制氮机设备已停机");
             return new JsonResult<>(success, 0);
         } else {
             return new JsonResult<>(success, 0);
         }
     }
+
+//    ExecutorService executorService = Executors.newCachedThreadPool();
+//    ThreadPoolExecutor pool = (ThreadPoolExecutor) executorService;
 
     /**
      * 制氮机开关
@@ -302,63 +308,114 @@ public class DownOrderUtils {
      * @param userId
      */
     public void N2DevControler(String controller, Device n2, int userId) {
+        log.warning("N2Status");
         String pk = n2.getProductKey();
         String devName = n2.getDeviceName();
         String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
         //新建进程执行制氮机开操作
         if ("on".equals(controller)) {
-            Thread t = new Thread(() -> {
-                String[] on = N2DevCommondBuilder.getN2DevOn();
-                JSONObject json = ioTService.pub(topicFullName, on[0].replace(" ", ""), pk, "1");
-                Order o = new Order(userId, 0, json.getString("MessageId"), 5, on[0],
-                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-                System.out.println("OOOO----" + o);
-                int r = orderService.save(o);
-                if (r == 1) {
-                    log.info("保存命令成功");
-                }
-                try {
-                    Thread.sleep(1200);
-                } catch (InterruptedException e) {
+//            pool.submit(() -> {
+            String[] on = N2DevCommondBuilder.getN2DevOn();
+            JSONObject json = ioTService.pub(topicFullName, on[0].replace(" ", ""), pk, "1");
+            Order o = new Order(userId, 0, json.getString("MessageId"), 5, on[0],
+                    ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
+            System.out.println("OOOO----" + o);
+            int r = orderService.save(o);
+            if (r == 1) {
+                log.info("保存命令成功");
+            }
+            try {
+                Thread.sleep(1200);
+            } catch (InterruptedException e) {
 
-                }
-                json = ioTService.pub(topicFullName, on[1].replace(" ", ""), pk, "1");
-                o = new Order(userId, 0, json.getString("MessageId"), 5, on[1],
-                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-                System.out.println("1111----" + o);
-                r = orderService.save(o);
-                if (r == 1) {
-                    log.info("保存命令成功");
-                }
-
-            });
-            t.start();
+            }
+            json = ioTService.pub(topicFullName, on[1].replace(" ", ""), pk, "1");
+            o = new Order(userId, 0, json.getString("MessageId"), 5, on[1],
+                    ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
+            System.out.println("1111----" + o);
+            r = orderService.save(o);
+            if (r == 1) {
+                log.info("保存命令成功");
+            }
+//            });
+//
+//            Thread t = new Thread(() -> {
+//                String[] on = N2DevCommondBuilder.getN2DevOn();
+//                JSONObject json = ioTService.pub(topicFullName, on[0].replace(" ", ""), pk, "1");
+//                Order o = new Order(userId, 0, json.getString("MessageId"), 5, on[0],
+//                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
+//                System.out.println("OOOO----" + o);
+//                int r = orderService.save(o);
+//                if (r == 1) {
+//                    log.info("保存命令成功");
+//                }
+//                try {
+//                    Thread.sleep(1200);
+//                } catch (InterruptedException e) {
+//
+//                }
+//                json = ioTService.pub(topicFullName, on[1].replace(" ", ""), pk, "1");
+//                o = new Order(userId, 0, json.getString("MessageId"), 5, on[1],
+//                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
+//                System.out.println("1111----" + o);
+//                r = orderService.save(o);
+//                if (r == 1) {
+//                    log.info("保存命令成功");
+//                }
+//
+//            });
+//            t.start();
         } else if ("off".equals(controller)) {
-            Thread t = new Thread(() -> {
-                String[] off = N2DevCommondBuilder.getN2DevOff();
-                JSONObject json = ioTService.pub(topicFullName, off[0], pk, "1");
-                Order o = new Order(userId, 0, json.getString("MessageId"), 5, off[0],
-                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-                System.out.println("OOOO----" + o);
-                int r = orderService.save(o);
-                if (r == 1) {
-                    log.info("保存命令成功");
-                }
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
+//            pool.submit(() -> {
+            String[] off = N2DevCommondBuilder.getN2DevOff();
+            JSONObject json = ioTService.pub(topicFullName, off[0], pk, "1");
+            Order o = new Order(userId, 0, json.getString("MessageId"), 5, off[0],
+                    ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
+            System.out.println("OOOO----" + o);
+            int r = orderService.save(o);
+            if (r == 1) {
+                log.info("保存命令成功");
+            }
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
 
-                }
-                json = ioTService.pub(topicFullName, off[1], pk, "1");
-                o = new Order(userId, 0, json.getString("MessageId"), 5, off[1],
-                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
-                System.out.println("1111----" + o);
-                r = orderService.save(o);
-                if (r == 1) {
-                    log.info("保存命令成功");
-                }
-            });
-            t.start();
+            }
+            json = ioTService.pub(topicFullName, off[1], pk, "1");
+            o = new Order(userId, 0, json.getString("MessageId"), 5, off[1],
+                    ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
+            System.out.println("1111----" + o);
+            r = orderService.save(o);
+            if (r == 1) {
+                log.info("保存命令成功");
+            }
+//            });
+
+//            Thread t = new Thread(() -> {
+//                String[] off = N2DevCommondBuilder.getN2DevOff();
+//                JSONObject json = ioTService.pub(topicFullName, off[0], pk, "1");
+//                Order o = new Order(userId, 0, json.getString("MessageId"), 5, off[0],
+//                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
+//                System.out.println("OOOO----" + o);
+//                int r = orderService.save(o);
+//                if (r == 1) {
+//                    log.info("保存命令成功");
+//                }
+//                try {
+//                    Thread.sleep(1500);
+//                } catch (InterruptedException e) {
+//
+//                }
+//                json = ioTService.pub(topicFullName, off[1], pk, "1");
+//                o = new Order(userId, 0, json.getString("MessageId"), 5, off[1],
+//                        ContextUtil.getTimeYMDHMM(null), devName, json.getString("Success"));
+//                System.out.println("1111----" + o);
+//                r = orderService.save(o);
+//                if (r == 1) {
+//                    log.info("保存命令成功");
+//                }
+//            });
+//            t.start();
         }
     }
 
@@ -380,7 +437,7 @@ public class DownOrderUtils {
         gasInfoCommondBuilder.setDevBH(devBH);
         gasInfoCommondBuilder.setDevZH(devZH);
         BuildMessage gasMsg = gasInfoCommondBuilder.build();
-        return deployAndSaveOrder(userId,rs,gasMsg,2,1);
+        return deployAndSaveOrder(userId, rs, gasMsg, 2, 1);
 //        String pk = rs.getProductKey();
 //        String devName = rs.getDeviceName();
 //        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
@@ -411,6 +468,8 @@ public class DownOrderUtils {
         log.info("IndexController=" + rs);
         String devBH = rs.getDevBH();
         String devZH = rs.getDevZH();
+        devBH = ContextUtil.FormatNum(Integer.parseInt(devBH), 2);
+        devZH = ContextUtil.FormatNum(Integer.parseInt(devZH), 2);
         if (devBH == null | devZH == null) {
             throw new RuntimeException("设备配置未完成");
         }
@@ -424,7 +483,7 @@ public class DownOrderUtils {
         grainInfoCommondBuilder.setDevBH(devBH);
         grainInfoCommondBuilder.setDevZH(devZH);
         BuildMessage grainMsg = grainInfoCommondBuilder.build();
-        return deployAndSaveOrder(userId,rs,grainMsg,3,1);
+        return deployAndSaveOrder(userId, rs, grainMsg, 3, 1);
 //        String pk = rs.getProductKey();
 //        String devName = rs.getDeviceName();
 //        String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
@@ -445,6 +504,30 @@ public class DownOrderUtils {
     }
 
     /**
+     * 下发查询sun
+     *
+     * @param companyId
+     * @param rs
+     * @return
+     */
+    public JsonResult<String> deploySunOrder(int companyId, Device rs, int devAdd) {
+        String devBH = ContextUtil.FormatNum(devAdd, 2);
+        String lie = ContextUtil.FormatNum(8, 2);
+        String hang = ContextUtil.toHexString(6).substring(2);
+        String ceng = ContextUtil.toHexString(5).substring(2);
+        String thNum = ContextUtil.toHexString(1).substring(2);
+        SunPowerCommondBuilder sunPowerCommondBuilder = SunPowerCommondBuilder.getInstance();
+        sunPowerCommondBuilder.setDevAddress(devBH);
+        sunPowerCommondBuilder.setLie(lie);
+        sunPowerCommondBuilder.setHang(hang);
+        sunPowerCommondBuilder.setCeng(ceng);
+        sunPowerCommondBuilder.setThNum(thNum);
+        BuildMessage buildMessage = sunPowerCommondBuilder.build();
+        System.err.println(buildMessage.toString());
+        return deployAndSaveOrder(companyId, rs, buildMessage, 7, 1);
+    }
+
+    /**
      * type 1-开关制氮机  2-查询命令
      *
      * @param
@@ -456,4 +539,6 @@ public class DownOrderUtils {
         N2 rs = n2Service.getNewInfoByDevName2(devName, type);
         return rs.getContent().toUpperCase();
     }
+
+
 }

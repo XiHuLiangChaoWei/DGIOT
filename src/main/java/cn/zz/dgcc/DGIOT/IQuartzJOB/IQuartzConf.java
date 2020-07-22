@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/8 11:26
  * ClassExplain :
  * ->
@@ -26,6 +26,7 @@ public class IQuartzConf implements ApplicationRunner {
 //        iQuartzStart.bindDevWithJob();
         iQuartzStart.quartzJobForDevice();
         System.err.println("start defalt quartz jobs complete !");
+
     }
 }
 

@@ -1,7 +1,9 @@
 package cn.zz.dgcc.DGIOT.IQuartzJOB;
 
+import cn.zz.dgcc.DGIOT.entity.Depot;
 import cn.zz.dgcc.DGIOT.entity.Device;
 import cn.zz.dgcc.DGIOT.entity.Product;
+import cn.zz.dgcc.DGIOT.service.DepotService;
 import cn.zz.dgcc.DGIOT.service.DeviceService;
 import cn.zz.dgcc.DGIOT.service.IoTService;
 import org.quartz.Job;
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/13 14:49
  * ClassExplain : 定时刷新设备状态
  * ->
@@ -24,6 +26,8 @@ public class IotStatusJob implements Job {
     IoTService ioTService;
     @Autowired
     DeviceService deviceService;
+    @Autowired
+    DepotService depotService;
 
     List<Device> getTotalList() {
         List<Product> products = ioTService.getProductList();
@@ -38,6 +42,7 @@ public class IotStatusJob implements Job {
             log.info("查询到设备列表" + d);
         }
         deviceService.updateDevStatus(devices);
+        depotService.updateDevStatus(devices);
 //        deviceService.updateDevIotId(devices);
     }
 

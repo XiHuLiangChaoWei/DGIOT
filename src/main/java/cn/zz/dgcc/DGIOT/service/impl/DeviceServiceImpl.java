@@ -1,10 +1,8 @@
 package cn.zz.dgcc.DGIOT.service.impl;
 
-import cn.zz.dgcc.DGIOT.entity.Company;
 import cn.zz.dgcc.DGIOT.entity.Device;
 import cn.zz.dgcc.DGIOT.mapper.DeviceMapper;
 import cn.zz.dgcc.DGIOT.service.CompanyService;
-import cn.zz.dgcc.DGIOT.service.DepotService;
 import cn.zz.dgcc.DGIOT.service.DeviceService;
 import cn.zz.dgcc.DGIOT.service.Exception.ISqlException;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
@@ -12,14 +10,13 @@ import cn.zz.dgcc.DGIOT.utils.DeviceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import sun.rmi.runtime.Log;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/23 15:16
  * ClassExplain :
  * ->
@@ -38,10 +35,10 @@ public class DeviceServiceImpl implements DeviceService {
 
 
     @Override
-    public void saveDeviceList(List<Device> devices) {
+    public int saveDeviceList(List<Device> devices) {
         //插入数据库
         log.info("云端设备总表大小=" + devices.size());
-        deviceMapper.insertDeviceList(devices);
+        return deviceMapper.insertDeviceList(devices);
     }
 
     @Override
@@ -154,10 +151,12 @@ public class DeviceServiceImpl implements DeviceService {
      */
     private boolean reg(Device device) {
         //查询云设备列表中与注册设备type相同且没有被使用的  同项目设备列表
-        String devNote = device.getDevNote();
 
+        //获取devNote
+        String devNote = device.getDevNote();
         String[] strs = devNote.split("-");
         String xiangMu = strs[0];
+        //根据devNote获取companyId
         int companyId = companyService.getCIDByName(xiangMu);
 
         List<Device> ls = getNoUsedDeviceListByTypeAndProject(device.getType(), companyId);
@@ -167,13 +166,26 @@ public class DeviceServiceImpl implements DeviceService {
         }
         //获取未使用的云设备
         Device reg2Dev = ls.get(0);
+        //TODO 修改过的匹配机制 要求实现在云端分配好 编号 站号
+        //如果设备类型是太阳能分机,通过获取未使用的云设备来进行ds分配,
+//        if (device.getType() == 7) {
+//            String dS = reg2Dev.getDeviceSecret();
+//            device.setDeviceSecret(dS);
+//            int upRs = deviceMapper.updataDeviceInfoByDS(device);
+//            return upRs == 1;
+//        }
+        //非太阳能分机,通过设定好的编号站号来进行云端和实机设备的绑定;
+        String ds = getPipeiDevDsByBhAndZh(device.getDevBH(), device.getDevZH(), companyId, device.getType());
         //通过ds来更新设备信息
-        String dS = reg2Dev.getDeviceSecret();
-        device.setDeviceSecret(dS);
+        device.setDeviceSecret(ds);
         int res = resetDtuIdByDtuId(device.getDtuId());
         int upRs = deviceMapper.updataDeviceInfoByDS(device);
         //注册成功
         return upRs == 1;
+    }
+
+    private String getPipeiDevDsByBhAndZh(String devBH, String devZH, int companyId, int type) {
+        return deviceMapper.selectQTDevByBHAndZHAndCompany(devBH, devZH, type, companyId);
     }
 
     /**
@@ -187,27 +199,23 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     int isExistInYun(Device device) {
-
         //deviceMapper.selectCountDevByDevAndDtu(device.getDevId(), device.getDtuId());
         //修改 通过分机5元作为身份验证
         int rs = deviceMapper.selectCountDevByDevInfoWWithoutDevAndDtu(device);
+//        if (device.getType() == 7) {
+//            rs = deviceMapper.selectCountDevByDevInfoAndCCid(device);
+//        }
         if (rs == 0) {
             log.info("云端不存在该设备");
             //TODO 注册设备
             return 0;
         } else if (rs == 1) {
             Device rs1 =
-                    //deviceMapper.selectDevByDevAndDtu(device.getDevId(), device.getDtuId());
                     deviceMapper.selectDevByDevInfo(device);
             //云端存在该设备，判断存储的dev和dtu信息是否相符
             log.info("查询云端设备信息：" + rs1);
             log.info("更新云端信息····");
             int rs2 = deviceMapper.updataDeviceInfoByDevInfo(device);
-//            if (!device.getDevId().equals(rs1.getDevId().trim()) | !device.getDtuId().equals(rs1.getDtuId().trim())) {
-//                log.info("云端设备信息与上报信息不符");
-//                //TODO 更新设备信息
-//                return 1;
-//            }
             return 1;
         }
         return 2;
@@ -340,6 +348,7 @@ public class DeviceServiceImpl implements DeviceService {
         ) {
             deviceMapper.updateDevStatus(device);
         }
+
     }
 
     @Override
@@ -354,7 +363,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public List<Device> getDevByCompanyIdAndType(int companyId, int devType) {
-        return deviceMapper.selectDevByTypeAndProject(companyId,devType);
+        return deviceMapper.selectDevByTypeAndProject(companyId, devType);
     }
 
     @Override
@@ -363,6 +372,36 @@ public class DeviceServiceImpl implements DeviceService {
         ) {
             deviceMapper.updateIotId(device);
         }
+    }
+
+    @Override
+    public String getFirewareVerByDevName(String devName) {
+        return deviceMapper.selectFirewareByDevName(devName);
+    }
+
+    @Override
+    public List<Device> getDevListByDevNameInfo(String str) {
+        List<Device> list = deviceMapper.selectDevByDevNameInfo(str);
+        if (list == null) {
+            throw new ISqlException("没有设备");
+        }
+        return list;
+    }
+
+    @Override
+    public List<Device> getAllActiveDev() {
+        return deviceMapper.selectAllActive();
+    }
+
+    @Override
+    public List<Device> getAllActiveDev(int page, int limit) {
+        page = (page - 1) * limit;
+        return deviceMapper.selectAllActiveWithLimit(page, limit);
+    }
+
+    @Override
+    public int updateDevUidByDevNameInfo(int cid, String deviceNameSuf) {
+        return deviceMapper.updateCidByDevInfo(cid, deviceNameSuf);
     }
 
     public List<Device> getNoUsedDeviceListByTypeAndProject(int type, int companyId) {

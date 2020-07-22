@@ -8,13 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/23 11:05
  * ClassExplain :
  * ->
@@ -103,13 +102,16 @@ public class UserServiceImpl implements UserService {
         if (result.getIsDelete() == 1) {
             throw new ISqlException("用户未找到");
         }
+        if(result.getIsOnline()==1){
+            throw new ISqlException("该用户已登陆");
+        }
         String salt = result.getSalt();
         if (!MD5Password(password, salt).equals(result.getPassword())) {
             throw new ISqlException("密码错误");
         }
         User user = new User(result.getCompanyId(), result.getType(), result.getUserId());
-
         result.setSalt(null);
+//        updateUserStatus(user,online);
         return result;
     }
 
@@ -135,6 +137,7 @@ public class UserServiceImpl implements UserService {
         if (!MD5Password(expwd, result.getSalt()).equals(result.getPassword())) {
             throw new ISqlException("原密码错误");
         }
+
         String salt = result.getSalt();
         Integer rows = userMapper.updatePasswordByUid(
                 userId, MD5Password(password, salt));
@@ -144,7 +147,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void reg(User user) {
+    public int reg(User user) {
         String username = user.getUserName();
         User result = userMapper.selectByUserName(username);
         log.info(user.getUserName());
@@ -167,8 +170,18 @@ public class UserServiceImpl implements UserService {
         if (rows != 1) {
             throw new ISqlException("插入不知道出了啥错");
         }
+        return rows;
+    }
+    public int updateUserStatus(User user,int active){
+        if(active==online){
+           return userMapper.onlineStatus(user.getUserId());
+        }else {
+           return userMapper.offlineStatus(user.getUserId());
+        }
     }
 
+    private final static int online = 1;
+    private final static int offline = 0;
 
     public String generatePassword(String password) {
         String salt = UUID.randomUUID().toString().toUpperCase();
@@ -186,6 +199,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public int getCompanyIdByUserId(int userId) {
         return userMapper.selectCompanyIdByUserId(userId);
+    }
+
+    @Override
+    public int logout(Integer userIdFromSession) {
+        User user = userMapper.selectByUserId(userIdFromSession);
+        return updateUserStatus(user,offline);
     }
 
 }

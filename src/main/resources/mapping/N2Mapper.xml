@@ -11,6 +11,23 @@
         <result column="batch_id" property="batchId"/>
     </resultMap>
 
+    <select id="selectByMsgId" resultType="java.lang.Integer">
+        SELECT
+           count(*)
+        FROM
+            n2
+        WHERE
+            msg_id = #{msgId}
+    </select>
+
+    <delete id="quartzDelete">
+         DELETE
+        FROM
+            n2
+        WHERE
+            rec_time &lt; #{date}
+    </delete>
+
     <select id="selectNewInfo" resultMap="N2ResultMap">
         SELECT
             *

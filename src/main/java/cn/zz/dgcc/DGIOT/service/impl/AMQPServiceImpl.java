@@ -1,13 +1,12 @@
 package cn.zz.dgcc.DGIOT.service.impl;
 
-import cn.zz.dgcc.DGIOT.utils.AMQP.WebSocketServiceUtil;
 import cn.zz.dgcc.DGIOT.service.AMQPService;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPServiceUtils;
 import org.springframework.stereotype.Service;
 
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/20 13:34
  * ClassExplain :
  * ->
@@ -24,9 +23,5 @@ public class AMQPServiceImpl implements AMQPService {
         }
     }
 
-    @Override
-    public void initWebSocketServer() {
-        WebSocketServiceUtil s2ws = new WebSocketServiceUtil();
-    }
 
 }

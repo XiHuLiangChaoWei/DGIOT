@@ -12,6 +12,7 @@
         <result column="yy" property="yy"/>
         <result column="zz" property="zz"/>
         <result column="inner_temp" property="innerTemp"/>
+        <result column="inner_humidity" property="innerH"/>
         <result column="out_temp" property="outTemp"/>
         <result column="mqtt_info" property="mqttInfo"/>
         <result column="design_min" property="designMin"/>
@@ -23,11 +24,37 @@
         <result column="min_temp" property="minTemp"/>
         <result column="avg_temp" property="avgTemp"/>
         <result column="qt_status" property="QTStatus"/>
+        <result column="model" property="model"/>
+        <result column="grain_update_time" property="grainUpTime"/>
+
+        <result column="depot_type" property="depotType"/> <!--仓库类型-->
+        <result column="in_time" property="inTime"/><!--入库时间-->
+        <result column="grain_type" property="grainType"/><!--粮食类型-->
+        <result column="grain_num" property="grainNum"/><!--粮食数量（吨）-->
+        <result column="in_humidity" property="inHumidity"/><!--入库湿度-->
+        <result column="now_humidity" property="nowHumidity"/><!--实时湿度-->
+        <result column="tester" property="tester"/><!--检测人-->
     </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+            depot (company_id,depot_id)
+        VALUES (#{companyId},#{depotId})
+    </insert>
+
+    <update id="updateDepotInfoByCompanyAndDepot">
+        UPDATE
+            depot
+        SET
+            depot_type = #{depotType},in_time=#{inTime},grain_type=#{grainType},grain_num=#{grainNum},in_humidity=#{inHumidity},now_humidity=#{nowHumidity},tester=#{tester}
+        WHERE
+            depot_id = #{depotId} AND company_id = #{companyId}
+    </update>
+
     <update id="upQTStatusById">
         UPDATE
             depot
-        SET qt_status = #{clStatus}
+        SET qt_status = #{clStatus},model = #{model}
         WHERE
             id=#{id}
     </update>
@@ -36,7 +63,7 @@
         UPDATE
             depot
         SET
-            max_temp = #{maxTemp},min_temp=#{minTemp},avg_temp=#{avgTemp},inner_humidity=#{innH},inner_temp=#{innT}
+            max_temp = #{maxTemp},grain_update_time=#{upTime},min_temp=#{minTemp},avg_temp=#{avgTemp},inner_humidity=#{innH},inner_temp=#{innT}
         WHERE
             id = #{id}
     </update>
@@ -63,13 +90,14 @@
         dev_name = #{devName}
     </select>
 
-    <select id="selectDepotByDepotId" resultMap="DepotResultMap">
+
+    <select id="selectDepotByDepotIdAndCompanyId" resultMap="DepotResultMap">
         SELECT
             *
         FROM
             depot
         WHERE
-            depot_id = #{depotId}
+             depot_id = #{depotId} AND company_id = #{companyId}
     </select>
 
 </mapper>

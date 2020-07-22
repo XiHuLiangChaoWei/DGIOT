@@ -4,7 +4,7 @@ import cn.zz.dgcc.DGIOT.entity.AppVersion;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/1 12:39
  * ClassExplain :
  * ->

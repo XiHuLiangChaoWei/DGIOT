@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/2 9:29
  * ClassExplain :
  * ->
@@ -39,7 +39,7 @@ public class FileUtils {
 //            System.out.println(Integer.toHexString(i));
 //            System.out.println(i1);
         }
-        System.out.println("总数" + sum);
+//        System.out.println("总数" + sum);
         return sum;
     }
 

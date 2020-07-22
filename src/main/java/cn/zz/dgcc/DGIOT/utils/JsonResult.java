@@ -1,7 +1,7 @@
 package cn.zz.dgcc.DGIOT.utils;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/10 14:02
  * ClassExplain :
  * ->
@@ -65,4 +65,12 @@ public class JsonResult<T> {
         this.data = data;
     }
 
+    @Override
+    public String toString() {
+        return "JsonResult{" +
+                "state=" + state +
+                ", message='" + message + '\'' +
+                ", data=" + data +
+                '}';
+    }
 }

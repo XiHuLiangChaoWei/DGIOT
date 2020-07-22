@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import javax.annotation.Resource;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/20 17:27
  * ClassExplain :
  * ->
@@ -24,7 +24,6 @@ public class StartConnection extends BaseController implements ApplicationRunner
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-       amqpService.initAMQP();
-       amqpService.initWebSocketServer();
+        amqpService.initAMQP();
     }
 }

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/22 10:20
  * ClassExplain :
  * ->
@@ -35,17 +35,28 @@ public class Dg4AnalysisN2 {
     }
 
 //    public static void main(String[] args) {
-//        String str = "AA 55 E4 03 01 01 00 00 FF FF FF FF FF FF FF FF FF FF FF FF 00 00 00 C8 FF FF FF FF 05 00 00 00 00 00 01 00 00 FF FF FF FF 00 01 0A FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 0A 00 00 00 00 00 00 00 00 00 00 01 00 02 64 53 EF EF ".replace(" ","");
-//    System.err.println(str);
+//       String str = "AA55E4030501000214061E153431FFFFFFFFFFFF000000C8FFFFF5F505000000000001000200D3027400010A00EBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF01FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0A000000000000000000000100024899EFEF";
+//       N2 n = new N2();
+//       n.setContent(str);
+//
+//      dg4AnalysisN2.analysisN2Info(n,"1",new Depot()).toJSONString();
 //    }
 
-    private static final Dg4AnalysisN2 Dg4AnalysisN2 = new Dg4AnalysisN2();
+    private static final Dg4AnalysisN2 dg4AnalysisN2 = new Dg4AnalysisN2();
 
     public static Dg4AnalysisN2 newInstance() {
-        return Dg4AnalysisN2;
+        return dg4AnalysisN2;
     }
 
     private final Logger log = Logger.getLogger(Dg4AnalysisN2.class.getName());
+
+    public static void main(String[] args) {
+        N2 n = new N2();
+        n.setContent("AA55E40301010100140706082D01FFFFFFFFFFFFFFFF00C8FFFF01F305000000000001000100CE019001010300CEFFFFFFFF0190FFFFFFFF0A000100000000000000000101024D11EFEF");
+        String devName = "qt001";
+        Depot depot = new Depot();
+        JSONObject j = newInstance().analysisN2Info(n, devName, depot);
+    }
 
     public JSONObject analysisN2Info(N2 n2, String devName, Depot depot) {
         String msg = n2.getContent();
@@ -59,7 +70,7 @@ public class Dg4AnalysisN2 {
         String banshuaiqi = msg.substring(40, 44);
         String liangcheng = msg.substring(44, 48);
         String pressureDifferent = msg.substring(52, 56);
-
+//        System.err.println(pressureDifferent);
         String valveCount = msg.substring(56, 58);
         //解析电动阀门数量
         int valveNum = Integer.valueOf(valveCount, 16);
@@ -140,7 +151,7 @@ public class Dg4AnalysisN2 {
         {
             n2VO.setDepotId(depot.getDepotId());//设置
 //            n2VO.setDevNote(devNote);
-            n2VO.setDevBH(Integer.parseInt(devBH));
+            n2VO.setDevBH(Integer.parseInt(devBH, 16));
             n2VO.setDevZH(Integer.parseInt(devZH));
             n2VO.setModel(getModel(model));   //设置模式
             n2VO.setDevStatus(devStatus);

@@ -3,19 +3,19 @@ package cn.zz.dgcc.DGIOT.utils.MsgBuilder;
 import cn.zz.dgcc.DGIOT.entity.BuildMessage;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/24 17:07
- * ClassExplain :
+ * ClassExplain : 提取变长温湿度
  * ->
  */
-public class SumPowerCommondBuilder extends CommondBuild {
-    private SumPowerCommondBuilder() {
+public class SunPowerCommondBuilder extends CommondBuild {
+    private SunPowerCommondBuilder() {
     }
 
-    private final static SumPowerCommondBuilder sumPowerCommondBuilder = new SumPowerCommondBuilder();
+    private final static SunPowerCommondBuilder SUN_POWER_COMMOND_BUILDER = new SunPowerCommondBuilder();
 
-    public static SumPowerCommondBuilder getInstance() {
-        return sumPowerCommondBuilder;
+    public static SunPowerCommondBuilder getInstance() {
+        return SUN_POWER_COMMOND_BUILDER;
     }
 
     final String start = "AAA0";
@@ -25,7 +25,7 @@ public class SumPowerCommondBuilder extends CommondBuild {
     String hang;
     String lie;
     String thNum;
-    String ifOut;
+    String ifOut = "01";
 
     public BuildMessage build() {
         BuildMessage buildMessage = new BuildMessage();

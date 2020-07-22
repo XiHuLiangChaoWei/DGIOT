@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/8 8:38
  * ClassExplain :      defalt QuartzJob
  * ->
@@ -31,40 +31,44 @@ public class IQuartzStart {
         //配置气调定时信息
         JobDetail qt = JobBuilder.newJob(QTJob.class).withIdentity("localQt", "Defalt")
                 .storeDurably().build();
-        CronTrigger trigger = TriggerBuilder.newTrigger().forJob(qt).withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ? "))
+        CronTrigger lqTrigger = TriggerBuilder.newTrigger().forJob(qt).withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ? "))
                 .withIdentity("localQt", "Defalt").build();
+        //配置定时刷新设备状态任务
+        JobDetail iotStatus = JobBuilder.newJob(IotStatusJob.class).withIdentity("localIot", "Defalt")
+                .storeDurably().build();
+        CronTrigger iotTrigger = TriggerBuilder.newTrigger().forJob(iotStatus).withSchedule(CronScheduleBuilder.cronSchedule("0 0/10 * * * ? "))
+                .withIdentity("localIot", "Defalt").build();
+        //配置油情任务
+        JobDetail oil = JobBuilder.newJob(OilJob.class).withIdentity("localOil", "Defalt")
+                .storeDurably().build();
+        CronTrigger oilTrigger = TriggerBuilder.newTrigger().forJob(oil).withSchedule(CronScheduleBuilder.cronSchedule("0 0 * * * ? *"))
+                .withIdentity("localOil", "Defalt").build();
 
         //配置同步时钟任务
         JobDetail timer = JobBuilder.newJob(((Job) jobExecutionContext -> {
             downOrderUtils.JsonTime(0);
         }).getClass()).withIdentity("timer", "Defalt")
                 .storeDurably().build();
-        CronTrigger trigger2 = TriggerBuilder.newTrigger().forJob(timer).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ? "))
+        CronTrigger timeTrigger = TriggerBuilder.newTrigger().forJob(timer).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ? "))
                 .withIdentity("timer", "Defalt").build();
+
         //配置查询粮情任务
         JobDetail grain = JobBuilder.newJob(QTJob.class).withIdentity("localGrain", "Defalt")
                 .storeDurably().build();
-        CronTrigger trigger3 = TriggerBuilder.newTrigger().forJob(grain).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ? "))
+        CronTrigger grainTrigger = TriggerBuilder.newTrigger().forJob(grain).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0,12 * * ?"))
                 .withIdentity("localGrain", "Defalt").build();
-        //配置定时刷新设备状态任务
-        JobDetail iotStatus = JobBuilder.newJob(IotStatusJob.class).withIdentity("localIot", "Defalt")
+        //配置定时删除
+        JobDetail remove = JobBuilder.newJob(IDeleteJob.class).withIdentity("localRemove","Defalt")
                 .storeDurably().build();
-        CronTrigger iotTrigger = TriggerBuilder.newTrigger().forJob(iotStatus).withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ? "))
-                .withIdentity("localIot", "Defalt").build();
-//        JobDetail test = JobBuilder.newJob(IJOB.class).build();
-//        Trigger testT = TriggerBuilder.newTrigger().forJob(test).startNow().build();
-//        scheduler.scheduleJob(test,testT);
+        CronTrigger removeTrigger = TriggerBuilder.newTrigger().forJob(remove).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?"))
+                .withIdentity("localRemove","Defalt").build();
 
-        JobDetail oil = JobBuilder.newJob(OilJob.class).withIdentity("localOil", "Defalt")
-                .storeDurably().build();
-        CronTrigger oilTrigger = TriggerBuilder.newTrigger().forJob(oil).withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ? "))
-                .withIdentity("localOil", "Defalt").build();
-
-        scheduler.scheduleJob(qt, trigger);
+        scheduler.scheduleJob(qt, lqTrigger);
         scheduler.scheduleJob(oil, oilTrigger);
-        scheduler.scheduleJob(timer, trigger2);
-        scheduler.scheduleJob(grain, trigger3);
+        scheduler.scheduleJob(timer, timeTrigger);
+        scheduler.scheduleJob(grain, grainTrigger);
         scheduler.scheduleJob(iotStatus, iotTrigger);
+        scheduler.scheduleJob(remove,removeTrigger);
     }
 
     /**

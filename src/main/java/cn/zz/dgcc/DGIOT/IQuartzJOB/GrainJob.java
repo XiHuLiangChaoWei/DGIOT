@@ -9,10 +9,13 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Logger;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/4 17:38
  * ClassExplain :
  * ->
@@ -33,8 +36,13 @@ public class GrainJob implements Job {
         return deviceList;
     }
 
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    ThreadPoolExecutor pool = (ThreadPoolExecutor) executorService;
+
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+
+
         System.out.println("开始执行计划任务");
         //从jobDataMap中获取设备列表
         List<Device> devices = getDeviceList();
@@ -45,10 +53,12 @@ public class GrainJob implements Job {
                     continue;
                 }
                 if (device.getType() == 3) {
-                    new Thread(() -> {
-                        log.info("定时查询粮情··············");
-                        downOrderUtils.deployN2Order(0, device);
-                    }).start();
+                    executorService.execute(() -> {
+                        pool.submit(() -> {
+                            log.info("定时查询粮情··············");
+                            downOrderUtils.deployN2Order(0, device);
+                        });
+                    });
                 }
 
             }
@@ -56,14 +66,6 @@ public class GrainJob implements Job {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        executorService.shutdown();
     }
-//    @Override
-//    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-//        log.info("定时查询粮情任务开始··············");
-//        String devName = jobExecutionContext.getJobDetail().getJobDataMap().getString("device");
-//        String userId = jobExecutionContext.getJobDetail().getJobDataMap().getString("userId");
-//        Device device = deviceService.getDevByDevName(devName);
-//        downOrderUtils.deployGrainOrder(Integer.parseInt(userId), device);
-//        log.info("定时查询粮情任务结束··············");
-//    }
 }

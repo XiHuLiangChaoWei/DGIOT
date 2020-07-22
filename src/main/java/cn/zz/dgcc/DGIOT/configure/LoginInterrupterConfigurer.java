@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/5/25 9:30
  * ClassExplain :
  * ->
@@ -34,6 +34,14 @@ public class LoginInterrupterConfigurer implements WebMvcConfigurer {
         patterns.add("/Login/loginCheck.do");
         patterns.add("/users/reg");
         patterns.add("/users/login");
+        patterns.add("/index.html");
+
+//        patterns.add("/*.png");
+//        patterns.add("/*.bmp");
+//        patterns.add("/*.css");
+//        patterns.add("/*.js");
+//        patterns.add("/*.html");
+//        patterns.add("/*.ftl");
         registry.addInterceptor(interceptor).addPathPatterns("/**").excludePathPatterns(patterns);
     }
 

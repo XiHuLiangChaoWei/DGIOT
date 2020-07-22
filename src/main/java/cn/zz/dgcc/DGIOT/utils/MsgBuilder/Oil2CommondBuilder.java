@@ -3,7 +3,7 @@ package cn.zz.dgcc.DGIOT.utils.MsgBuilder;
 import cn.zz.dgcc.DGIOT.entity.BuildMessage;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/11 10:33
  * ClassExplain :
  * ->

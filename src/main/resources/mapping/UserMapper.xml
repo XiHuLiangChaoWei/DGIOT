@@ -11,9 +11,19 @@
         <result column="nick_name" property="name"/>
         <result column="salt" property="salt"/>
         <result column="is_deleted" property="isDeleted"/>
-
+        <result column="is_online" property="isOnline"/>
     </resultMap>
 
+    <update id="onlineStatus">
+         UPDATE iuser
+         SET is_online = 1
+         WHERE id = #{userId}
+    </update>
+    <update id="offlineStatus">
+         UPDATE iuser
+         SET is_online = 0
+         WHERE id = #{userId}
+    </update>
 
     <insert id="insertUser" parameterType="cn.zz.dgcc.DGIOT.entity.User" useGeneratedKeys="true">
          insert into
@@ -72,9 +82,9 @@
 
     <update id="updatePasswordByUid">
         UPDATE iuser SET
-			password = #{password},
+			password = #{password}
 		WHERE
-			id =#{id}
+			id =#{userId}
     </update>
 
 </mapper>

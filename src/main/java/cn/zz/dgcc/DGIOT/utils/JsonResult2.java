@@ -1,7 +1,7 @@
 package cn.zz.dgcc.DGIOT.utils;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/18 16:21
  * ClassExplain :
  * ->
@@ -9,7 +9,16 @@ package cn.zz.dgcc.DGIOT.utils;
 public class JsonResult2<T> {
     private Integer code;
     private String message;
+    private Integer count;
     private T data;
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public Integer getCode() {
         return code;
@@ -36,6 +45,12 @@ public class JsonResult2<T> {
     }
 
     public JsonResult2() {
+    }
+
+    public JsonResult2(Integer code, T data, Integer count) {
+        this.code = code;
+        this.data = data;
+        this.count = count;
     }
 
     public JsonResult2(Integer code, T data) {

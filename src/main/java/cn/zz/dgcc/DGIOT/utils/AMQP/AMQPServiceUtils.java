@@ -23,7 +23,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/4/20 13:40
  * ClassExplain :AMQP服务端 接收消息并转发
  * ->
@@ -163,7 +163,7 @@ public class AMQPServiceUtils {
 //            if(message.getBody(byte[].class)==null){
 //                return;
 //            }
-//将message主体转化成字符串类型数据
+            //将message主体转化成字符串类型数据
             byte[] body = message.getBody(byte[].class);
 
             String content = new String(body,"GB2312").replace(" ", "");
@@ -186,7 +186,7 @@ public class AMQPServiceUtils {
                 amqpServiceUtils.parseMsg(amqpMessage);
             }
             amqpServiceUtils.parseMsg(amqpMessage);
-//            alertMsg(amqpMessage);
+            //alertMsg(amqpMessage);
 
         } catch (Exception e) {
             logger.error("processMessage occurs error ", e);
@@ -200,20 +200,6 @@ public class AMQPServiceUtils {
     }
 
     private void parseMsg(AMQPMessage amqpMessage){deviceBindController.parseInfo(amqpMessage);}
-
-    static AMQP2WebSocket amqp2WebSocket = AMQP2WebSocket.getAMQP2WebSocket();
-
-    /**
-     * 消息转发
-     * @param amqpMessage
-     * @throws Exception
-     */
-    private static void alertMsg(AMQPMessage amqpMessage) throws Exception {
-        amqp2WebSocket.setMsgC(amqpMessage);
-        amqp2WebSocket.init();
-        amqp2WebSocket.destroy();
-    }
-
 
     private static final JmsConnectionListener myJmsConnectionListener = new JmsConnectionListener() {
         /**

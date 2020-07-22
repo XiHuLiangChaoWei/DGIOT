@@ -3,10 +3,11 @@ package cn.zz.dgcc.DGIOT.mapper;
 import cn.zz.dgcc.DGIOT.entity.Oil;
 import cn.zz.dgcc.DGIOT.entity.OilConf;
 
+import java.util.Date;
 import java.util.List;
 
 /**
- * Created by: YYL
+ * Created by: LT001
  * Date: 2020/6/10 9:43
  * ClassExplain :
  * ->
@@ -21,4 +22,6 @@ public interface OilMapper {
     OilConf selectOilConfByName(String devName);
 
     List<Oil> selectTenOilInfoByName(String devName);
+
+    int quartzDelete(Date date);
 }
