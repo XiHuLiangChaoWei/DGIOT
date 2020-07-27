@@ -17,9 +17,7 @@ import java.util.Date;
  * ClassExplain :
  * ->
  */
-public class IDeleteJob implements Job {
-    @Autowired
-    ISqlDeleteService iSqlDeleteService;
+public class IDeleteJob extends BaseJob implements Job {
 
     /**
      * 删除30天以前的粮情油情气调数据

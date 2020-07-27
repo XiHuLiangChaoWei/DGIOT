@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+<div>
+    <select id="select">
+        <option>
+            1
+        </option>
+        <option>
+            2
+        </option>
+    </select>
+</div>
+<div id="container2" style="height: 100%"></div>
+<div id="container" style="height: 100%"></div>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+<!--<script type="text/javascript"-->
+<!--        src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script>-->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+<script type="text/javascript" src="../jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+    var dateX = [];
+    var date1 = [];
+    var date2 = [];
+    var date3 = [];
+    var date4 = [];
+    var date5 = [];
+    var date6 = [];
+    var dateHeight = [];
+
+    window.onload = function () {
+        getDevList();
+        // getList();
+    }
+
+    function getDevList() {
+        $("#select").empty();
+        $.ajax({
+            url: "/app/getDev?companyId=7&devType=6",
+            type: "get",
+            dataType: "json",
+            success: function (json) {
+                let list = json.data;
+                console.log(list);
+                for (let i = 0; i < list.length; i++) {
+                    let inner = "<option value='#{devName}'>#{devName}</option>";
+                    inner = inner.replace(/#{devName}/g, list[i].deviceName);
+                    $("#select").append(inner);
+                }
+                getList(list[0].deviceName);
+            }
+        })
+    }
+
+    $("#select").change(function () {
+        // console.log($(this).children('option:selected').val())
+        getList($(this).children('option:selected').val())
+    });
+
+    function getList(str) {
+        console.log(str);
+        dateX = [];
+        date1 = [];
+        date2 = [];
+        date3 = [];
+        date4 = [];
+        date5 = [];
+        date6 = [];
+        dateHeight = [];
+        $.ajax({
+            url: "/app/oil/list2?devName=" + str,
+            type: "get",
+            dataType: "json",
+            success: function (json) {
+                let list = json.data;
+                list = list.reverse();
+                console.log(list)
+                for (let i = 0; i < list.length; i++) {
+                    dateX.push(list[i].time);
+                    date1.push(list[i].temps[0]);
+                    date2.push(list[i].temps[1]);
+                    date3.push(list[i].temps[2]);
+                    date4.push(list[i].temps[3]);
+                    date5.push(list[i].temps[4]);
+                    date6.push(list[i].temps[5]);
+                    dateHeight.push(list[i].finalHeight);
+                }
+                // console.log(dateX)
+                // console.log(date1)
+                // console.log(date2)
+                // console.log(date3)
+                // console.log(date4)
+                // console.log(date5)
+                // console.log(date6)
+
+
+                var dom = document.getElementById("container");
+                var myChart = echarts.init(dom);
+                var app = {};
+                option = null;
+                option = {
+                    title: {
+                        text: '油温变化图'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#6a7985'
+                            }
+                        }
+                    },
+                    legend: {
+                        data: ['1', '2', '3', '4', '5', '6']
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: dateX
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '1',
+                            type: 'line',
+                            stack: '总量',
+                            areaStyle: {},
+                            data: date1
+                        },
+                        {
+                            name: '2',
+                            type: 'line',
+                            stack: '总量',
+                            areaStyle: {},
+                            data: date2
+                        },
+                        {
+                            name: '3',
+                            type: 'line',
+                            stack: '总量',
+                            areaStyle: {},
+                            data: date3
+                        },
+                        {
+                            name: '4',
+                            type: 'line',
+                            stack: '总量',
+                            areaStyle: {},
+                            data: date4
+                        },
+                        {
+                            name: '5',
+                            type: 'line',
+                            stack: '总量',
+                            areaStyle: {},
+                            data: date5
+                        },
+                        {
+                            name: '6',
+                            type: 'line',
+                            stack: '总量',
+                            areaStyle: {},
+                            data: date6
+                        }
+                    ]
+                };
+                ;
+                if (option && typeof option === "object") {
+                    myChart.setOption(option, true);
+                }
+
+
+                var dom2 = document.getElementById("container2");
+                var myChart2 = echarts.init(dom2);
+                var app = {};
+                option2 = null;
+                option2 = {
+                    title: {
+                        text: '高度变化'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#6a7985'
+                            }
+                        }
+                    },
+                    legend: {
+                        data: ["height"]
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: dateX
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: 'height',
+                            type: 'line',
+                            stack: '总量',
+                            areaStyle: {},
+                            data: dateHeight
+                        }
+                    ]
+                };
+                ;
+                if (option2 && typeof option2 === "object") {
+                    myChart2.setOption(option2, true);
+                }
+            }
+        })
+    }
+
+</script>
+</body>
+</html>

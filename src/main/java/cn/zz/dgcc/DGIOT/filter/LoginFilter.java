@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 /**
  * Created by: LT001
  * Date: 2020/7/15 15:04
- * ClassExplain :
+ * ClassExplain : 拦截器
  * ->
  */
 @WebFilter(urlPatterns = "/*")
@@ -27,10 +27,9 @@ public class LoginFilter implements Filter {
         String uri = request.getRequestURI();
         if (!uri.equals("/index.html")) {
             String forceLogOut = (String) request.getSession().getAttribute("forceLogOut");
-//            System.err.println("filter="+forceLogOut);
             if(null!=forceLogOut&&!"".equals(forceLogOut)){
                 if(forceLogOut.equals("yes")){
-                    System.err.println("单点登陆触发");
+//                    System.err.println("单点登陆触发");
                     request.getSession().invalidate();
                     response.sendRedirect("../index.html");
                 }

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 /**
  * Created by: LT001
  * Date: 2020/4/30 10:31
- * ClassExplain :
+ * ClassExplain : 废弃
  * ->
  */
 @Controller
@@ -50,12 +50,6 @@ public class IndexController extends BaseController {
     @Autowired
     OrderService orderService;
 
-    @RequestMapping("/index")
-    public ModelAndView Index() {
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("index.html");
-        return mav;
-    }
 
     @RequestMapping("/index2")
     public ModelAndView Index2() {

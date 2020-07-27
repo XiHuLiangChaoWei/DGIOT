@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../layui/css/layui.css" media="all">
+
+    <script src="../layui/layui.js" charset="utf-8"></script>
+    <script src="../jquery-3.4.1.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../jquery-3.4.1.min.js"></script>
+</head>
+<style>
+    body {
+        text-align: center;
+        line-height: 24px;
+        font: 14px Helvetica Neue, Helvetica, PingFang SC, Tahoma, Arial, sans-serif;
+        font-size: 14px;
+        margin: 0;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        position: relative;
+        padding: 20px;
+        border: 1px solid #eee;
+    }
+
+    #container > div {
+        text-align: center;
+        margin: 0 auto;
+    }
+</style>
+<body>
+<div id="container" style="height: 100%">
+    <div class="site-text site-block" style="width: 80%">
+        <div style="text-align: center;">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项目名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="project" required="" lay-verify="required" placeholder="请输入项目名"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项目主账号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="username" required="" lay-verify="required" placeholder="请输入主账号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">主账号密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="password" required="" lay-verify="required" lay-vertype="tips"
+                               placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">主账号为该项目下的初始账号</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">主账号密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="password2" required="" lay-verify="required" lay-vertype="tips"
+                               placeholder="再次输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">再次输入密码</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项目地址信息</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="description" required="" lay-verify="required"
+                               placeholder="请输入项目地址,用'-'隔开"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">仓库数</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="depotNum" required="" lay-verify="required" placeholder="仓库数"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">气调</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="qt" required="" lay-verify="required" placeholder="设备数，为0则为不带有设备"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">粮情</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="lq" required="" lay-verify="required" placeholder="设备数，为0则为不带有设备"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">自动生成云端设备</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="autocreate" lay-skin="switch" lay-text="ON|OFF"
+                               lay-filter="switchTest"
+                               value="1">
+                        <div class="layui-unselect layui-form-switch" lay-skin="_switch"><em>OFF</em><i></i></div>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">项目备注</label>
+                    <div class="layui-input-block">
+                        <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit="" lay-filter="formDemo">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+</body>
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            // layer.msg(JSON.stringify(data.field));
+            console.log(JSON.stringify(data.field));
+            if (data.field.password != data.field.password2) {
+                alert("两次密码输入不相同")
+                return;
+            }
+            $.ajax({
+                url: "addP",
+                data: data.field,
+                dataType: "json",
+                type: "post",
+                success: function (data) {
+                    alert(data.message)
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</html>

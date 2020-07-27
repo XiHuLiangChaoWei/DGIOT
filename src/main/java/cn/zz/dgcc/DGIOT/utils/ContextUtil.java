@@ -1,7 +1,5 @@
 package cn.zz.dgcc.DGIOT.utils;
 
-import cn.zz.dgcc.DGIOT.entity.User;
-import cn.zz.dgcc.DGIOT.utils.Cache.CacheManagerImpl;
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -20,12 +18,6 @@ import java.util.HashMap;
 import java.util.TimeZone;
 import java.util.UUID;
 
-//import org.apache.commons.lang.StringUtils;
-//import org.apache.commons.lang.math.RandomUtils;
-//
-//import com.bstek.bdf2.core.business.IUser;
-//import com.bstek.bdf2.core.context.ContextHolder;
-//import com.bstek.dorado.core.Configure;
 
 /**
  * 系统公用方法
@@ -36,7 +28,7 @@ public class ContextUtil {
 
     private static SimpleDateFormat sdf = null;
 
-
+    //str 2 shortHex  ex: 8 -> 08, 10->0A
     public static String toShortHex(int value) {
         String tempHex = Integer.toHexString(value);
         if (tempHex.length() < 2) {
@@ -193,13 +185,23 @@ public class ContextUtil {
         return sb.toString();
     }
 
-
+    /**
+     * ex:   1 ->  000001 ,  10 ->  000010
+     * @param a
+     * @return
+     */
     public static String FormatNum6(int a) {
         DecimalFormat df = new DecimalFormat("000000");
         String rs = df.format(a);
         return rs;
     }
 
+    /**
+     *  ex: a=1,len=2  -> 01,  a=10,len=4 -> 0010
+     * @param a
+     * @param len
+     * @return
+     */
     public static String FormatHEXString(String a, int len) {
         if (a.length() > len) {
             int b = a.length() - len;

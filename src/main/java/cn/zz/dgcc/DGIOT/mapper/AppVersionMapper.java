@@ -12,4 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface AppVersionMapper {
     AppVersion selectNewVersion();
+
+    int updateAppVer(AppVersion appVersion);
 }

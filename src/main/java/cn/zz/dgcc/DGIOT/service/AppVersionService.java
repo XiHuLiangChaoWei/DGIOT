@@ -10,4 +10,5 @@ import cn.zz.dgcc.DGIOT.entity.AppVersion;
  */
 public interface AppVersionService {
     AppVersion getNowAppVersion();
+    int gengxin(AppVersion appVersion);
 }

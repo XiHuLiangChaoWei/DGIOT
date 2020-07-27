@@ -166,7 +166,7 @@ public class AppDateController extends BaseController {
         //放入项目名
         js1.put("companyName", c.getName());
 
-        js1.put("history",js);
+        js1.put("history", js);
 
         return new JsonResult<>(success, js1);
     }
@@ -313,7 +313,7 @@ public class AppDateController extends BaseController {
      */
     @RequestMapping("/getNewSunGrain.do")
     @ResponseBody
-    public JsonResult<JSONObject> sendSunInfo(int devAdd, HttpSession session, @RequestParam(required = false, defaultValue = "1")int depotId) {
+    public JsonResult<JSONObject> sendSunInfo(int devAdd, HttpSession session, @RequestParam(required = false, defaultValue = "1") int depotId) {
         log.info("下发查询太阳能分机");
         int companyId = getCompanyIdFromSession(session);
         int userId = getUserIdFromSession(session);
@@ -521,7 +521,6 @@ public class AppDateController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         //解析气调信息后，获取新的粮情信息
         log.info("下发查询粮情命令···");
         Device rs = deviceService.getDevByDevName(devName);
@@ -560,9 +559,6 @@ public class AppDateController extends BaseController {
         //下发查询N2命令
         log.info("下发查询N2命令···");
         Device rs = deviceService.getDevByDevName(devName);
-//        if (rs.getDtuId() == null) {
-//            return new JsonResult<>(success, js, "N2Info");
-//        }
         JsonResult<String> jr = downOrderUtils.deployN2Order(getUserIdFromSession(session), rs);
         log.info("下发查询N2成功···");
         return new JsonResult<>(success, js, "N2Info");

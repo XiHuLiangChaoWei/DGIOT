@@ -3,7 +3,7 @@ package cn.zz.dgcc.DGIOT.utils;
 /**
  * Created by: LT001
  * Date: 2020/4/10 14:02
- * ClassExplain :
+ * ClassExplain :   http response 返回封装
  * ->
  */
 public class JsonResult<T> {

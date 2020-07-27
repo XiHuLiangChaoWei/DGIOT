@@ -14,28 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-public class OilJob implements Job {
-    @Autowired
-    DeviceService deviceService;
+public class OilJob extends BaseJob implements Job {
 
-    @Autowired
-    DownOrderUtils downOrderUtils;
-
-    private static final Logger log = Logger.getLogger(OilJob.class.getSimpleName());
-
-    private final static ExecutorService executorService = new ThreadPoolExecutor(
-            Runtime.getRuntime().availableProcessors(),
-            Runtime.getRuntime().availableProcessors() * 2, 60, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>(50000));
     public List<Device> getDeviceList() {
         List<Device> deviceList = deviceService.getAllDev();
         return deviceList;
     }
-
-//    static ExecutorService executorService = Executors.newCachedThreadPool();
-//    ThreadPoolExecutor pool = (ThreadPoolExecutor) executorService;
-
-    ThreadPoolExecutor pool = (ThreadPoolExecutor) executorService;
 
     public void execute(JobExecutionContext jobExecutionContext) {
 

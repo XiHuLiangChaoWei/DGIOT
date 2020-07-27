@@ -19,13 +19,7 @@ import java.util.logging.Logger;
  * ClassExplain :   查询QT信息
  * ->
  */
-public class QTJob implements Job {
-    @Autowired
-    DeviceService deviceService;
-    @Autowired
-    DownOrderUtils downOrderUtils;
-
-    private final static Logger log = Logger.getLogger(QTJob.class.getSimpleName());
+public class QTJob extends BaseJob implements Job {
 
     public QTJob() {
     }
@@ -35,22 +29,8 @@ public class QTJob implements Job {
         return deviceList;
     }
 
-    //    static ExecutorService executorService = Executors.newCachedThreadPool();
-    private final static ExecutorService executorService = new ThreadPoolExecutor(
-            Runtime.getRuntime().availableProcessors(),
-            Runtime.getRuntime().availableProcessors() * 2, 60, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>(50000));
-//    ExecutorService executorService = Executors.newCachedThreadPool();
-    ThreadPoolExecutor pool = (ThreadPoolExecutor) executorService;
-
-//
-//    @Autowired
-//    ExecutorService pool;
-
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
-
 //        System.out.println("开始执行计划任务");
         log.info("开始执行气调任务--------------------------------------------");
         //从jobDataMap中获取设备列表

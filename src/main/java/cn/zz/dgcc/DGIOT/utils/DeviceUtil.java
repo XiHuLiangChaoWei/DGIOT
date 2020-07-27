@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 /**
  * Created by: LT001
  * Date: 2020/5/8 11:21
- * ClassExplain :
+ * ClassExplain : 从amqpmsg中解析出设备对象
  * ->
  */
 public class DeviceUtil {

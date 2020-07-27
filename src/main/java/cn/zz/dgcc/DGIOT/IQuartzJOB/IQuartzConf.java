@@ -10,7 +10,7 @@ import org.springframework.core.annotation.Order;
 /**
  * Created by: LT001
  * Date: 2020/6/8 11:26
- * ClassExplain :
+ * ClassExplain : 将定时任务添加到程序启动
  * ->
  */
 @Configuration

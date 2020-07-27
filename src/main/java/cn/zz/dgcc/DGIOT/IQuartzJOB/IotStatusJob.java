@@ -20,14 +20,7 @@ import java.util.logging.Logger;
  * ClassExplain : 定时刷新设备状态
  * ->
  */
-public class IotStatusJob implements Job {
-    private final static Logger log = Logger.getLogger(IotStatusJob.class.getSimpleName());
-    @Autowired
-    IoTService ioTService;
-    @Autowired
-    DeviceService deviceService;
-    @Autowired
-    DepotService depotService;
+public class IotStatusJob extends BaseJob implements Job {
 
     List<Device> getTotalList() {
         List<Product> products = ioTService.getProductList();

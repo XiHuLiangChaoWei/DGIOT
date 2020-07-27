@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 /**
  * Created by: LT001
  * Date: 2020/5/18 10:34
- * ClassExplain :
+ * ClassExplain : 解析服务实现  MAIN
  * ->
  */
 @Service
@@ -83,7 +83,7 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     @Override
     public void analysisInfo(AMQPMessage amqpMessage) {
-        log.info("解析开始~~~~~~~~~~~~~~~~~~~~~~~~");
+//        log.info("解析开始~~~~~~~~~~~~~~~~~~~~~~~~");
         byte[] bytes = amqpMessage.getBody();
         String msg = bytesToHexString(bytes).toUpperCase();
         String topic = amqpMessage.getTopic();
@@ -92,7 +92,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         String devName = topicSplit[2];
         String msgId = amqpMessage.getMessageId();
         log.info("接收到" + pk + "-" + devName + "的消息:" + msg);
-        log.info("解析完成························");
+//        log.info("解析完成························");
         Date date = new Date();
         String content = amqpMessage.getContent();
 

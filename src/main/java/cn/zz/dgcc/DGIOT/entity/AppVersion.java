@@ -13,6 +13,16 @@ public class AppVersion {
     String verNote;
     String address;
 
+    public AppVersion() {
+
+    }
+
+    public AppVersion(String version, String verNote, String avatarpath) {
+        this.verName = version;
+        this.verNote = verNote;
+        this.address = avatarpath;
+    }
+
     public int getId() {
         return id;
     }

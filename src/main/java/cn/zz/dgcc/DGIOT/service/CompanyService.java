@@ -5,7 +5,7 @@ import cn.zz.dgcc.DGIOT.entity.Company;
 /**
  * Created by: LT001
  * Date: 2020/6/4 18:01
- * ClassExplain :
+ * ClassExplain :   项目相关
  * ->
  */
 public interface CompanyService {

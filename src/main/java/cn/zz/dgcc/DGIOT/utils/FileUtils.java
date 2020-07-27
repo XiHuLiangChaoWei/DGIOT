@@ -10,10 +10,14 @@ import java.util.*;
 /**
  * Created by: LT001
  * Date: 2020/6/2 9:29
- * ClassExplain :
+ * ClassExplain :   文件工具
  * ->
  */
 public class FileUtils {
+    /**
+     * @param url 通过url读取硬盘上的文件
+     * @return
+     */
     public static File getFile(String url) {
         File file = new File(url);
         if (file.exists()) {
@@ -36,10 +40,7 @@ public class FileUtils {
         ) {
             int i1 = byteToInt(i);
             sum += i1;
-//            System.out.println(Integer.toHexString(i));
-//            System.out.println(i1);
         }
-//        System.out.println("总数" + sum);
         return sum;
     }
 
@@ -55,16 +56,20 @@ public class FileUtils {
 //        }
 //    }
 
-
+    /**
+     *
+     * @param file 文件
+     * @return 将文件分割成1024字节的分包 并打包成json
+     * @throws IOException
+     */
     public static JSONArray getFileSplit(File file) throws IOException {
         JSONArray ja = new JSONArray();
         JSONObject jo;
         FileInputStream fis = null;
         //文件大小
         long length = file.length();
-        System.err.println(length);
-
-        byte[] fileData = null;
+//        System.err.println(length);
+        byte[] fileData;
         //打开文件流
         try {
             fis = new FileInputStream(file);
@@ -73,6 +78,7 @@ public class FileUtils {
         int len = 0;
         int index = 0;
         fileData = new byte[1024];
+        //每1024个字节封装成一个jsonObject对象
         while ((len = fis.read(fileData)) != -1) {
 //            System.err.println(len);
 //            System.err.println(new String(fileData));
@@ -80,10 +86,10 @@ public class FileUtils {
 //                fixWith0(fileData);
 //            }
 //            System.out.println("--------------------------" + index + "---------------------------");
-
             jo = new JSONObject();
             byte[] r = null;
             jo.put("index", index);
+            //最后一包，不足1024字节的，用FF填充
             if ((length - index * 1024) < 1024) {
                 r=fixWith0(fileData, (int) (length - index * 1024));
             } else {

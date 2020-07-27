@@ -1,13 +1,11 @@
 package cn.zz.dgcc.DGIOT.controller;
 
+import cn.zz.dgcc.DGIOT.entity.AppVersion;
 import cn.zz.dgcc.DGIOT.entity.BuildMessage;
 import cn.zz.dgcc.DGIOT.entity.Device;
 import cn.zz.dgcc.DGIOT.entity.Fireware;
-import cn.zz.dgcc.DGIOT.service.DepotService;
-import cn.zz.dgcc.DGIOT.service.DeviceService;
+import cn.zz.dgcc.DGIOT.service.*;
 import cn.zz.dgcc.DGIOT.service.Exception.IFileException;
-import cn.zz.dgcc.DGIOT.service.FirewareService;
-import cn.zz.dgcc.DGIOT.service.IoTService;
 import cn.zz.dgcc.DGIOT.utils.*;
 import cn.zz.dgcc.DGIOT.utils.MsgBuilder.SunFengjiCommondBuilder;
 import cn.zz.dgcc.DGIOT.utils.MsgBuilder.SunPowerCommondBuilder;
@@ -54,13 +52,20 @@ public class IoTWebController extends BaseController {
     DepotService depotService;
     @Autowired
     DownOrderUtils downOrderUtils;
+    @Autowired
+    AppVersionService appVersionService;
+
+    @RequestMapping("uploadapp")
+    public String app(){
+        return "html/appUpload";
+    }
 
     @RequestMapping("/test1")
     public String test1(Model model) {
         return "html/admin";
     }
 
-    @RequestMapping("/update_fileOrFireware")
+    @RequestMapping("/fileOrFireware")
     public String update_fileOrFireware() {
         return "html/up";
     }
@@ -73,11 +78,6 @@ public class IoTWebController extends BaseController {
     @RequestMapping("/AnShunXiXiu")
     public String test16() {
         return "html/AnShunXiXiu";
-    }
-
-    @RequestMapping("/test4")
-    public String firewareUpdate() {
-        return "html/firewareUpdate";
     }
 
     @RequestMapping("/firewareUpdate2")
@@ -147,7 +147,11 @@ public class IoTWebController extends BaseController {
         System.err.println(msg.toString());
     }
 
-
+    /**
+     * 返回版本列表
+     *
+     * @return
+     */
     @RequestMapping("fireware")
     @ResponseBody
     public JsonResult2<List<Fireware>> f() {
@@ -239,6 +243,66 @@ public class IoTWebController extends BaseController {
         System.err.println(avatarpath);
         Fireware fireware = new Fireware(orginalFilename.trim(), avatarpath);
         int rs = firewareService.saveFirewareVersion(fireware);
+        return new JsonResult<Void>(success, avatarpath);
+    }
+
+
+    @RequestMapping("upApp")
+    @ResponseBody
+    public JsonResult<Void> updateAppFile(
+            @RequestParam("fileName") MultipartFile file,
+            String version, String vernote,
+            HttpSession session) {
+
+        System.err.println("version:"+version+"===vercode:"+vernote);
+
+        //检查上传文件是否为空
+        if (file.isEmpty()) {
+            throw new IFileException("请使用非空文件");
+        }
+        //检查上传文件大小
+//        if(file.getSize()>AVATAR_MAX_SIZE) {
+//            throw new IFileException("请使用不超过" + AVATAR_MAX_SIZE + "kb的文件");
+//        }
+        //检查上传文件类型  通过contentType
+//        if(AVATAR_TYPES.contains(file.getContentType())) {
+//            throw new IFileException("文件类型错误,请使用" + AVATAR_TYPES + "类型的文件");
+//        }
+        //获取文件原名
+        String orginalFilename = file.getOriginalFilename();
+        System.err.println(orginalFilename);
+        //设置文件存储路径
+        String parentPath = "D:/dgcc";
+        File parent = new File(parentPath);
+        if (!parent.exists()) {
+            parent.mkdirs();
+        }
+        //检查文件后缀
+        int beginIndex = orginalFilename.lastIndexOf(".");
+        String suffix = "";
+        if (beginIndex > 0) {
+            suffix = orginalFilename.substring(beginIndex);
+        }
+        //生成服务器上文件存储全路径  该路径只用来在后台查看路径
+        String avatarpath = parentPath + "/" + orginalFilename;
+        //文件生成操作  两个参数分别为 路径,文件名
+        File avatar = new File(parent, orginalFilename);
+        try {
+            file.transferTo(avatar);
+        } catch (IllegalStateException e) {
+            throw new IFileException("文件状态码出错");
+        } catch (IOException e) {
+            throw new IFileException("您的文件已经移动或者被删除,请重新上传");
+        }
+        //
+        System.err.println(avatarpath);
+        AppVersion appVersion = new AppVersion(version, vernote, avatarpath);
+        AppVersion oldApp = appVersionService.getNowAppVersion();
+        appVersion.setVerCode(String.valueOf((Integer.parseInt(oldApp.getVerCode())+1)));
+        int rsAppVer = appVersionService.gengxin(appVersion);
+        if(rsAppVer!=1){
+            return new JsonResult<Void>(servWrong, avatarpath);
+        }
         return new JsonResult<Void>(success, avatarpath);
     }
 
@@ -338,6 +402,11 @@ public class IoTWebController extends BaseController {
         return new JsonResult2<>(0, list, list.size());
     }
 
+    /**
+     * 产品列表信息
+     *
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/showProductList")
     public JsonResult<JSON> test2() {
@@ -347,6 +416,12 @@ public class IoTWebController extends BaseController {
         return new JsonResult<>(success, productInfo);
     }
 
+    /**
+     * 根据产品pk返回设备列表
+     *
+     * @param productKey
+     * @return
+     */
     @ResponseBody
     @RequestMapping("{productKey}/showDeviceListByProductKey")
     public JsonResult<JSON> test3(@PathVariable("productKey") String productKey) {
@@ -356,6 +431,12 @@ public class IoTWebController extends BaseController {
         return new JsonResult<>(success, deviceInfo);
     }
 
+    /**
+     * 根据产品pk获取产品详细信息
+     *
+     * @param productKey
+     * @return
+     */
     @ResponseBody
     @RequestMapping("{productKey}/getProductDetail")
     public JsonResult<JSON> test4(@PathVariable("productKey") String productKey) {
@@ -369,6 +450,12 @@ public class IoTWebController extends BaseController {
         return new JsonResult<>(success, productInfo);
     }
 
+    /**
+     * 根据pk获取产品自定义topic
+     *
+     * @param productKey
+     * @return
+     */
     @ResponseBody
     @RequestMapping("{productKey}/getProductTopic")
     public JsonResult<JSON> test5(@PathVariable("productKey") String productKey) {
@@ -382,6 +469,15 @@ public class IoTWebController extends BaseController {
         return new JsonResult<>(success, productTopicInfo);
     }
 
+    /**
+     * 发送消息
+     *
+     * @param productKey
+     * @param fullName
+     * @param content
+     * @param qos
+     * @return
+     */
     @ResponseBody
     @RequestMapping("{productKey}/sendMsg/{fullName}/content/{content}/Qos/{qos}")
     public JsonResult<JSON> test6(@PathVariable("productKey") String productKey,
@@ -406,7 +502,12 @@ public class IoTWebController extends BaseController {
         return new JsonResult<>(success, json0);
     }
 
-
+    /**
+     * 根据设备的iotId获取设备详细信息
+     *
+     * @param deviceIot
+     * @return
+     */
     @ResponseBody
     @RequestMapping("{deviceIot}/getDeviceDetail")
     public JsonResult<JSON> test6(@PathVariable("deviceIot") String deviceIot) {

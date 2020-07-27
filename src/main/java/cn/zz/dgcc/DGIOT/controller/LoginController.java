@@ -28,8 +28,7 @@ import java.util.logging.Logger;
 /**
  * Created by: LT001
  * Date: 2019/10/23 15:36
- * ClassExplain :
- * ->
+ * ClassExplain : 登陆控制器,弃用,仍可以进行登陆,但是登陆后跳转页面无法操作。目前使用静态页面直接进行登陆，未通过视图解析器，所以该登陆页面弃用。
  */
 @Controller
 public class LoginController {
@@ -40,7 +39,10 @@ public class LoginController {
     @Resource
     private UserService userServiceImpl;
 
-
+    /**
+     * 通过视图解析器返回登陆页面==》freemarker
+     * @return
+     */
     @RequestMapping("/Login")
     public ModelAndView Login() {
         ModelAndView mav = new ModelAndView();
@@ -136,7 +138,6 @@ public class LoginController {
             json.put("flag", 用户名或密码错误);
 
         } else {
-
             String sessionId = GenerateUUID.GetUUID();
             Cookie cookie = new Cookie("SessionID", sessionId);
             cookie.setMaxAge(60 * 30);

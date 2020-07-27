@@ -3,7 +3,7 @@ package cn.zz.dgcc.DGIOT.utils;
 /**
  * Created by: LT001
  * Date: 2020/6/18 16:21
- * ClassExplain :
+ * ClassExplain :   为了配合LayUi的数据表格，封装的另一种http response返回
  * ->
  */
 public class JsonResult2<T> {

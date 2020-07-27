@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 /**
  * Created by: LT001
  * Date: 2020/7/15 14:41
- * ClassExplain :
+ * ClassExplain : 当session创建时，判断用户状态
  * ->
  */
 

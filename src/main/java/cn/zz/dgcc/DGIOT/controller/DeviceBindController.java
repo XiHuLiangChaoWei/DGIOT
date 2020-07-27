@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * Created by: LT001
  * Date: 2020/5/7 16:01
  * ClassExplain :
- * ->
+ *
  */
 @Controller
 public class DeviceBindController extends BaseController {
@@ -44,9 +44,11 @@ public class DeviceBindController extends BaseController {
      * 解析消息
      */
     public void parseInfo(AMQPMessage amqpMessage) {
+        //版本升级请求，转入firewareService进行处理
         if (amqpMessage.getTopic().contains("/user/dev/version/upgrade/request")) {
             firewareService.analysisInfo(amqpMessage);
         }
+        //其他请求，直接进入analysisService
         analysisService.analysisInfo(amqpMessage);
 
     }
@@ -89,19 +91,18 @@ public class DeviceBindController extends BaseController {
     private final int 需要更新设备信息 = 1;
     private final int 设备匹配成功 = 2;
 
-    //设备注册
+    //进行云端设备绑定操作
     public void registerDevice(AMQPMessage a) {
         String str = a.getContent();
+        //收到消息后，刷新数据库中iot_device_list表信息
         if (str.equals("refreshList")) {
             savaDevList();
             return;
         }
-
+        //
         int regSuccess = deviceService.registerDevice(a);
-
-
-        if (regSuccess == 需要云端注册新设备) {//注册失败，没有足够设备分配
-
+        if (regSuccess == 需要云端注册新设备) {
+            //匹配现有云端设备失败，没有足够设备分配
             log.info("设备表可分配不足，向平台申请新设备");
             //批量添加设备
             //获取设备类型
@@ -117,7 +118,7 @@ public class DeviceBindController extends BaseController {
                     break;
                 }
             }
-            //从几开始
+            //获取设备列表中已存在同产品下的设备数量
             deviceNameFix = deviceService.getCountByType(pk);
 
             String deviceNameSuf = null;
@@ -195,7 +196,6 @@ public class DeviceBindController extends BaseController {
             if ("true".equals(succ)) {
                 log.info("第一次三元组信息下发成功");
             }
-
 //            jsonRs = ioTService.pub("/a1KhXudYrKw/000000/user/dev/register/response", downDevInfo.toString(),
 //                    "a1KhXudYrKw", null);
 //            succ = jsonRs.getString("Success");

@@ -17,13 +17,11 @@ import java.util.logging.Logger;
  * ClassExplain :
  * ->
  */
-public class IJOB implements Job {
+public class IJOB extends BaseJob implements Job {
     @Autowired
     DeviceService deviceService;
     @Autowired
     DownOrderUtils downOrderUtils;
-
-    private final static Logger log = Logger.getLogger(IJOB.class.getSimpleName());
 
     public IJOB() {
     }

@@ -19,4 +19,11 @@
         DESC LIMIT 1
     </select>
 
+    <update id="updateAppVer" parameterType="cn.zz.dgcc.DGIOT.entity.AppVersion">
+        UPDATE version
+        SET ver_name = #{verName},ver_note = #{verNote},ver_code = #{verCode}
+        WHERE
+            id = 1
+    </update>
+
 </mapper>

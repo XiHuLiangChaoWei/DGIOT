@@ -20,13 +20,7 @@ import java.util.logging.Logger;
  * ClassExplain :
  * ->
  */
-public class GrainJob implements Job {
-    @Autowired
-    DeviceService deviceService;
-    @Autowired
-    DownOrderUtils downOrderUtils;
-
-    private final static Logger log = Logger.getLogger(GrainJob.class.getSimpleName());
+public class GrainJob extends BaseJob implements Job{
 
     public GrainJob() {
     }
@@ -36,28 +30,18 @@ public class GrainJob implements Job {
         return deviceList;
     }
 
-    ExecutorService executorService = Executors.newCachedThreadPool();
-    ThreadPoolExecutor pool = (ThreadPoolExecutor) executorService;
-
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
-
         System.out.println("开始执行计划任务");
         //从jobDataMap中获取设备列表
         List<Device> devices = getDeviceList();
         try {
             for (Device device : devices
             ) {
-                if (device.getType() == 0) {
-                    continue;
-                }
                 if (device.getType() == 3) {
-                    executorService.execute(() -> {
-                        pool.submit(() -> {
-                            log.info("定时查询粮情··············");
-                            downOrderUtils.deployN2Order(0, device);
-                        });
+                    pool.submit(() -> {
+                        log.info("定时查询粮情··············");
+                        downOrderUtils.deployGrainOrder(0, device);
                     });
                 }
 
@@ -66,6 +50,5 @@ public class GrainJob implements Job {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        executorService.shutdown();
     }
 }

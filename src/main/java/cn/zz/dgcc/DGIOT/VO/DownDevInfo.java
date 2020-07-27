@@ -26,8 +26,6 @@ public class DownDevInfo {
         this.devId = devId;
     }
 
-    //{"productKey":"a1NXIYnqFcv","deviceName":"QT000001","deviceSecret":"NvRGnDGttpHquSzCiOuXZ264hZ17SuvV","DtuId":"30FF6B064241343617181857","devId":"39FFD7054E42343343782543"}
-
     @Override
     public String toString() {
         return "{" +

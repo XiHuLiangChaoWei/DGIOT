@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by: LT001
  * Date: 2020/7/10 14:33
- * ClassExplain :
+ * ClassExplain :   定时删除相关
  * ->
  */
 public interface ISqlDeleteService {

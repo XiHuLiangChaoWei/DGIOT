@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by: LT001
  * Date: 2020/4/21 13:51
- * ClassExplain :
+ * ClassExplain : webSocket
  * ->
  */
 @Component

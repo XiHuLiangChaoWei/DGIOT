@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Created by: LT001
  * Date: 2020/6/8 8:38
- * ClassExplain :      defalt QuartzJob
+ * ClassExplain :      defalt QuartzJob   配置定时任务启动
  * ->
  */
 @Configuration
@@ -41,7 +41,7 @@ public class IQuartzStart {
         //配置油情任务
         JobDetail oil = JobBuilder.newJob(OilJob.class).withIdentity("localOil", "Defalt")
                 .storeDurably().build();
-        CronTrigger oilTrigger = TriggerBuilder.newTrigger().forJob(oil).withSchedule(CronScheduleBuilder.cronSchedule("0 0 * * * ? *"))
+        CronTrigger oilTrigger = TriggerBuilder.newTrigger().forJob(oil).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0/1 * * ? "))
                 .withIdentity("localOil", "Defalt").build();
 
         //配置同步时钟任务
@@ -53,9 +53,9 @@ public class IQuartzStart {
                 .withIdentity("timer", "Defalt").build();
 
         //配置查询粮情任务
-        JobDetail grain = JobBuilder.newJob(QTJob.class).withIdentity("localGrain", "Defalt")
+        JobDetail grain = JobBuilder.newJob(GrainJob.class).withIdentity("localGrain", "Defalt")
                 .storeDurably().build();
-        CronTrigger grainTrigger = TriggerBuilder.newTrigger().forJob(grain).withSchedule(CronScheduleBuilder.cronSchedule("0 0 0,12 * * ?"))
+        CronTrigger grainTrigger = TriggerBuilder.newTrigger().forJob(grain).withSchedule(CronScheduleBuilder.cronSchedule("0 0 1,13 * * ? "))
                 .withIdentity("localGrain", "Defalt").build();
         //配置定时删除
         JobDetail remove = JobBuilder.newJob(IDeleteJob.class).withIdentity("localRemove","Defalt")

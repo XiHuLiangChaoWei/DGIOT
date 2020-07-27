@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by: LT001
  * Date: 2020/6/2 11:45
- * ClassExplain :
+ * ClassExplain :   固件版本相关
  * ->
  */
 public interface FirewareService {
