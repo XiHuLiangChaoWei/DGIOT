@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 /**
  * Created by: LT001
  * Date: 2020/4/23 14:09
- * ClassExplain :数据库相关 用于开发人员的数据调试
+ * ClassExplain :数据库相关 用于开发人员的数据调试,对客户来说应当是不可见不可用的
  */
 @Controller
 @RequestMapping("/sql")

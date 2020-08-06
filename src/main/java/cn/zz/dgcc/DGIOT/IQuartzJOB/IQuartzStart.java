@@ -55,7 +55,7 @@ public class IQuartzStart {
         //配置查询粮情任务
         JobDetail grain = JobBuilder.newJob(GrainJob.class).withIdentity("localGrain", "Defalt")
                 .storeDurably().build();
-        CronTrigger grainTrigger = TriggerBuilder.newTrigger().forJob(grain).withSchedule(CronScheduleBuilder.cronSchedule("0 0 1,13 * * ? "))
+        CronTrigger grainTrigger = TriggerBuilder.newTrigger().forJob(grain).withSchedule(CronScheduleBuilder.cronSchedule("0 0 7,15 * * ? "))
                 .withIdentity("localGrain", "Defalt").build();
         //配置定时删除
         JobDetail remove = JobBuilder.newJob(IDeleteJob.class).withIdentity("localRemove","Defalt")

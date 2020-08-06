@@ -119,6 +119,12 @@ public class AppDateController extends BaseController {
         return new JsonResult<>(success, "下发成功");
     }
 
+    /**
+     * 历史粮情
+     * @param session
+     * @param grainHistoryVO
+     * @return
+     */
     @RequestMapping("/grain/history")
     @ResponseBody
     public JsonResult<JSONObject> grainHistory(HttpSession session, GrainHistoryVO grainHistoryVO) {
@@ -394,7 +400,7 @@ public class AppDateController extends BaseController {
     /**
      * @param session
      * @param depotId
-     * @return
+     * @return  历史油情信息
      */
     @ResponseBody
     @RequestMapping("/oil")

@@ -1,8 +1,10 @@
 package cn.zz.dgcc.DGIOT.service.impl;
 
 import cn.zz.dgcc.DGIOT.entity.Device;
+import cn.zz.dgcc.DGIOT.entity.Iproduct;
 import cn.zz.dgcc.DGIOT.entity.Product;
 import cn.zz.dgcc.DGIOT.service.IoTService;
+import cn.zz.dgcc.DGIOT.service.ProductService;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -16,11 +18,14 @@ import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import org.eclipse.paho.client.mqttv3.internal.websocket.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -31,6 +36,10 @@ import java.util.logging.Logger;
  */
 @Service
 public class IotServiceImpl implements IoTService {
+
+    @Autowired
+    ProductService productService;
+
     private final static Logger log = Logger.getLogger(IotServiceImpl.class.getSimpleName());
 
     public List<Product> getProductList() {
@@ -63,10 +72,26 @@ public class IotServiceImpl implements IoTService {
     private final static int 太阳能分机设备 = 7;
     private final static int 测试设备 = 0;
 
+    //从数据库表中读取产品信息
+    List<Iproduct> getProductListFromSql() {
+        return productService.getAll();
+    }
+
+    //
+    Map<String, Integer> productMap() {
+        Map<String, Integer> map = new HashMap<>();
+        for (Iproduct i : getProductListFromSql()
+        ) {
+            map.put(i.getProductKey(), i.getId());
+        }
+        return map;
+    }
+
     /*
     根据产品列表查询设备列表
      */
     public List<Device> getDeviceList(List<Product> pL) {
+        Map<String, Integer> productMap = productMap();
         List<Device> devList = new ArrayList<Device>();
         JSONObject row;
         for (Product p : pL
@@ -90,35 +115,42 @@ public class IotServiceImpl implements IoTService {
                 int devBh = Integer.parseInt(strs[strs.length - 1].substring(3));
                 a.setDevBH(String.valueOf(devBh));
                 a.setDevZH("1");
-                switch (row.getString("ProductKey")) {
-                    case "a1KhXudYrKw":
-                        a.setType(测试设备);
-                        break;
-                    case "a1fmlHyzz82":
-                        a.setType(环流设备);
-                        break;
-                    case "a1zuatjJlcg":
-                        a.setType(通风设备);
-                        break;
-                    case "a1RnedE9Gfb":
-                        a.setType(粮情设备);
-                        break;
-                    case "a1bop2X1JTB":
-                        a.setType(制氮设备);
-                        break;
-                    case "a1J3Y773MWq":
-                        a.setType(气调设备);
-                        break;
-                    case "g092bBa0bSV":
-                        a.setType(油情设备);
-                        break;
-                    case "g092mlxAtWS":
-                        a.setType(太阳能分机设备);
-                        break;
+                if (row.getString("ProductKey").equals("a1KhXudYrKw")) {
+                    a.setType(测试设备);
+                } else {
+                    //修改 通过一个MAP来进行产品id的匹配
+                    a.setType(productMap.get(pk));
                 }
+
+//                switch (row.getString("ProductKey")) {
+//                    case "a1KhXudYrKw":
+//                        a.setType(测试设备);
+//                        break;
+//                    case "a1fmlHyzz82":
+//                        a.setType(环流设备);
+//                        break;
+//                    case "a1zuatjJlcg":
+//                        a.setType(通风设备);
+//                        break;
+//                    case "a1RnedE9Gfb":
+//                        a.setType(粮情设备);
+//                        break;
+//                    case "a1bop2X1JTB":
+//                        a.setType(制氮设备);
+//                        break;
+//                    case "a1J3Y773MWq":
+//                        a.setType(气调设备);
+//                        break;
+//                    case "g092bBa0bSV":
+//                        a.setType(油情设备);
+//                        break;
+//                    case "g092mlxAtWS":
+//                        a.setType(太阳能分机设备);
+//                    case "g092BCWzcaq":
+//                        a.setType(8);
+//                }
                 devList.add(a);
             }
-
         }
         return devList;
     }

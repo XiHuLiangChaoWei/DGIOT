@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * Created by: LT001
  * Date: 2020/7/21 14:27
- * ClassExplain : 主要提供新建项目
+ * ClassExplain : 提供新建项目的便捷操作
  * ->
  */
 @Controller

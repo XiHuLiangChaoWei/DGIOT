@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 /**
  * Created by: LT001
  * Date: 2020/4/20 17:27
- * ClassExplain :
+ * ClassExplain :   初始化amqp服务端
  * ->
  */
 @Controller

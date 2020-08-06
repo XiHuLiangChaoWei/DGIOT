@@ -1,5 +1,6 @@
 package cn.zz.dgcc.DGIOT.controller;
 
+import cn.zz.dgcc.DGIOT.VO.SunChaXunVO;
 import cn.zz.dgcc.DGIOT.entity.AppVersion;
 import cn.zz.dgcc.DGIOT.entity.BuildMessage;
 import cn.zz.dgcc.DGIOT.entity.Device;
@@ -35,7 +36,7 @@ import java.util.regex.Pattern;
 /**
  * Created by: LT001
  * Date: 2020/4/9 15:01
- * ClassExplain :前端页面控制器层
+ * ClassExplain :       管理员用前端页面 控制器层
  * ->
  */
 @Controller
@@ -55,8 +56,18 @@ public class IoTWebController extends BaseController {
     @Autowired
     AppVersionService appVersionService;
 
+    @RequestMapping({"/", ""})
+    public String temp() {
+        return "html/temp";
+    }
+
+    @RequestMapping("sunAddSearch")
+    public String sun() {
+        return "html/sunLQfj";
+    }
+
     @RequestMapping("uploadapp")
-    public String app(){
+    public String app() {
         return "html/appUpload";
     }
 
@@ -128,27 +139,30 @@ public class IoTWebController extends BaseController {
     }
 
     /**
-     * 查询指令
+     * 查询指令 太阳能粮情主机查询
+     *
+     * @param sunChaXunVO 封装对象，包含 devName,以及层行列，温湿度点，是否有外温湿度
      */
     @RequestMapping("sun")
     @ResponseBody
-    public void b() {
+    public void b(SunChaXunVO sunChaXunVO) {
+        System.err.println(sunChaXunVO.toString());
         SunPowerCommondBuilder sunPowerCommondBuilder = SunPowerCommondBuilder.getInstance();
-        sunPowerCommondBuilder.setCeng("04");
-        sunPowerCommondBuilder.setHang("08");
-        sunPowerCommondBuilder.setLie("09");
-        sunPowerCommondBuilder.setThNum("01");
-        sunPowerCommondBuilder.setIfOut("00");
-        sunPowerCommondBuilder.setDevAddress("02");
+        sunPowerCommondBuilder.setCeng(ContextUtil.FormatNum(sunChaXunVO.getCeng(), 2));
+        sunPowerCommondBuilder.setHang(ContextUtil.FormatNum(sunChaXunVO.getHang(), 2));
+        sunPowerCommondBuilder.setLie(ContextUtil.FormatNum(sunChaXunVO.getLie(), 2));
+        sunPowerCommondBuilder.setThNum(ContextUtil.FormatNum(sunChaXunVO.getThNum(), 2));
+        sunPowerCommondBuilder.setIfOut(ContextUtil.FormatNum(sunChaXunVO.getIfOut(), 2));
+        sunPowerCommondBuilder.setDevAddress(ContextUtil.FormatNum(sunChaXunVO.getFjAddress(), 2));
         BuildMessage msg = sunPowerCommondBuilder.build();
-        String fullTopic = "/g092mlxAtWS/ZZ-DG-CS-SUN001/user/sev/downdate";
+        String fullTopic = "/g092mlxAtWS/" + sunChaXunVO.getDevName() + "/user/sev/downdate";
         String pk = "g092mlxAtWS";
         ioTService.pub(fullTopic, msg.toString(), pk, "1");
         System.err.println(msg.toString());
     }
 
     /**
-     * 返回版本列表
+     * 返回固件版本列表
      *
      * @return
      */
@@ -247,6 +261,15 @@ public class IoTWebController extends BaseController {
     }
 
 
+    /**
+     * 上传apk文件
+     *
+     * @param file
+     * @param version
+     * @param vernote
+     * @param session
+     * @return
+     */
     @RequestMapping("upApp")
     @ResponseBody
     public JsonResult<Void> updateAppFile(
@@ -254,7 +277,7 @@ public class IoTWebController extends BaseController {
             String version, String vernote,
             HttpSession session) {
 
-        System.err.println("version:"+version+"===vercode:"+vernote);
+        System.err.println("version:" + version + "===vercode:" + vernote);
 
         //检查上传文件是否为空
         if (file.isEmpty()) {
@@ -298,9 +321,9 @@ public class IoTWebController extends BaseController {
         System.err.println(avatarpath);
         AppVersion appVersion = new AppVersion(version, vernote, avatarpath);
         AppVersion oldApp = appVersionService.getNowAppVersion();
-        appVersion.setVerCode(String.valueOf((Integer.parseInt(oldApp.getVerCode())+1)));
+        appVersion.setVerCode(String.valueOf((Integer.parseInt(oldApp.getVerCode()) + 1)));
         int rsAppVer = appVersionService.gengxin(appVersion);
-        if(rsAppVer!=1){
+        if (rsAppVer != 1) {
             return new JsonResult<Void>(servWrong, avatarpath);
         }
         return new JsonResult<Void>(success, avatarpath);
@@ -308,6 +331,7 @@ public class IoTWebController extends BaseController {
 
 
     /**
+     *
      * @param devName 设备名
      * @param version 目标版本
      * @param type    1=dev other = dtu
@@ -403,7 +427,7 @@ public class IoTWebController extends BaseController {
     }
 
     /**
-     * 产品列表信息
+     * 产品列表信息 云端产品
      *
      * @return
      */
@@ -484,7 +508,7 @@ public class IoTWebController extends BaseController {
                                   @PathVariable("fullName") String fullName,
                                   @PathVariable("content") String content,
                                   @PathVariable("qos") String qos) {
-        fullName = fullName.replace("-", "/");
+        fullName = fullName.replace(":", "/");
 
         String[] fullNames = fullName.split("/");
         if (fullNames[2].equals("${deviceName}")) {

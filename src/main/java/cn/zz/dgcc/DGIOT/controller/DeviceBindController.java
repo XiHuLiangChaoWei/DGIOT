@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 /**
  * Created by: LT001
  * Date: 2020/5/7 16:01
- * ClassExplain :
+ * ClassExplain :   真实设备与云端设备进行绑定操作
  *
  */
 @Controller
