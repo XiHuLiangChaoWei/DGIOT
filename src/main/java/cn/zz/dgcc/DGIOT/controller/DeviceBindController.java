@@ -61,6 +61,18 @@ public class DeviceBindController extends BaseController {
         return devices;
     }
 
+    @ResponseBody
+    @RequestMapping("adddevlist")
+    public void save(){
+        List<Product> products = ioTService.getProductList();
+        List<Device> devices = ioTService.getDeviceList(products);
+        for (Device d : devices
+        ) {
+            log.info("查询到设备列表" + d);
+        }
+        deviceService.saveDeviceList(devices);
+    }
+
     public void savaDevList() {
         List<Device> devices = getTotalList();
         for (Device d : devices
@@ -95,7 +107,7 @@ public class DeviceBindController extends BaseController {
     public void registerDevice(AMQPMessage a) {
         String str = a.getContent();
         //收到消息后，刷新数据库中iot_device_list表信息
-        if (str.equals("refreshList")) {
+        if (str.equals("")) {
             savaDevList();
             return;
         }
@@ -189,7 +201,7 @@ public class DeviceBindController extends BaseController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //调用下发API 下发三元组信息
+            //调用下发API 下发三元组信息processMessage
             JSONObject jsonRs = ioTService.pub("/a1KhXudYrKw/000000/user/dev/register/response", downDevInfo.toString(),
                     "a1KhXudYrKw", null);
             String succ = jsonRs.getString("Success");

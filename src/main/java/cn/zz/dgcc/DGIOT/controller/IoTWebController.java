@@ -138,6 +138,23 @@ public class IoTWebController extends BaseController {
         return jr;
     }
 
+    @RequestMapping("sun2")
+    @ResponseBody
+    public void b() {
+        SunPowerCommondBuilder sunPowerCommondBuilder = SunPowerCommondBuilder.getInstance();
+        sunPowerCommondBuilder.setCeng(ContextUtil.FormatNum(1, 2));
+        sunPowerCommondBuilder.setHang(ContextUtil.FormatNum(9, 2));
+        sunPowerCommondBuilder.setLie(ContextUtil.FormatNum(20, 2));
+        sunPowerCommondBuilder.setThNum(ContextUtil.FormatNum(1, 2));
+        sunPowerCommondBuilder.setIfOut(ContextUtil.FormatNum(1, 2));
+        sunPowerCommondBuilder.setDevAddress(ContextUtil.FormatNum(1, 2));
+        BuildMessage msg = sunPowerCommondBuilder.build();
+        String fullTopic = "/g092mlxAtWS/ZZ-DG-CS-SUN001/user/sev/downdate";
+        String pk = "g092mlxAtWS";
+        ioTService.pub(fullTopic, msg.toString(), pk, "1");
+        System.err.println(msg.toString());
+    }
+
     /**
      * 查询指令 太阳能粮情主机查询
      *

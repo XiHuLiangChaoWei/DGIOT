@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 /**
  * Created by: LT001
- * Date: 2019/10/23 15:36
+ * Date: 2019/10/23 15:36register
  * ClassExplain : 登陆控制器,弃用,仍可以进行登陆,但是登陆后跳转页面无法操作。目前使用静态页面直接进行登陆，未通过视图解析器，所以该登陆页面弃用。
  */
 @Controller

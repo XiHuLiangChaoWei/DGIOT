@@ -148,4 +148,24 @@ public class Dg4AnalysisOil {
         return jsonObject;
     }
 
+    public static void main(String[] args) {
+        String tempDate = "AAA8FFFFFFFFFFFFFF01A801FFFFFFFFFFFFFFFFFFFFFFFFFFE8EFEF";
+        String temp = null;
+        List<Float> tempList = new ArrayList<>();
+        for (int i = 0; i < tempDate.length() / 4; i++) {
+            temp = tempDate.substring(i * 4, i * 4 + 4);
+//            if (temp == null) {
+//                temp = "0000";
+//            }
+            if ("FFFF".equals(temp)) {
+                //代表异常或者没数据,解析为异常数据
+//                temps.add(ERROR_TEMP_TAG);
+            } else {
+                tempList.add(Float.valueOf(new DecimalFormat("0.00").format(BytesUtil.oilTempTran(tran_LH(temp)) * 0.0625)));
+            }
+        }
+
+        System.out.println(tempList);
+    }
+
 }

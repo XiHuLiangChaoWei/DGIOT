@@ -11,6 +11,16 @@ public class JsonResult<T> {
     private String message;
     private T data;
 
+    public T getData1() {
+        return data1;
+    }
+
+    public void setData1(T data1) {
+        this.data1 = data1;
+    }
+
+    private T data1;
+
     public Integer getState() {
         return state;
     }
@@ -71,6 +81,14 @@ public class JsonResult<T> {
                 "state=" + state +
                 ", message='" + message + '\'' +
                 ", data=" + data +
+                ", data1=" + data1 +
                 '}';
     }
+
+    public JsonResult(Integer state, T data, T data1){
+        this.state = state;
+        this.data = data;
+        this.data1=data1;
+    }
+
 }

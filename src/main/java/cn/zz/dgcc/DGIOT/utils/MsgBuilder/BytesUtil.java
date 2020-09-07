@@ -313,7 +313,7 @@ public class BytesUtil {
 
 
     public static void main(String[] args) {
-        System.err.println(hexToInt("FFDE"));
+        System.out.println(hexToInt("0x48"));
     }
 
     /**

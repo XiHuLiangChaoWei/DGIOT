@@ -121,6 +121,7 @@ public class AppDateController extends BaseController {
 
     /**
      * 历史粮情
+     *
      * @param session
      * @param grainHistoryVO
      * @return
@@ -211,6 +212,9 @@ public class AppDateController extends BaseController {
         int companyId = rs.getCompanyId();
         Device n2 = deviceService.getN2DevByUser(companyId);
         JsonResult<Integer> jr = downOrderUtils.getN2DevStatus(n2, userId);
+        if (jr == null) {
+            return new JsonResult<>(success, 0);
+        }
         return jr;
     }
 
@@ -400,7 +404,7 @@ public class AppDateController extends BaseController {
     /**
      * @param session
      * @param depotId
-     * @return  历史油情信息
+     * @return 历史油情信息
      */
     @ResponseBody
     @RequestMapping("/oil")

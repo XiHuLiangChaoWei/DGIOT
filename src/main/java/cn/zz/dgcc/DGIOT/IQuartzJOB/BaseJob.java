@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 /**
  * Created by: LT001
  * Date: 2020/7/13 9:14
- * ClassExplain :
+ * ClassExplain :   
  * ->
  */
 public class BaseJob {

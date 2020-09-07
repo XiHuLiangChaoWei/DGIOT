@@ -270,7 +270,7 @@ public class DownOrderUtils {
         String pk = n2.getProductKey();
         String devName = n2.getDeviceName();
         String topicFullName = "/" + pk + "/" + devName + "/user/sev/downdate";
-        //查询制氮机运行装填
+        //查询制氮机运行状态
         String getStatus = N2DevCommondBuilder.getN2DevStatus();
         JSONObject json = ioTService.pub(topicFullName, getStatus, pk, "1");
         Order o = new Order(userId, 0, json.getString("MessageId"), 5, getStatus,
@@ -537,6 +537,9 @@ public class DownOrderUtils {
     private String getN2DevR(String type, Device n2) {
         String devName = n2.getDeviceName();
         N2 rs = n2Service.getNewInfoByDevName2(devName, type);
+        if(rs==null){
+            return "";
+        }
         return rs.getContent().toUpperCase();
     }
 
