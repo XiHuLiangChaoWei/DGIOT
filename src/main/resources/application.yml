@@ -120,6 +120,9 @@ spring:
 Mybatis:
   mapper-locations: classpath:mapping/*.xml
   type-aliases-package: cn.zz.dgcc.DGIOT.entity
+  #打印sql语句
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 logging:
   path: d:/Log/
