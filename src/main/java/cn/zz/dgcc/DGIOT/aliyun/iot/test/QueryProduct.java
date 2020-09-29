@@ -17,25 +17,6 @@ import com.aliyuncs.profile.DefaultProfile;
  */
 public class QueryProduct {
     public static void main(String[] args) {
-        DefaultProfile profile = DefaultProfile.getProfile("cn-shanghai", "LTAI4FtLrEDXjUoG8vy9hqga", "N25z0lGWyu6mB6DxrGxI9mtIswkDeo");
-        IAcsClient client = new DefaultAcsClient(profile);
 
-        CommonRequest request = new CommonRequest();
-        request.setMethod(MethodType.POST);
-        request.setDomain("iot.cn-shanghai.aliyuncs.com");
-        request.setVersion("2018-01-20");
-        request.setAction("QueryProductList");
-        request.putQueryParameter("RegionId", "cn-shanghai");
-//        request.putQueryParameter("ProductKey", "a1KhXudYrKw");
-        request.putQueryParameter("PageSize","200");
-        request.putQueryParameter("CurrentPage","1");
-        try {
-            CommonResponse response = client.getCommonResponse(request);
-            System.out.println(response.getData());
-        } catch (ServerException e) {
-            e.printStackTrace();
-        } catch (ClientException e) {
-            e.printStackTrace();
-        }
     }
 }
