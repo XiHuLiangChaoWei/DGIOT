@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>主页</title>
+
+    <link href="static/blue/css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="../custom/blue/uimaker/easyui.css">
+    <link rel="stylesheet" href="static/blue/css/index.css">
+    <link rel="stylesheet" type="text/css" href="../custom/blue/uimaker/icon.css">
+    <link rel="stylesheet" href="/pages/static/blue/css/providers1.css">
+    <style>
+        #container{
+            width: 100%;
+            height: 100%;
+            margin:0 auto;
+            overflow: scroll;
+            font-family: Helvetica, sans-serif;;
+
+            background-color: #FFFFFF;
+            /*background-image: url(images/cangku_01.jpg);*/
+            background-size:100% 100%;
+
+        }
+        #top{
+            padding: 20px;
+
+        }
+        #bottom{
+            position: relative;
+        }
+        .box{
+            width: 220px;
+            height: 340px;
+            margin: 15px;
+            /* box-shadow: 0px 0px 12px rgba(0,255,255,0.5);*/
+            border: 1px solid rgba(127,255,255,0.25);
+
+            background-color: rgba(0, 127, 127, 0.608);
+
+
+        }
+        .box img{
+            width: 220px;
+            height: 240px;
+            opacity:0.9;
+        }
+        .box div{
+            width:220px;
+            height:240px;
+            display: flex;
+
+            font-weight: bold;
+            color: rgba(255,255,255,0.75);
+            /*text-shadow: 0 0 10px rgba(0,255,255,0.95);*/
+        }
+        .box div2{
+            width:220px;
+            height:80px;
+
+            display: flex;
+
+
+            font-weight: bold;
+            color: rgba(255,255,255,0.75);
+            /*text-shadow: 0 0 10px rgba(0,255,255,0.95);*/
+        }
+        .box div3{
+            width:190px;
+            height:80px;
+
+            display: flex;
+            align-items: center;
+            justify-content:center;
+            flex-direction:row;
+            flex-wrap: wrap;
+            font-weight: bold;
+            color: rgba(255,255,255,0.75);
+            /*text-shadow: 0 0 10px rgba(0,255,255,0.95);*/
+        }
+        .box divstatus{
+            width:220px;
+            height:20px;
+            margin-top:240px;
+            padding: auto;
+            display: flex;
+
+            justify-content: center;
+            color:#bfbfbf;
+            text-align: justify;
+            text-align: center;
+            line-height: 20px;
+            background-color: rgba(255,255,255,0.9);
+            border-top: 1px solid #bfbfbf;
+            /*text-shadow: 0 0 10px rgba(0,255,255,0.95);*/
+        }
+        .box h4{
+            width:30px;
+            height:80px;
+
+            font-size: 20px;
+            text-align: center;
+            line-height: 26px;
+            border-right: 1px solid rgba(127,255,255,0.25);
+        }
+        .box p{
+            width: 190px;
+            height: 80px;
+
+            right: 0px;
+
+        }
+        .box button1 {
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            padding: 5px 10px;
+            margin: 2px 10px;
+            text-align: center;
+            font-size: 10px;
+            font-style: normal;
+            display: flex;
+            background-color: rgba(255,255,255,0.75);
+            color: #00a65a;
+            border: 1px solid #00a65a;
+            border-radius:10px;
+            height: 10px;
+
+        }
+        button1:hover {
+            background-color: #00a65a;
+            color: white;
+        }
+        .box button2 {
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            padding: 5px 10px;
+            margin: 2px 10px;
+            display: flex;
+            text-align: center;
+            font-size: 10px;
+            font-style: normal;
+            background-color: rgba(255,255,255,0.75);
+            color: red;
+            border: 1px solid red;
+            border-radius:10px;
+            height: 10px;
+        }
+        button2:hover {
+            background-color: red;
+            color: white;
+        }
+    </style>
+
+
+
+
+</head>
+<body style="font-family:Georgia;
+         font-family:Arial;" onbeforeunload="close()">
+
+
+<div class="statement" style="padding-right: 0px;">
+
+    <div class="process" >
+        <!-- <img id="lswdwenduquxian" src="/bbpic/wenduquxian.png" style="cursor: pointer;"></img>
+           <img id="lswdanniu" src="/bbpic/lishiwenduanniu.png" style="cursor: pointer;"></img> -->
+        <div class="sta-title">气调状态列表<span id='titletip'></span></div>
+        <div class="process-inner">
+
+            <div id="container">
+                <div id="bottom"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div  id="qt" class="easyui-window" title="氮气气调" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:500px;height:200px;padding:10px;">
+
+    图片id<input type="text" id="tid">
+</div>
+
+<script type="text/javascript" src="../custom/blue/jquery.min.js"></script>
+<script type="text/javascript" src="../custom/blue/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../custom/blue/easyui-lang-zh_CN.js"></script>
+<script src="js/httpget.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        loaddataqitiao();
+
+
+    });
+
+
+    $(window).resize(function(){
+        //$('#bd.bd-content"').height($("body").height()-46);
+        //$('#bd.bd-content"').height(801);
+        // var width=$("body").height();
+        //alert (width);
+        var height = window.parent.document.documentElement.scrollHeight
+        //alert(height);
+        $("body").height(height-113);
+        $("#bd").height(height-113);
+        $(".statement").height(height-113-60);
+        $(".statement .info").height(height-113-60-2);
+
+        $(".statement .process").height(height-113-60-2);
+        var cssheight=height-113-60-2;
+
+        $(".statement .process .process-inner").height(cssheight-40);
+        var width= document.getElementById("container").offsetWidth;
+        var lienum= Math.floor(width/235);
+        // console.log("bianhua"+lienum);
+        liebiao(lienum,document.getElementById("bottom"));
+    }).resize();
+    function liebiao(lieshu,pn){
+
+        //改变每个位置的函数 jiuge
+
+        var boxW=220,boxH=340,boxXY=15;
+
+        for(var i=0;i<pn.children.length;i++){
+
+            var row =Math.floor(i/lieshu);//行
+            var col=Math.floor(i%lieshu);//列
+
+            //console.log("当前盒子所在的坐标：("+row+","+col+")");
+
+            var sd=pn.children[i];
+            sd.style.position='absolute';
+            sd.style.left=col*(boxW+boxXY)+'px';
+            sd.style.top=row*(boxH+boxXY)+'px';
+        }
+
+    };
+    //添加仓库信息展示
+    function addElementDiv(obj,num,maxtemp,mintemp,avgtemp,model,innertemp,innerh,stat) {
+        var parent = document.getElementById(obj);
+
+        //添加 div
+        var div = document.createElement("div");
+        var img=document.createElement("img");
+        var h4=document.createElement("h4");
+        var p=document.createElement("p");
+        var div2=document.createElement("div2");
+        var div3=document.createElement("div3");
+        var divstatus=document.createElement("divstatus");
+
+
+        var ljzt = document.createElement("ljzt");
+        var sszt = document.createElement("sszt");
+
+        //设置 div 属性，如 id
+        div.setAttribute("class", "box");
+        img.setAttribute("id",num+"img");
+        divstatus.setAttribute("id",num+"div");
+
+        img.onclick=function(){
+           // window.open("yudu.html?id="+this.getAttribute("id")+"&name=1");
+            addTab(this.getAttribute("id"),1);
+        }
+
+        var a;
+        if(stat=="ONLINE"){
+            a="在线"
+        }else{
+            a="离线"
+        }
+        ljzt.innerHTML="连接状态："+a
+
+
+        h4.innerHTML= num+"号仓";
+        var status;
+        switch (model){
+            case 0:
+                status="停止";
+                img.src="images/仓房图标.png";
+                break;
+            case 1:
+                status="上充下排中...";
+                img.src="images/仓房图标.png";
+                break;
+            case 2:
+                status="下充上排中...";
+                img.src="images/仓房图标.png";
+                break;
+            case 3:
+                status="环流熏蒸中...";
+                img.src="images/仓房图标.png";
+                break;
+            case 4:
+                status="负压充氮中...";
+                img.src="images/仓房图标.png";
+                break;
+            case 6:
+                status="氮气排空中..."
+                img.src="images/仓房图标.png";
+                break;
+            case 7:
+                status="氮气回收中..."
+                img.src="images/仓房图标.png";
+                break;
+            case 8:
+                status="快速投药中..."
+                img.src="images/仓房图标.png";
+                break;
+
+        };
+
+        sszt.innerHTML="实时状态："+status
+        divstatus.innerHTML=status;
+        div.appendChild(img);
+        //div.appendChild(number);
+        // div.appendChild(wendu);
+        //div.appendChild(shidu);
+        div.appendChild(divstatus);
+        div2.appendChild(h4);
+        div3.append(ljzt)
+        div3.append(sszt);
+        div2.appendChild(div3);
+        div.appendChild(div2);
+        parent.appendChild(div);
+        //parent.appendChild(div2);
+    };
+
+    function addTab(id,name){
+        // var her = "yudu.html?id="+id+"&name="+name;
+        var her = "3.html?id="+id+"&name="+name;
+
+        var parentiframe = window.parent; //获取父级页面对象
+        var div =parentiframe.document.getElementsByClassName('.easyui-tabs1'); //获取父级页面中指定元素
+
+
+        if ( parentiframe.$('.easyui-tabs1').tabs('exists', "氮气气调")) {
+
+            parentiframe.$('.easyui-tabs1').tabs('close', "氮气气调");
+
+        }
+            var content = '<iframe name="indextab" scrolling="auto" src="'+her+'" frameborder="0"  style="width:100%;height:100%;"></iframe>';
+            parentiframe.$('.easyui-tabs1').tabs('add',{
+                title:"氮气气调",
+                content:content,
+                closable:true,
+                fit:true,
+                selected:true
+
+            });
+
+    }
+
+
+</script>
+</body>
+</html>
