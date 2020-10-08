@@ -167,7 +167,8 @@ public class DeviceBindController extends BaseController {
 
 
             log.info("批量添加云端设备获取pk=" + pk);
-            iotDeviceService.batchAddDevices(pk, deviceNameSuf, deviceNameFix,13);
+            //批量注册设备
+//            iotDeviceService.batchAddDevices(pk, deviceNameSuf, deviceNameFix,13);
 //            Thread.sleep(50);
             log.info("调用刷新云端设备列表");
             savaDevList();
