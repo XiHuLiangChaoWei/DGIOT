@@ -14,4 +14,6 @@ public interface OrderService {
     Order getNewOn1(String s);
 
     void updateOrder(String messageId);
+
+    Order getdevid(String devId);
 }

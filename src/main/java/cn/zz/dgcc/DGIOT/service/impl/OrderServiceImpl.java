@@ -33,4 +33,9 @@ public class OrderServiceImpl implements OrderService {
     public void updateOrder(String messageId) {
         orderMapper.update(messageId);
     }
+
+    @Override
+    public Order getdevid(String devId) {
+        return orderMapper.getdevid(devId);
+    }
 }

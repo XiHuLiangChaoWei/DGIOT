@@ -92,4 +92,11 @@ public class N2ServiceImpl implements N2Service {
     public N2 getNewInfoByDevName2(String devName, String type) {
         return n2Mapper.selectNewInfoByDevName2(devName, type);
     }
+
+    @Override
+    public List<N2> getAlldevname(String devname) {
+        return n2Mapper.getAlldevname(devname);
+    }
+
+
 }

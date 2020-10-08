@@ -16,4 +16,6 @@ public interface OrderMapper {
     Order getNewOpen1(String s);
 
     void update(String messageId);
+
+    Order getdevid(String devId);
 }

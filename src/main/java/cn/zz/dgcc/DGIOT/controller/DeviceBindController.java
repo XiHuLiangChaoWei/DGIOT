@@ -7,6 +7,7 @@ import cn.zz.dgcc.DGIOT.entity.Product;
 import cn.zz.dgcc.DGIOT.service.*;
 import cn.zz.dgcc.DGIOT.utils.AMQP.AMQPMessage;
 import cn.zz.dgcc.DGIOT.utils.DeviceUtil;
+import cn.zz.dgcc.DGIOT.utils.DownOrderUtils;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,8 @@ public class DeviceBindController extends BaseController {
     AnalysisService analysisService;
     @Autowired
     FirewareService firewareService;
-
+    @Autowired
+    DownOrderUtils downOrderUtils;
 
     /**
      * 解析消息
@@ -64,6 +66,8 @@ public class DeviceBindController extends BaseController {
     @ResponseBody
     @RequestMapping("adddevlist")
     public void save(){
+        //time
+//        downOrderUtils.JsonTime(8);
         List<Product> products = ioTService.getProductList();
         List<Device> devices = ioTService.getDeviceList(products);
         for (Device d : devices

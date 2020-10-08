@@ -23,4 +23,6 @@ public interface N2Service {
     N2 getNewInfo();
 
     N2 getNewInfoByDevName2(String devName, String type);
+
+    List<N2> getAlldevname(String devname);
 }

@@ -52,4 +52,15 @@
 
     </select>
 
+    <select id="getdevid" resultMap="OrderResultMap">
+        SELECT
+            *
+        FROM
+            Iorder
+        WHERE
+            dev_id = #{devId}
+            ORDER BY
+            id DESC Limit 1
+    </select>
+
 </mapper>

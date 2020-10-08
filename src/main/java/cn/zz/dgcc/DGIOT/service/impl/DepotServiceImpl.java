@@ -130,4 +130,9 @@ public class DepotServiceImpl implements DepotService {
         return depotMapper.insert(depot);
     }
 
+    @Override
+    public int updmodel(int deptid,int companyId, int model) {
+        return depotMapper.updmodel(deptid,deptid,model);
+    }
+
 }

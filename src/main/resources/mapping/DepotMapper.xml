@@ -100,4 +100,12 @@
              depot_id = #{depotId} AND company_id = #{companyId}
     </select>
 
+    <update id="updmodel">
+        UPDATE
+            depot
+        SET model = #{model}
+        WHERE
+            depot_id = #{depotId} AND company_id = #{companyId}
+    </update>
+
 </mapper>

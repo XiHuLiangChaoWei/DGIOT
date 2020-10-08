@@ -35,6 +35,8 @@ public interface DepotMapper {
 
     int upQTStatusById(@Param("id") int id, @Param("clStatus") int clStatus, @Param("model") int model);
 
+    int updmodel(@Param("depotId") int depotId, @Param("companyId") int companyId,@Param("model") int model);
+
     Depot selectDepotByDepotIdAndCompanyId(@Param("depotId") int depotId, @Param("companyId") int companyId);
 
     int updateDepotInfoByCompanyAndDepot(@Param("companyId") int companyId,

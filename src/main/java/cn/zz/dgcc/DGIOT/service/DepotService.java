@@ -49,4 +49,6 @@ public interface DepotService {
     int updateDepotInfoByCompanyAndDepot(int companyId,String depotInfo);
 
     int addDepot(Depot depot);
+
+    int updmodel(int deptid,int companyId, int model);
 }

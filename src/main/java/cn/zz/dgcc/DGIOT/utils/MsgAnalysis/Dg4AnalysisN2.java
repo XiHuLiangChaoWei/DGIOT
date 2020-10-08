@@ -7,6 +7,7 @@ import cn.zz.dgcc.DGIOT.entity.N2;
 import cn.zz.dgcc.DGIOT.mapper.DepotDevMapper;
 import cn.zz.dgcc.DGIOT.service.DeviceService;
 import cn.zz.dgcc.DGIOT.utils.ContextUtil;
+import cn.zz.dgcc.DGIOT.utils.DownOrderUtils;
 import cn.zz.dgcc.DGIOT.utils.MsgBuilder.BytesUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.omg.PortableInterceptor.INACTIVE;
@@ -52,11 +53,14 @@ public class Dg4AnalysisN2 {
 
     public static void main(String[] args) {
         N2 n = new N2();
-        n.setContent("AA55E4030B010000140703111A06FFFFFFFFFFFF000000C8FFFF01F305000000000001000000CE01C900010AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0A000000000000000000000100020CC0EFEF");
-        String devName = "qt001";
-        Depot depot = new Depot();
-        JSONObject j = newInstance().analysisN2Info(n, devName, depot);
-        System.out.println(j);
+        n.setContent("AA55E403010101001409160F2B18FFFFFFFFFFFF000000FAFFFF01F008000000000000000001000200B9FFFF00010500D600D500D300D500D9FFFFFFFFFFFFFFFFFFFF050000000000010002217AEFEF");
+//        n.setContent("AA55E403010101001409160F2B18FFFFFFFFFF00807E00FC000202000300006000F800010500D400D700F700F100FEFFFFFFFFFFC30000000213FCEFEF303D002B2F61314A33593737334D57712F475A");
+
+//        String devName = "qt001";
+//        Depot depot = new Depot();
+//        JSONObject j = newInstance().analysisN2Info(n, devName, depot);
+        System.out.println(n.getContent().length());
+
     }
 
     public JSONObject analysisN2Info(N2 n2, String devName, Depot depot) {

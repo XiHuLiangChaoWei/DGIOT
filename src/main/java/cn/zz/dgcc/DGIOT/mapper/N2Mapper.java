@@ -29,4 +29,6 @@ public interface N2Mapper {
     N2 selectNewInfoByDevName2(String devName, String type);
 
     Integer selectByMsgId(String msgId);
+
+    List<N2> getAlldevname(String devname);
 }

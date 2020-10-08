@@ -1,6 +1,7 @@
 package cn.zz.dgcc.DGIOT.controller;
 
 import cn.zz.dgcc.DGIOT.VO.GrainHistoryVO;
+import cn.zz.dgcc.DGIOT.VO.N2VO;
 import cn.zz.dgcc.DGIOT.entity.QTConfigure;
 import cn.zz.dgcc.DGIOT.entity.*;
 import cn.zz.dgcc.DGIOT.service.*;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -116,7 +118,14 @@ public class AppDateController extends BaseController {
         int companyId = userService.getCompanyIdByUserId(userId);
         Device n2 = deviceService.getN2DevByUser(companyId);
         downOrderUtils.N2DevControler(controller, n2, userId);
-        return new JsonResult<>(success, "下发成功");
+        String s = "";
+        if("on".equals(controller)){
+            s="开启成功";
+        }
+        if("off".equals(controller)){
+            s="关闭成功";
+        }
+        return new JsonResult<>(success, s);
     }
 
     /**
@@ -991,4 +1000,151 @@ public class AppDateController extends BaseController {
             log.info("保存命令成功");
         }
     }
+
+
+    //
+    @RequestMapping("/getQt")
+    @ResponseBody
+    public JsonResult<List<Device>> getsel(HttpSession session, @RequestBody String deptid) {
+
+        //从session获当前用户的id
+        int userId = getUserIdFromSession(session);
+        //获取userId对应的城市id
+        User user = userService.getByUid(userId);
+        String companyId = String.valueOf(user.getCompanyId());
+
+        List depotlist = depotService.getDevNamesByDepotId(Integer.parseInt(deptid),Integer.parseInt(companyId));
+
+        String devName = depotlist.get(0).toString();
+        N2 n2 = n2Service.getNewInfoByDevName(devName);
+        Depot depot = new Depot();
+
+        Dg4AnalysisN2 dg4AnalysisN2 = Dg4AnalysisN2.newInstance();
+        JSONObject js = dg4AnalysisN2.analysisN2Info(n2, devName, depot);
+        N2VO n2VO = (N2VO) js.get("气调信息");
+
+        List<N2> n2list = n2Service.getAlldevname(devName);
+        List lis1 = new ArrayList();
+        for(N2 n2c : n2list){
+            JSONObject js1 = dg4AnalysisN2.analysisN2Info(n2c, devName, depot);
+            N2VO n2VO1 = (N2VO) js1.get("气调信息");
+            List n2VO1list = allqtList(n2VO1);
+            lis1.add(n2VO1list);
+        }
+        Order o = orderService.getdevid("GZ-YD-XX-ZD001");
+        //最新气调信息
+        List list = qtList(n2VO,o.getMessageContent());
+        int r = depotService.updmodel(n2VO.getDevBH(),Integer.parseInt(companyId),n2VO.getModel());
+
+
+
+        return new JsonResult<>(200,list,lis1);
+    }
+
+    private List allqtList(N2VO n2VO) {
+        List list = new ArrayList();
+        String moshi = moshi(n2VO.getModel());
+        list.add(n2VO.getDevBH());
+        list.add(n2VO.getDevZH());
+        list.add(moshi);
+        list.add(n2VO.getLiangcheng());
+        list.add(n2VO.getPressureDif());
+        list.add(n2VO.getRealTimeN2());
+        list.add(n2VO.getQTstartTime());//气调开始时间
+        list.add(n2VO.getQMJCtime());
+        list.add(n2VO.getO2());
+        list.add(n2VO.getCO2());
+        return list;
+    }
+
+    public  static List qtList(N2VO n2VO,String o){
+        List list = new ArrayList();
+        String cangfang = String.valueOf(n2VO.getDevBH());
+        String moshi = moshi(n2VO.getModel());
+        String nongdu = String.valueOf(n2VO.getRealTimeN2());
+        String qiya =n2VO.getPressureDif();
+        String bsqyali=n2VO.getLiangcheng();
+        String bsqtime =n2VO.getHalfTime();
+        String iresult = iresult(n2VO.getHalfTime());//检查结果
+        String status = getstatus(o);//氮气机状态
+
+        String img = getimg(n2VO.getModel());
+        n2VO.getModel();
+        list.add(cangfang);
+        list.add(moshi);
+        list.add(nongdu);
+        list.add(qiya);
+        list.add(bsqyali);
+        list.add(bsqtime);
+        list.add(iresult);
+        list.add(status);
+        list.add(img);
+        return list;
+    }
+
+    private static String getstatus(String o) {
+        String s = "";
+        if("04 06 00 23 00 00 78 55".equals(o)){
+            s="开启中";
+        }
+        if(" 04 06 00 24 00 00 C9 94".equals(o)){
+            s="关闭";
+        }
+        return s ;
+    }
+
+    private static String getimg(int model) {
+        String img = "";
+        if(model==6){
+            img = "images/dqpk.gif";
+        }else if(model==7){
+            img = "images/dqhs.gif";
+        }else if(model==8){
+            img = "images/ksty.gif";
+        }else if(model==3){
+            img = "images/hlxz.gif";
+        }else{
+            img = "images/ting.gif";
+        }
+        return img;
+    }
+
+    private static String iresult(String bsq) {
+        String iresult = null;
+        if(Integer.parseInt(bsq)>300){
+            iresult = "良好";
+        }else if(Integer.parseInt(bsq)<250){
+            iresult = "较差";
+        }else{
+            iresult = "中等";
+        }
+
+        return iresult;
+    }
+
+    private static String moshi(int model) {
+        String moshi = "";
+        if(model==1){
+            moshi="上充下排";
+        }else if(model==2){
+            moshi="下充上排";
+        }else if(model==3){
+            moshi="环流熏蒸";
+        }else if(model==4){
+            moshi="负压充氮";
+        }else if(model==5){
+            moshi="气密性检查";
+        }else if(model==6){
+            moshi="氮气排空";
+        }else if(model==7){
+            moshi="氮气回收";
+        }else if(model==8){
+            moshi="快速投药";
+        }else{
+            moshi="空闲";
+        }
+        return moshi;
+    }
+
+
 }

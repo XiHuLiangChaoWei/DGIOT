@@ -90,5 +90,15 @@
             n2
     </select>
 
+    <select id="getAlldevname" resultMap="N2ResultMap">
+        SELECT
+            *
+        FROM
+            n2
+        WHERE
+        dev_name = #{devName}
+        ORDER BY id DESC  LIMIT 50
+    </select>
+
 
 </mapper>

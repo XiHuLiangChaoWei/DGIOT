@@ -16,13 +16,24 @@ public class N2DevCommondBuilder extends CommondBuild {
         return n2DevCommondBuilder;
     }
 
-    static String[] n2DevOn = new String[]{"03 06 00 23 00 01 B8 22", "03 06 00 23 00 00 79 E2"};
-    static String[] n2DevOff = new String[]{" 03 06 00 24 00 01 09 E3 ", " 03 06 00 24 00 00 C8 23"};
-    static String n2DevStatus = "03 03 00 3A 00 01 A5 E5";
-    static String n2Purity = "03 03 00 41 00 02 95 FD";
-    static String n2Flow = "03 03 00 43 00 02 34 3D";
-    static String n2Pressure = "03 03 00 45 00 02 D4 3C ";
-    static String n2Temp = "03 03 00 47 00 02 75 FC";
+//    static String[] n2DevOn = new String[]{"03 06 00 23 00 01 B8 22", "03 06 00 23 00 00 79 E2"};
+    static String[] n2DevOn = new String[]{"04 06 00 23 00 01 B9 95", "04 06 00 23 00 00 78 55"};
+//    static String[] n2DevOff = new String[]{" 03 06 00 24 00 01 09 E3 ", " 03 06 00 24 00 00 C8 23"};
+    static String[] n2DevOff = new String[]{"04 06 00 24 00 01 08 54", " 04 06 00 24 00 00 C9 94"};
+
+//    static String n2DevStatus = "03 03 00 3A 00 01 A5 E5";
+    static String n2DevStatus = "04 03 00 3A 00 01 A4 52";
+//    static String n2Purity = "03 03 00 41 00 02 95 FD";
+    static String n2Purity = "04 03 00 41 00 02 94 4A";
+
+//    static String n2Flow = "03 03 00 43 00 02 34 3D";
+    static String n2Flow = "04 03 00 43 00 02 35 8A";
+//    static String n2Pressure = "03 03 00 45 00 02 D4 3C ";
+    static String n2Pressure = "04 03 00 45 00 02 D5 8B ";
+
+//    static String n2Temp = "03 03 00 47 00 02 75 FC";
+    static String n2Temp = " 04 03 00 47 00 02 74 4B";
+
 
     public static String[] getN2DevOn() {
         return n2DevOn;
