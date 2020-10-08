@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>氮气气调</title>
+
+    <link href="/pages/static/blue/css/base.css" rel="stylesheet">
+<link rel="stylesheet" href="../custom/blue/uimaker/easyui.css">
+<link rel="stylesheet" type="text/css" href="../custom/blue/uimaker/icon.css">
+<link rel="stylesheet" href="/pages/static/blue/css/providers1.css">
+   
+<link rel="stylesheet" href="static/green/css/workcangfang.css">
+
+    
+
+
+
+
+
+<script type="text/javascript" src="../custom/blue/jquery.min.js"></script>
+    <script type="text/javascript" src="../custom/blue/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../custom/blue/easyui-lang-zh_CN.js"></script>
+<script src="../pages/js/yudu.js"></script>
+
+    <!--分层显示js-->
+    <!-- <script src="xlsxdemo-master/bootstarp-table/js/three.min.js"></script>
+    <script src="xlsxdemo-master/bootstarp-table/js/tween.min.js"></script>
+    <script src="xlsxdemo-master/bootstarp-table/js/TrackballControls.js"></script>
+    <script src="xlsxdemo-master/bootstarp-table/js/CSS3DRenderer.js"></script> -->
+
+
+    <script src="xlsxdemo-master/js/utils.js"></script>
+    <!-- <script type="text/javascript" src="../custom/blue/jquery.easyui.minboot.js"></script>
+     <script type="text/javascript" src="../custom/blue/easyui-lang-zh_CN.js"></script> -->
+    <style type="text/css">
+        
+        #container{
+                width: 100%;
+                height: 100%;
+                margin:0 auto;
+                overflow: scroll;
+                font-family: Helvetica, sans-serif;;
+               
+                
+                 
+                 background-size:100% 100%;
+                
+            }
+            #top{
+                padding: 20px;
+                
+            }
+            #bottom{
+                position: relative;
+            }
+
+       .imgclass{
+        position:static;
+        width:100%;
+       }
+        .divHeaderTable
+        {
+            width: 100%;
+            padding-bottom:5px;
+            display:block;
+        }
+        .divHeaderRow
+        {
+            width: 100%; /* add extra that you want to for header column */
+            display:block;
+            height:105px;
+        }
+        .divHeaderColumn
+        {
+            float: left;
+            width: 33%;
+            display:block;
+        }
+        .divTable
+        {
+            width: 100%;
+            display:inline-block;
+           
+        }
+        .divRow
+        {
+            width: 100%;
+            display:inline-flex;
+            
+        }
+        .divheng{
+            width: 80%;
+            height: 100px;
+            margin-bottom: 2px;
+            background: #e3e3e3;
+            text-align: center;
+            vertical-align:center;
+            font-size: 40px;
+            
+            color: white;
+        }
+        .divColumn
+        {
+            float: left;
+            width: 80%;
+           height: 360px;
+           
+           background: #e3e3e3;
+          
+        }
+        .divCell
+        {
+            float: left;
+            width: 190px;
+            display: inline;
+           height: 240px;
+           margin-right: 10px;
+            
+        }
+         .divButton
+        {
+            
+            width: 100%;
+            display: table;
+           height: 240px;
+          vertical-align: middle;
+  text-align: center;
+
+           
+        }
+        .button1 {
+            
+            padding: 5px 10px;
+            margin:  10px;
+            text-align: center;
+            font-size: 16px;
+            font-style: normal;
+            width: 150px;
+            background-color: #04d8d1;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            border: 1px solid #00a65a;
+            border-radius:5px;
+            height: 50px;
+
+            
+        }
+        .button1:hover {
+            background-color: #00a65a;
+            color: red;
+        }
+        .divlabel{
+            
+            width:100px;
+            margin:5px;
+        }
+        .divinput{
+            margin-left: 5px;
+            display: inline;
+
+        }
+    </style>
+   <!--  <script src="./static/blue/js/echarts.min.js"></script>
+    <script src="./static/blue/js/echarts-gl.min.js"></script> -->
+</head>
+<script>
+    function getparam(){
+        var query = location.search.substring(1);
+        var values= query.split("&");
+        for(var i = 0; i < values.length; i++) {
+            var pos = values[i].indexOf('=');
+            if (pos == -1) continue;
+            var paramname = values[i].substring(0,pos);
+            var value = values[i].substring(pos+1);
+        }
+    }
+
+</script>
+<body>
+
+ <div class="statement" style="padding-right: 0px;">
+               
+                <div class="process" >
+                      <!-- <img id="lswdwenduquxian" src="/bbpic/wenduquxian.png" style="cursor: pointer;"></img>
+                         <img id="lswdanniu" src="/bbpic/lishiwenduanniu.png" style="cursor: pointer;"></img> -->
+                                        <div class="process-inner">
+        
+                   <div id="container">
+           <!--  <div id="top">
+                <button id="btn1">3列</button>
+                <button id="btn2">4列</button>
+                <button id="btn3">5列</button>
+            </div> -->
+            <div id="bottom">
+
+<div id="content" class="divTable">
+    <div class="divRow">
+        <div class="divheng">
+            
+        <ul class="work-items">
+                            <li>
+                                <div class="work-inner">
+                                    <div class="work-item blue">
+                                       
+                                       <span id="moshi" class="num"></span>
+                                        <label id="qixiangzhan">模式</label>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="work-inner">
+                                    <div class="work-item blue">
+                                        
+                                         <span id="nongdu" class="num">--&nbsp;<span class="unit">%</span></span>
+                                        <label>目标浓度值</label>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="work-inner">
+                                    <div class="work-item blue">
+                                         
+                                        <span id="qiya" class="num">--&nbsp;<span class="unit">pa</span></span>
+                                        <label>当前仓内气压</label>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="work-inner">
+                                    <div class="work-item blue">
+                                        
+                                       <span id="bsqyali" class="num">--&nbsp;<span class="unit">pa</span></span>
+                                        <label>气密检测量程</label>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="work-inner">
+                                    <div class="work-item blue">
+                                         
+                                        <span id="bsqtime" class="num">--&nbsp;<span class="unit">m</span></span>
+                                        <label>半衰期时间</label>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="work-inner">
+                                    <div class="work-item blue">
+                                         
+                                        <span id="iresult" class="num">--&nbsp;<span class="unit"></span></span>
+                                        <label>检查结果</label>
+                                    </div>
+                                </div>
+                            </li>
+                             <li>
+                                <div class="work-inner">
+                                    <div class="work-item blue">
+                                        
+                                       <span id="status" class="num">--&nbsp;<span class="unit">℃</span></span>
+                                        <label>氮气机状态</label>
+                                    </div>
+                                </div>
+                            </li>
+                           
+                           
+                        </ul>
+                    </div>
+  
+        <div class="divheng" style="width: 20%;margin-left: 2px;background: #00a65a;line-height: 100px;" id="cangfang"></div>
+    </div>
+    <div class="divRow">
+            <div class="divColumn">
+                <div style="display:flex;">
+                    <img  src="images/cangfang.jpg" style="padding:5px;width:60%;height: 350px;" >
+                    <img id="img" src="images/ting.gif" style="padding:5px;width:40%;height: 350px;" >
+                </div>
+            </div>
+        <div class="divColumn" style="width:20%;margin-left: 2px;text-align: center;">
+
+
+
+                <span id="cang" style="display: none;"></span>
+                <button class="button1" type="button"  id= "3" onclick="fun($('#cang').html(),3)"><img style="vertical-align: middle;width: 24px;height: 24px;" src="images/上.png">&nbsp;环流熏蒸</button>
+                <button class="button1" style="background: #dbf405;" id= "6" onclick="fun($('#cang').html(),6)"><img style="vertical-align: middle;width: 24px;height: 24px;" src="images/下.png">&nbsp;氮气排空</button>
+                <button class="button1" style="background: #f47b05;" type="button"  id= "7" onclick="fun($('#cang').html(),7)"><img style="vertical-align: middle;width: 24px;height: 24px;" src="images/环流EOF.png">&nbsp;氮气回收</button>
+                <button class="button1" style="background: #0575f4;" type="button"  id= "8" onclick="fun($('#cang').html(),8)">快速投药</button>
+                 <button class="button1" style="background: #6fd106;" type="button"  id= "0" onclick="fun($('#cang').html(),0)">停&nbsp;&nbsp;止</button>
+            </div>
+
+        </div> 
+       
+    </div>
+
+    <div class="divRow" style="background: red;height: 300px;">
+
+<table id="wu-datagrid" class="easyui-datagrid" title="仓库列表" ></table>
+               </div>
+            </div>
+        </div>
+                
+             
+                
+                </div>
+            </div>  
+        </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+<!--<script src="../pages/js/liangshijiance.js"></script>-->
+
+
+<script type="text/javascript">
+ $(window).resize(function(){
+            //$('#bd.bd-content"').height($("body").height()-46);
+            //$('#bd.bd-content"').height(801);
+             // var width=$("body").height();
+              //alert (width);
+              //var height=parent.document.getElementById("body").height
+              var height = window.parent.document.documentElement.scrollHeight
+        console.log(height);
+            $("body").height(height-114-28);
+            
+            $(".statement").height(height-114-28);
+           
+            
+              $(".statement .process").height(height-113-28-2);
+            var cssheight=height-114-28-2;
+
+            $(".statement .process .process-inner").height(cssheight-20);
+           
+          }).resize();
+
+
+function fun(num,model){
+    switch (model){
+        case 1:
+            $("#img").attr("src", "images/1234.png");
+            break;
+        case 2:
+            $("#img").attr("src", "images/1.png");
+            break;
+        case 3:
+            $("#img").attr("src", "images/hlxz.gif");
+            $("#moshi").html("环流熏蒸");
+            break;
+        case 4:
+            $("#img").attr("src", "images/123.jpg");
+            break;
+        case 5:
+            $("#img").attr("src", "images/123.jpg");
+            break;
+        case 6:
+            $("#img").attr("src", "images/dqpk.gif");
+            $("#moshi").html("氮气排空");
+            break;
+        case 7:
+            $("#img").attr("src", "images/dqhs.gif");
+            $("#moshi").html("氮气回收");
+            break;
+        case 8:
+            $("#img").attr("src", "images/ksty.gif");
+            $("#moshi").html("快速投药");
+            break;
+        case 0:
+            $("#img").attr("src", "images/ting.gif");
+            $("#moshi").html("空闲");
+            break;
+    }
+
+    yuduhttpsendorder(num,model);
+}
+
+
+      </script>
+
+
+
+</html>
